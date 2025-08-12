@@ -4,7 +4,8 @@ function getPath(tree: TranslationTree, path: string): unknown {
   const parts = path.split('.').filter(Boolean)
   let current: any = tree
   for (const part of parts) {
-    if (current == null || typeof current !== 'object') return undefined
+    if (current == null || typeof current !== 'object')
+      return undefined
     current = current[part]
   }
   return current
@@ -16,25 +17,30 @@ export function createTranslator(locales: Record<string, TranslationTree>, cfg: 
 
   function resolve(key: string, locale?: string, params?: TransParams): string | undefined {
     const tryLocales: string[] = []
-    if (locale) tryLocales.push(locale)
+    if (locale)
+      tryLocales.push(locale)
     else tryLocales.push(defaultLocale)
 
     if (fallbackLocale) {
-      if (Array.isArray(fallbackLocale)) tryLocales.push(...fallbackLocale)
+      if (Array.isArray(fallbackLocale))
+        tryLocales.push(...fallbackLocale)
       else tryLocales.push(fallbackLocale)
     }
 
     for (const loc of tryLocales) {
       const tree = locales[loc]
-      if (!tree) continue
+      if (!tree)
+        continue
       const val = getPath(tree, key)
-      if (val == null) continue
+      if (val == null)
+        continue
       if (typeof val === 'function') {
         // Dynamic value support
         const fn = val as (params?: TransParams) => string
         return fn(params)
       }
-      if (typeof val === 'string' || typeof val === 'number' || typeof val === 'boolean') return String(val)
+      if (typeof val === 'string' || typeof val === 'number' || typeof val === 'boolean')
+        return String(val)
       // Nested object → not renderable
       return undefined
     }
@@ -56,4 +62,4 @@ export function createTranslator(locales: Record<string, TranslationTree>, cfg: 
     const result = resolve(key, locale, params)
     return result ?? key
   }
-} 
+}

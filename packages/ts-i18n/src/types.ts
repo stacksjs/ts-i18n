@@ -14,7 +14,7 @@ export interface TransParams {
 
 export type TranslationValue = string | number | boolean | null | ((params?: TransParams) => string)
 
-export type TranslationTree = {
+export interface TranslationTree {
   [key: string]: TranslationValue | TranslationTree
 }
 

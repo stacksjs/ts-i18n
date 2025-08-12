@@ -1,5 +1,5 @@
-import { loadConfig } from 'bunfig'
 import type { TsI18nConfig } from './types'
+import { loadConfig } from 'bunfig'
 
 export const defaultConfig: TsI18nConfig = {
   translationsDir: 'locales',

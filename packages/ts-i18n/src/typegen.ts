@@ -1,12 +1,13 @@
-import { mkdir, writeFile } from 'fs/promises'
-import { dirname } from 'path'
 import type { TranslationTree } from './types'
+import { mkdir, writeFile } from 'node:fs/promises'
+import { dirname } from 'node:path'
 
 function collectKeys(tree: TranslationTree, prefix = ''): string[] {
   const keys: string[] = []
   for (const [k, v] of Object.entries(tree)) {
     const full = prefix ? `${prefix}.${k}` : k
-    if (v && typeof v === 'object' && !Array.isArray(v)) keys.push(...collectKeys(v as TranslationTree, full))
+    if (v && typeof v === 'object' && !Array.isArray(v))
+      keys.push(...collectKeys(v as TranslationTree, full))
     else keys.push(full)
   }
   return keys
@@ -27,4 +28,4 @@ export async function generateTypes(treesByLocale: Record<string, TranslationTre
   const dts = `export type TranslationKey = ${union}\n`
   await mkdir(dirname(outFile), { recursive: true })
   await writeFile(outFile, dts)
-} 
+}

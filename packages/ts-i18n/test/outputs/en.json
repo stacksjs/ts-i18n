@@ -1,0 +1,12 @@
+{
+  "home": {
+    "title": "Home"
+  },
+  "user": {
+    "profile": {
+      "name": "Name"
+    }
+  },
+  "onlyInEn": "Only in EN",
+  "dynamic": {}
+}

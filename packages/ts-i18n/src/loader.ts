@@ -1,9 +1,9 @@
-import fg from 'fast-glob'
-import { readFile } from 'fs/promises'
-import { basename, extname, join } from 'path'
-import { pathToFileURL } from 'url'
-import YAML from 'yaml'
 import type { TranslationTree, TsI18nConfig } from './types'
+import { readFile } from 'node:fs/promises'
+import { basename, extname, join } from 'node:path'
+import { pathToFileURL } from 'node:url'
+import fg from 'fast-glob'
+import YAML from 'yaml'
 
 async function importTsModule(filePath: string): Promise<Record<string, unknown>> {
   const spec = filePath.startsWith('file://') ? filePath : pathToFileURL(filePath).href
@@ -31,7 +31,8 @@ function setAtPath(obj: TranslationTree, path: string[], value: TranslationTree)
   let cursor: TranslationTree = obj
   for (let i = 0; i < path.length - 1; i++) {
     const segment = path[i]
-    if (!cursor[segment] || typeof cursor[segment] !== 'object') cursor[segment] = {}
+    if (!cursor[segment] || typeof cursor[segment] !== 'object')
+      cursor[segment] = {}
     cursor = cursor[segment] as TranslationTree
   }
   cursor[path[path.length - 1]] = value
@@ -61,9 +62,10 @@ export async function loadTranslations(config: TsI18nConfig): Promise<Record<str
       data = (mod as any).default ?? mod
     }
 
-    if (!data || typeof data !== 'object') continue
+    if (!data || typeof data !== 'object')
+      continue
 
-    const relative = file.replace(baseDir + '/', '')
+    const relative = file.replace(`${baseDir}/`, '')
     const segments = relative.split('/')
     let locale = segments[0]
     const rest = segments.slice(1)
@@ -73,12 +75,14 @@ export async function loadTranslations(config: TsI18nConfig): Promise<Record<str
       locale = basename(locale, ext)
     }
 
-    if (!locale) continue
+    if (!locale)
+      continue
 
     const namespacePath = rest.length ? rest.join('/') : ''
     const tree = data as TranslationTree
 
-    if (!localeMap[locale]) localeMap[locale] = {}
+    if (!localeMap[locale])
+      localeMap[locale] = {}
 
     if (!namespacePath) {
       localeMap[locale] = deepMerge(localeMap[locale], tree)
@@ -91,8 +95,8 @@ export async function loadTranslations(config: TsI18nConfig): Promise<Record<str
       const last = parts[parts.length - 1]
       let valueToSet: TranslationTree = tree
       if (
-        tree && typeof tree === 'object' && !Array.isArray(tree) &&
-        Object.keys(tree).length === 1 && Object.prototype.hasOwnProperty.call(tree, last)
+        tree && typeof tree === 'object' && !Array.isArray(tree)
+        && Object.keys(tree).length === 1 && Object.prototype.hasOwnProperty.call(tree, last)
       ) {
         valueToSet = (tree as any)[last] as TranslationTree
       }
@@ -103,4 +107,4 @@ export async function loadTranslations(config: TsI18nConfig): Promise<Record<str
   }
 
   return localeMap
-} 
+}
