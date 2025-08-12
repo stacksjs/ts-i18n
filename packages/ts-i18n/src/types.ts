@@ -18,6 +18,8 @@ export interface TranslationTree {
   [key: string]: TranslationValue | TranslationTree
 }
 
+export type Dictionary = TranslationTree
+
 export interface LocaleData {
   locale: string
   messages: TranslationTree

@@ -23,6 +23,22 @@ await writeOutputs(trees, 'dist/i18n')
 await generateTypes(trees, 'dist/i18n/keys.d.ts')
 ```
 
+### Authoring TS files with type safety
+
+```ts
+// locales/en/app.ts
+import type { Dictionary } from 'ts-i18n'
+
+export default {
+  home: {
+    title: 'Home',
+  },
+  dynamic: {
+    welcome: ({ name }: { name: string }) => `Welcome, ${name}!`,
+  },
+} satisfies Dictionary
+```
+
 ## CLI
 
 Create `.config/ts-i18n.config.ts` (or run `ts-i18n init`) and then:
@@ -50,5 +66,5 @@ export default {
   dynamic: {
     welcome: ({ name }: { name: string }) => `Welcome, ${name}!`,
   },
-}
+} satisfies Dictionary
 ```

@@ -42,11 +42,13 @@ user:
 `locales/en/dynamic.ts`:
 
 ```ts
+import type { Dictionary } from 'ts-i18n'
+
 export default {
   dynamic: {
     hello: ({ name }: { name: string }) => `Hello, ${name}`,
   },
-}
+} satisfies Dictionary
 ```
 
 ## Use at runtime

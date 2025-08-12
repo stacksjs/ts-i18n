@@ -202,3 +202,21 @@ bun test
 ## License
 
 MIT — see `LICENSE.md`.
+
+## Authoring TS files with type safety
+
+You can get editor hints and static checks by using `satisfies Dictionary`:
+
+```ts
+// locales/en/app.ts
+import type { Dictionary } from 'ts-i18n'
+
+export default {
+  home: {
+    title: 'Home',
+  },
+  dynamic: {
+    welcome: ({ name }: { name: string }) => `Welcome, ${name}!`,
+  },
+} satisfies Dictionary
+```
