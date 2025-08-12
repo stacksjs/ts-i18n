@@ -1,22 +1,31 @@
 import type { TranslationTree, TsI18nConfig } from './types'
 import { readFile } from 'node:fs/promises'
-import { basename, extname, join } from 'node:path'
+import { basename, extname, join, relative as pathRelative, resolve, sep } from 'node:path'
 import { pathToFileURL } from 'node:url'
-import fg from 'fast-glob'
+import * as tiny from 'tinyglobby'
 import YAML from 'yaml'
+
+async function globby(patterns: string[], opts: { dot?: boolean }) {
+  const fn: any = (tiny as any).glob
+  return fn(patterns, opts) as Promise<string[]>
+}
 
 async function importTsModule(filePath: string): Promise<Record<string, unknown>> {
   const spec = filePath.startsWith('file://') ? filePath : pathToFileURL(filePath).href
   const mod = await import(spec)
-  const candidate = (mod && (mod.default ?? mod.translations ?? mod)) as Record<string, unknown>
+  const candidate = (mod && (mod.default ?? (mod as any).translations ?? mod)) as Record<string, unknown>
   return candidate
+}
+
+function isPlainObject(value: unknown): value is Record<string, unknown> {
+  return value != null && typeof value === 'object' && !Array.isArray(value)
 }
 
 function deepMerge(target: TranslationTree, source: TranslationTree): TranslationTree {
   const output: TranslationTree = { ...target }
   for (const key of Object.keys(source)) {
     const value = (source as any)[key]
-    if (value && typeof value === 'object' && !Array.isArray(value)) {
+    if (isPlainObject(value)) {
       const existing = (output[key] && typeof output[key] === 'object') ? (output[key] as TranslationTree) : {}
       output[key] = deepMerge(existing, value as TranslationTree)
     }
@@ -39,10 +48,17 @@ function setAtPath(obj: TranslationTree, path: string[], value: TranslationTree)
 }
 
 export async function loadTranslations(config: TsI18nConfig): Promise<Record<string, TranslationTree>> {
-  const baseDir = config.translationsDir
+  const baseDir = resolve(config.translationsDir)
+  if (!baseDir || typeof baseDir !== 'string')
+    throw new Error('ts-i18n: translationsDir must be a non-empty string')
+
   const include = config.include ?? ['**/*.yml', '**/*.yaml', '**/*.ts', '**/*.js']
   const patterns = include.map(p => join(baseDir, p))
-  const files = await fg(patterns, { dot: false })
+  const matched = await globby(patterns, { dot: false })
+  const files = matched.map(f => resolve(f))
+
+  if (!files.length)
+    throw new Error(`ts-i18n: No translation files found under ${baseDir}`)
 
   const localeMap: Record<string, TranslationTree> = {}
 
@@ -51,22 +67,34 @@ export async function loadTranslations(config: TsI18nConfig): Promise<Record<str
     const isYaml = ext === '.yml' || ext === '.yaml'
     const isTs = ext === '.ts' || ext === '.js'
 
-    let data: Record<string, unknown> | undefined
+    let data: unknown
 
     if (isYaml) {
-      const content = await readFile(file, 'utf8')
-      data = YAML.parse(content) as any
+      try {
+        const content = await readFile(file, 'utf8')
+        const parsed = YAML.parse(content)
+        data = parsed == null ? {} : parsed
+      }
+      catch (e: any) {
+        throw new Error(`ts-i18n: Failed to parse YAML file ${file}: ${e?.message ?? e}`)
+      }
     }
     else if (isTs) {
-      const mod = await importTsModule(file)
-      data = (mod as any).default ?? mod
+      try {
+        const mod = await importTsModule(file)
+        data = (mod as any).default ?? mod
+      }
+      catch (e: any) {
+        throw new Error(`ts-i18n: Failed to import TS translation module ${file}: ${e?.message ?? e}`)
+      }
     }
 
-    if (!data || typeof data !== 'object')
-      continue
+    if (!isPlainObject(data)) {
+      throw new Error(`ts-i18n: Translation file must export an object. File: ${file}`)
+    }
 
-    const relative = file.replace(`${baseDir}/`, '')
-    const segments = relative.split('/')
+    const relative = pathRelative(baseDir, file)
+    const segments = relative.split(sep)
     let locale = segments[0]
     const rest = segments.slice(1)
 
@@ -76,7 +104,7 @@ export async function loadTranslations(config: TsI18nConfig): Promise<Record<str
     }
 
     if (!locale)
-      continue
+      throw new Error(`ts-i18n: Could not infer locale from file path: ${file}`)
 
     const namespacePath = rest.length ? rest.join('/') : ''
     const tree = data as TranslationTree

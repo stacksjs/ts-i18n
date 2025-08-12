@@ -1,6 +1,7 @@
 import type { TsI18nConfig } from '../src/types'
 import { beforeAll, describe, expect, it } from 'bun:test'
-import { mkdir, readFile, rm } from 'node:fs/promises'
+import { mkdir, readFile, rm, writeFile } from 'node:fs/promises'
+import { join } from 'node:path'
 import { loadTranslations } from '../src/loader'
 import { writeOutputs } from '../src/output'
 import { createTranslator } from '../src/translator'
@@ -78,5 +79,56 @@ describe('ts-i18n outputs and type generation', () => {
     await generateTypes(trees, baseConfig.typesOutFile!)
     const content = await readFile(baseConfig.typesOutFile!, 'utf8')
     expect(content).toContain('export type TranslationKey')
+  })
+})
+
+describe('ts-i18n edge cases and errors', () => {
+  it('throws when translationsDir is invalid', async () => {
+    await expect(() => loadTranslations({ ...baseConfig, translationsDir: '' as any })).toThrow()
+  })
+
+  it('throws when no files are found', async () => {
+    const emptyDir = join(outputs, 'empty')
+    await rm(emptyDir, { recursive: true, force: true })
+    await mkdir(emptyDir, { recursive: true })
+    await expect(loadTranslations({ ...baseConfig, translationsDir: emptyDir })).rejects.toThrow('No translation files')
+  })
+
+  it('throws on invalid YAML content', async () => {
+    const badDir = join(outputs, 'bad-yaml')
+    await rm(badDir, { recursive: true, force: true })
+    await mkdir(badDir, { recursive: true })
+    const file = join(badDir, 'en.yml')
+    await writeFile(file, 'home:\n  title: "Missing quote\n', 'utf8')
+    await expect(loadTranslations({ ...baseConfig, translationsDir: badDir })).rejects.toThrow('Failed to parse YAML')
+  })
+
+  it('throws when TS module does not export object', async () => {
+    const badDir = join(outputs, 'bad-ts')
+    await rm(badDir, { recursive: true, force: true })
+    await mkdir(join(badDir, 'en'), { recursive: true })
+    const file = join(badDir, 'en', 'bad.ts')
+    await writeFile(file, 'export default 42 as any', 'utf8')
+    await expect(loadTranslations({ ...baseConfig, translationsDir: badDir })).rejects.toThrow('must export an object')
+  })
+
+  it('handles empty YAML as empty object', async () => {
+    const emptyYamlDir = join(outputs, 'empty-yaml')
+    await rm(emptyYamlDir, { recursive: true, force: true })
+    await mkdir(emptyYamlDir, { recursive: true })
+    await writeFile(join(emptyYamlDir, 'en.yml'), '', 'utf8')
+    const trees = await loadTranslations({ ...baseConfig, translationsDir: emptyYamlDir })
+    expect(trees.en).toEqual({})
+  })
+
+  it('merges nested namespaces from files under locale subdirectories', async () => {
+    const nestedDir = join(outputs, 'nested')
+    await rm(nestedDir, { recursive: true, force: true })
+    await mkdir(join(nestedDir, 'en'), { recursive: true })
+    await writeFile(join(nestedDir, 'en', 'home.yml'), 'home:\n  title: Home Sub\n', 'utf8')
+    await writeFile(join(nestedDir, 'en.yml'), 'user:\n  age: 30\n', 'utf8')
+    const trees = await loadTranslations({ ...baseConfig, translationsDir: nestedDir })
+    expect((trees as any).en.home.title).toBe('Home Sub')
+    expect((trees as any).en.user.age).toBe(30)
   })
 })
