@@ -1,1 +1,1 @@
-export type TranslationKey = "home.title" | "onlyInPt" | "user.profile.name"
+export type TranslationKey = 'home.title' | 'onlyInPt' | 'user.profile.name'
