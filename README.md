@@ -8,19 +8,50 @@
 
 # ts-i18n
 
-Fast, Bun-native TypeScript i18n loader with YAML/TS support, runtime translation, and type generation. Framework-agnostic: use it in any template engine or with React/Vue.
+Fast, Bun‑native TypeScript i18n loader with YAML/TS support, runtime translation, and type generation. Framework‑agnostic: use it in any template engine or with React/Vue.
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Features](#features)
+- [Installation](#installation)
+- [Quick Start](#quick-start)
+- [Directory Structure](#directory-structure)
+- [Configuration](#configuration)
+- [Authoring Translations](#authoring-translations)
+  - [YAML files](#yaml-files)
+  - [TypeScript files (satisfies Dictionary)](#typescript-files-satisfies-dictionary)
+- [Runtime API](#runtime-api)
+- [CLI](#cli)
+- [Type Generation](#type-generation)
+- [Per‑locale JSON Output](#per-locale-json-output)
+- [Framework Integration](#framework-integration)
+  - [Template engines](#template-engines)
+  - [React](#react)
+  - [Vue](#vue)
+- [Error handling](#error-handling)
+- [Performance](#performance)
+- [Testing](#testing)
+- [License](#license)
+
+## Overview
+
+`ts-i18n` focuses on a simple and fast developer experience:
+
+- Keep translations in easy‑to‑read YAML files or in TypeScript with optional dynamic values.
+- Load at runtime, generate per‑locale JSON for bundlers if needed, and optionally generate type definitions for key safety.
 
 ## Features
 
 - YAML (.yml/.yaml) and TS/JS translations
-- Option A folder structure: `locales/en.yml` or `locales/en/*.yml|.ts`
-- Runtime loader with fallback locales
+- Folder structure: `locales/en.yml` or `locales/en/*.yml|.ts`
+- Runtime translator with fallback locales
 - Dynamic values via functions in TS files
-- Optional per-locale JSON output
+- Per‑locale JSON output (optional)
 - Type generation for translation keys
-- Zero-interop with frameworks; works in SSR and build steps
+- Framework‑agnostic; works with SSR and build steps
 
-## Install
+## Installation
 
 ```bash
 # bun
@@ -30,13 +61,13 @@ bun add ts-i18n
 npm i ts-i18n
 
 # pnpm
-dpnm add ts-i18n
+pnpm add ts-i18n
 
 # yarn
 yarn add ts-i18n
 ```
 
-## Quick start
+## Quick Start
 
 ```ts
 import { createTranslator, loadTranslations } from 'ts-i18n'
@@ -53,7 +84,9 @@ trans('home.title') // "Home"
 trans('dynamic.hello', { name: 'Ada' }) // "Hello, Ada"
 ```
 
-### Folder structure (Option A)
+## Directory Structure
+
+Recommended (Option A):
 
 ```text
 locales/
@@ -64,22 +97,12 @@ locales/
     dynamic.ts
 ```
 
-- YAML files must be strictly nested objects with string/number/boolean/null leaves.
+- YAML files should be strictly nested objects with primitive leaves (string/number/boolean/null).
 - TS/JS files should export a default object. Values can be functions for dynamic messages.
 
-`locales/en/dynamic.ts`:
+## Configuration
 
-```ts
-export default {
-  dynamic: {
-    hello: ({ name }: { name: string }) => `Hello, ${name}`,
-  },
-}
-```
-
-## Config
-
-`ts-i18n` reads `.config/ts-i18n.config.ts` via bunfig when used through the CLI. You can also pass the config object directly to APIs.
+`ts-i18n` reads `.config/ts-i18n.config.ts` via bunfig when using the CLI. You can also pass the same options programmatically.
 
 ```ts
 export interface TsI18nConfig {
@@ -107,12 +130,66 @@ export default {
 }
 ```
 
-You can scaffold a sample config:
+Scaffold a sample config:
 
 ```bash
 # generates .config/ts-i18n.config.ts from defaults
 npx ts-i18n init
 ```
+
+## Authoring Translations
+
+### YAML files
+
+```yaml
+# locales/en.yml
+home:
+  title: Home
+user:
+  profile:
+    name: Name
+```
+
+### TypeScript files (satisfies Dictionary)
+
+Use `satisfies Dictionary` for editor hints and static checks.
+
+```ts
+// locales/en/app.ts
+import type { Dictionary } from 'ts-i18n'
+
+export default {
+  home: {
+    title: 'Home',
+  },
+  dynamic: {
+    welcome: ({ name }: { name: string }) => `Welcome, ${name}!`,
+  },
+} satisfies Dictionary
+```
+
+## Runtime API
+
+```ts
+import { createTranslator, generateTypes, loadTranslations, writeOutputs } from 'ts-i18n'
+
+const cfg = { translationsDir: 'locales', defaultLocale: 'en', fallbackLocale: 'pt' }
+const trees = await loadTranslations(cfg)
+const trans = createTranslator(trees, { defaultLocale: cfg.defaultLocale, fallbackLocale: cfg.fallbackLocale })
+
+// translate
+trans('home.title')
+trans('dynamic.welcome', { name: 'Ada' })
+
+// optional outputs
+await writeOutputs(trees, 'dist/i18n')
+await generateTypes(trees, 'dist/i18n/keys.d.ts')
+```
+
+Notes:
+
+- If a key is missing in the active locale, `trans` falls back to `fallbackLocale` (or returns the key if not found).
+- Interpolation is handled by your template engine; for dynamic TS values, pass `params` to `trans`.
 
 ## CLI
 
@@ -130,25 +207,33 @@ ts-i18n check
 ts-i18n init --out .config/ts-i18n.config.ts
 ```
 
-## Programmatic API
+## Type Generation
+
+Generates a union type of keys for DX.
 
 ```ts
-import { createTranslator, generateTypes, loadTranslations, writeOutputs } from 'ts-i18n'
-
-const cfg = { translationsDir: 'locales', defaultLocale: 'en', fallbackLocale: 'pt' }
-const trees = await loadTranslations(cfg)
-const trans = createTranslator(trees, { defaultLocale: cfg.defaultLocale, fallbackLocale: cfg.fallbackLocale })
-
-await writeOutputs(trees, 'dist/i18n')
+import { generateTypes } from 'ts-i18n'
 await generateTypes(trees, 'dist/i18n/keys.d.ts')
+// -> export type TranslationKey = 'home.title' | 'user.profile.name' | ...
 ```
 
-## Using with template engines
+## Per‑locale JSON Output
 
-- Use the returned `trans` function directly in your renderer. Example: `{{ trans('user.profile.name') }}`.
-- Interpolation is handled by the template engine; for dynamic TS values, pass params: `trans('dynamic.hello', { name: 'Ada' })`.
+Write serializable JSON per locale (function values are stripped).
 
-## Using with React
+```ts
+import { writeOutputs } from 'ts-i18n'
+await writeOutputs(trees, 'dist/i18n')
+// -> dist/i18n/en.json, dist/i18n/pt.json, ...
+```
+
+## Framework Integration
+
+### Template engines
+
+Use the returned function directly: `{{ trans('user.profile.name') }}`. For dynamic messages: `{{ trans('dynamic.welcome', { name: user.name }) }}`.
+
+### React
 
 ```tsx
 import React, { createContext, useContext } from 'react'
@@ -174,7 +259,7 @@ export function useTrans() {
 }
 ```
 
-## Using with Vue
+### Vue
 
 ```ts
 import { createTranslator, loadTranslations } from 'ts-i18n'
@@ -193,30 +278,31 @@ export function useTrans() {
 }
 ```
 
+## Error handling
+
+The loader throws descriptive errors for common issues:
+
+- Missing or invalid `translationsDir`
+- No files found under `translationsDir`
+- YAML parse failures (reports file path and message)
+- TS module import errors
+- Non‑object exports from YAML/TS
+- Locale inference failure from file path
+
+## Performance
+
+- Uses `tinyglobby` for fast globbing.
+- Minimizes allocations and performs deep merges only when necessary.
+- Bun target build for optimal runtime.
+
 ## Testing
 
 ```bash
 bun test
 ```
 
+High coverage tests validate loader behavior, translator fallback, outputs, type generation, and edge cases.
+
 ## License
 
 MIT — see `LICENSE.md`.
-
-## Authoring TS files with type safety
-
-You can get editor hints and static checks by using `satisfies Dictionary`:
-
-```ts
-// locales/en/app.ts
-import type { Dictionary } from 'ts-i18n'
-
-export default {
-  home: {
-    title: 'Home',
-  },
-  dynamic: {
-    welcome: ({ name }: { name: string }) => `Welcome, ${name}!`,
-  },
-} satisfies Dictionary
-```
