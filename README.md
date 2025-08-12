@@ -6,41 +6,192 @@
 <!-- [![npm downloads][npm-downloads-src]][npm-downloads-href] -->
 <!-- [![Codecov][codecov-src]][codecov-href] -->
 
-# ts-starter-monorepo
+# ts-i18n
 
-This is an opinionated TypeScript Starter kit to help kick-start development of your next Bun package.
+Fast, Bun-native TypeScript i18n loader with YAML/TS support, runtime translation, and type generation. Framework-agnostic: use it in any template engine or with React/Vue.
 
 ## Features
 
-This Starter Kit comes pre-configured with the following:
+- YAML (.yml/.yaml) and TS/JS translations
+- Option A folder structure: `locales/en.yml` or `locales/en/*.yml|.ts`
+- Runtime loader with fallback locales
+- Dynamic values via functions in TS files
+- Optional per-locale JSON output
+- Type generation for translation keys
+- Zero-interop with frameworks; works in SSR and build steps
 
-- 🛠️ [Powerful Build Process](https://github.com/oven-sh/bun) - via Bun
-- 💪🏽 [Fully Typed APIs](https://www.typescriptlang.org/) - via TypeScript
-- 📚 [Documentation-ready](https://vitepress.dev/) - via VitePress
-- ⌘ [CLI & Binary](https://www.npmjs.com/package/bunx) - via Bun & CAC
-- 🧪 [Built With Testing In Mind](https://bun.sh/docs/cli/test) - pre-configured unit-testing powered by [Bun](https://bun.sh/docs/cli/test)
-- 🤖 [Renovate](https://renovatebot.com/) - optimized & automated PR dependency updates
-- 🎨 [ESLint](https://eslint.org/) - for code linting _(and formatting)_
-- 📦️ [pkg.pr.new](https://pkg.pr.new) - Continuous (Preview) Releases for your libraries
-- 🐙 [GitHub Actions](https://github.com/features/actions) - runs your CI _(fixes code style issues, tags releases & creates its changelogs, runs the test suite, etc.)_
-
-## Get Started
-
-It's rather simple to get your package development started:
+## Install
 
 ```bash
-# you may use this GitHub template or the following command:
-bunx degit stacksjs/ts-starter my-pkg
-cd my-pkg
+# bun
+bun add ts-i18n
 
-bun i # install all deps
-bun run build # builds the library for production-ready use
+# npm
+npm i ts-i18n
 
-# after you have successfully committed, you may create a "release"
-bun run release # automates git commits, versioning, and changelog generations
+# pnpm
+dpnm add ts-i18n
+
+# yarn
+yarn add ts-i18n
 ```
 
-_Check out the package.json scripts for more commands._
+## Quick start
+
+```ts
+import { createTranslator, loadTranslations } from 'ts-i18n'
+
+const trees = await loadTranslations({
+  translationsDir: 'locales',
+  defaultLocale: 'en',
+  fallbackLocale: 'pt',
+})
+
+const trans = createTranslator(trees, { defaultLocale: 'en', fallbackLocale: 'pt' })
+
+trans('home.title') // "Home"
+trans('dynamic.hello', { name: 'Ada' }) // "Hello, Ada"
+```
+
+### Folder structure (Option A)
+
+```text
+locales/
+  en.yml
+  pt.yml
+  en/
+    auth.yml
+    dynamic.ts
+```
+
+- YAML files must be strictly nested objects with string/number/boolean/null leaves.
+- TS/JS files should export a default object. Values can be functions for dynamic messages.
+
+`locales/en/dynamic.ts`:
+
+```ts
+export default {
+  dynamic: {
+    hello: ({ name }: { name: string }) => `Hello, ${name}`,
+  },
+}
+```
+
+## Config
+
+`ts-i18n` reads `.config/ts-i18n.config.ts` via bunfig when used through the CLI. You can also pass the config object directly to APIs.
+
+```ts
+export interface TsI18nConfig {
+  translationsDir: string // e.g. 'locales'
+  defaultLocale: string // e.g. 'en'
+  fallbackLocale?: string | string[] // e.g. 'pt' or ['pt', 'es']
+  include?: string[] // globs relative to translationsDir
+  verbose?: boolean
+  outDir?: string // where to write per-locale JSON (optional)
+  typesOutFile?: string // where to write generated d.ts (optional)
+}
+```
+
+Sample config:
+
+```ts
+// .config/ts-i18n.config.ts
+export default {
+  translationsDir: 'locales',
+  defaultLocale: 'en',
+  fallbackLocale: 'pt',
+  include: ['**/*.yml', '**/*.yaml', '**/*.ts'],
+  outDir: 'dist/i18n',
+  typesOutFile: 'dist/i18n/keys.d.ts',
+}
+```
+
+You can scaffold a sample config:
+
+```bash
+# generates .config/ts-i18n.config.ts from defaults
+npx ts-i18n init
+```
+
+## CLI
+
+```bash
+# Build per-locale JSON (when outDir is set) and generate types (when typesOutFile is set)
+ts-i18n build
+
+# List discovered locales and their top-level namespaces
+ts-i18n list
+
+# Check missing keys vs base locale
+ts-i18n check
+
+# Create a sample config file
+ts-i18n init --out .config/ts-i18n.config.ts
+```
+
+## Programmatic API
+
+```ts
+import { createTranslator, generateTypes, loadTranslations, writeOutputs } from 'ts-i18n'
+
+const cfg = { translationsDir: 'locales', defaultLocale: 'en', fallbackLocale: 'pt' }
+const trees = await loadTranslations(cfg)
+const trans = createTranslator(trees, { defaultLocale: cfg.defaultLocale, fallbackLocale: cfg.fallbackLocale })
+
+await writeOutputs(trees, 'dist/i18n')
+await generateTypes(trees, 'dist/i18n/keys.d.ts')
+```
+
+## Using with template engines
+
+- Use the returned `trans` function directly in your renderer. Example: `{{ trans('user.profile.name') }}`.
+- Interpolation is handled by the template engine; for dynamic TS values, pass params: `trans('dynamic.hello', { name: 'Ada' })`.
+
+## Using with React
+
+```tsx
+import React, { createContext, useContext } from 'react'
+import { createTranslator, loadTranslations } from 'ts-i18n'
+
+const I18nContext = createContext<(k: string, p?: any) => string>(() => '')
+
+export function I18nProvider({ children }: { children: React.ReactNode }) {
+  const [transFn, setTransFn] = React.useState(() => (k: string) => k)
+
+  React.useEffect(() => {
+    (async () => {
+      const trees = await loadTranslations({ translationsDir: 'locales', defaultLocale: 'en', fallbackLocale: 'pt' })
+      setTransFn(() => createTranslator(trees, { defaultLocale: 'en', fallbackLocale: 'pt' }))
+    })()
+  }, [])
+
+  return <I18nContext.Provider value={transFn}>{children}</I18nContext.Provider>
+}
+
+export function useTrans() {
+  return useContext(I18nContext)
+}
+```
+
+## Using with Vue
+
+```ts
+import { createTranslator, loadTranslations } from 'ts-i18n'
+import { createApp, inject } from 'vue'
+
+const key = Symbol('i18n')
+
+export async function installI18n(app) {
+  const trees = await loadTranslations({ translationsDir: 'locales', defaultLocale: 'en', fallbackLocale: 'pt' })
+  const trans = createTranslator(trees, { defaultLocale: 'en', fallbackLocale: 'pt' })
+  app.provide(key, trans)
+}
+
+export function useTrans() {
+  return inject(key)
+}
+```
 
 ## Testing
 
@@ -48,48 +199,6 @@ _Check out the package.json scripts for more commands._
 bun test
 ```
 
-## Changelog
-
-Please see our [releases](https://github.com/stackjs/ts-starter-monorepo/releases) page for more information on what has changed recently.
-
-## Contributing
-
-Please see [CONTRIBUTING](.github/CONTRIBUTING.md) for details.
-
-## Community
-
-For help, discussion about best practices, or any other conversation that would benefit from being searchable:
-
-[Discussions on GitHub](https://github.com/stacksjs/ts-starter-monorepo/discussions)
-
-For casual chit-chat with others using this package:
-
-[Join the Stacks Discord Server](https://discord.gg/stacksjs)
-
-## Postcardware
-
-“Software that is free, but hopes for a postcard.” We love receiving postcards from around the world showing where Stacks is being used! We showcase them on our website too.
-
-Our address: Stacks.js, 12665 Village Ln #2306, Playa Vista, CA 90094, United States 🌎
-
-## Sponsors
-
-We would like to extend our thanks to the following sponsors for funding Stacks development. If you are interested in becoming a sponsor, please reach out to us.
-
-- [JetBrains](https://www.jetbrains.com/)
-- [The Solana Foundation](https://solana.com/)
-
 ## License
 
-The MIT License (MIT). Please see [LICENSE](LICENSE.md) for more information.
-
-Made with 💙
-
-<!-- Badges -->
-[npm-version-src]: https://img.shields.io/npm/v/ts-starter-monorepo?style=flat-square
-[npm-version-href]: https://npmjs.com/package/ts-starter-monorepo
-[github-actions-src]: https://img.shields.io/github/actions/workflow/status/stacksjs/ts-starter-monorepo/ci.yml?style=flat-square&branch=main
-[github-actions-href]: https://github.com/stacksjs/ts-starter-monorepo/actions?query=workflow%3Aci
-
-<!-- [codecov-src]: https://img.shields.io/codecov/c/gh/stacksjs/ts-starter-monorepo/main?style=flat-square
-[codecov-href]: https://codecov.io/gh/stacksjs/ts-starter-monorepo -->
+MIT — see `LICENSE.md`.

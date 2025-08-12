@@ -1,93 +1,82 @@
 <p align="center"><img src="https://github.com/stacksjs/rpx/blob/main/.github/art/cover.jpg?raw=true" alt="Social Card of this repo"></p>
 
-# A Better Developer Experience
+# ts-i18n
 
-> A TypeScript Starter Kit that will help you bootstrap your next project without minimal opinion.
+Fast, Bun-native TypeScript i18n loader with YAML/TS support, runtime translation, and type generation. Framework-agnostic and easy to adopt.
 
-# ts-starter-monorepo
+## Why ts-i18n?
 
-This is an opinionated TypeScript Starter kit to help kick-start development of your next Bun package.
+- Works with strict YAML and dynamic TS files
+- Simple runtime translator with fallback locales
+- Optional JSON outputs for bundlers
+- Type-safe keys via generated `d.ts`
+- Great performance using Bun and tinyglobby
 
-## Get Started
-
-It's rather simple to get your package development started:
+## Install
 
 ```bash
-# you may use this GitHub template or the following command:
-bunx degit stacksjs/ts-starter-monorepo my-monorepo
-cd my-monorepo
-
- # if you don't have pnpm installed, run `npm i -g pnpm`
-bun i # install all deps
-bun run build # builds the library for production-ready use
-
-# after you have successfully committed, you may create a "release"
-bun run release # automates git commits, versioning, and changelog generations
+bun add ts-i18n
+# or npm i ts-i18n / pnpm add ts-i18n / yarn add ts-i18n
 ```
 
-_Check out the package.json scripts for more commands._
+## Create your translations
 
-### Developer Experience (DX)
+```text
+locales/
+  en.yml
+  pt.yml
+  en/
+    dynamic.ts
+```
 
-This Starter Kit comes pre-configured with the following:
+`locales/en.yml`:
 
-- [Powerful Build Process](https://github.com/oven-sh/bun) - via Bun
-- [Fully Typed APIs](https://www.typescriptlang.org/) - via TypeScript
-- [Documentation-ready](https://vitepress.dev/) - via VitePress
-- [CLI & Binary](https://www.npmjs.com/package/bunx) - via Bun & CAC
-- [Be a Good Commitizen](https://www.npmjs.com/package/git-cz) - pre-configured Commitizen & git-cz setup to simplify semantic git commits, versioning, and changelog generations
-- [Built With Testing In Mind](https://bun.sh/docs/cli/test) - pre-configured unit-testing powered by [Bun](https://bun.sh/docs/cli/test)
-- [Renovate](https://renovatebot.com/) - optimized & automated PR dependency updates
-- [ESLint](https://eslint.org/) - for code linting _(and formatting)_
-- [GitHub Actions](https://github.com/features/actions) - runs your CI _(fixes code style issues, tags releases & creates its changelogs, runs the test suite, etc.)_
+```yaml
+home:
+  title: Home
+user:
+  profile:
+    name: Name
+```
 
-## Changelog
+`locales/en/dynamic.ts`:
 
-Please see our [releases](https://github.com/stacksjs/stacks/releases) page for more information on what has changed recently.
+```ts
+export default {
+  dynamic: {
+    hello: ({ name }: { name: string }) => `Hello, ${name}`,
+  },
+}
+```
 
-## Stargazers
+## Use at runtime
 
-[![Stargazers](https://starchart.cc/stacksjs/ts-starter.svg?variant=adaptive)](https://starchart.cc/stacksjs/ts-starter)
+```ts
+import { createTranslator, loadTranslations } from 'ts-i18n'
 
-## Contributing
+const trees = await loadTranslations({
+  translationsDir: 'locales',
+  defaultLocale: 'en',
+  fallbackLocale: 'pt',
+})
 
-Please review the [Contributing Guide](https://github.com/stacksjs/contributing) for details.
+const trans = createTranslator(trees, { defaultLocale: 'en', fallbackLocale: 'pt' })
 
-## Community
+trans('home.title') // Home
+trans('dynamic.hello', { name: 'Ada' }) // Hello, Ada
+```
 
-For help, discussion about best practices, or any other conversation that would benefit from being searchable:
+## Generate outputs and types
 
-[Discussions on GitHub](https://github.com/stacksjs/stacks/discussions)
+```ts
+import { generateTypes, writeOutputs } from 'ts-i18n'
 
-For casual chit-chat with others using this package:
+await writeOutputs(trees, 'dist/i18n')
+await generateTypes(trees, 'dist/i18n/keys.d.ts')
+```
 
-[Join the Stacks Discord Server](https://discord.gg/stacksjs)
+Or use the CLI with a `.config/ts-i18n.config.ts`:
 
-## Postcardware
-
-Two things are true: Stacks OSS will always stay open-source, and we do love to receive postcards from wherever Stacks is used! 🌍 _We also publish them on our website. And thank you, Spatie_
-
-Our address: Stacks.js, 12665 Village Ln #2306, Playa Vista, CA 90094
-
-## Sponsors
-
-We would like to extend our thanks to the following sponsors for funding Stacks development. If you are interested in becoming a sponsor, please reach out to us.
-
-- [JetBrains](https://www.jetbrains.com/)
-- [The Solana Foundation](https://solana.com/)
-
-## Credits
-
-- [Chris Breuer](https://github.com/chrisbbreuer)
-- [All Contributors](https://github.com/stacksjs/rpx/graphs/contributors)
-
-## License
-
-The MIT License (MIT). Please see [LICENSE](https://github.com/stacksjs/ts-starter-monorepo/tree/main/LICENSE.md) for more information.
-
-Made with 💙
-
-<!-- Badges -->
-
-<!-- [codecov-src]: https://img.shields.io/codecov/c/gh/stacksjs/rpx/main?style=flat-square
-[codecov-href]: https://codecov.io/gh/stacksjs/rpx -->
+```bash
+ts-i18n build
+```

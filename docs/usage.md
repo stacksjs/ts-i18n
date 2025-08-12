@@ -1,89 +1,54 @@
-# Get Started
+# Usage
 
-There are two ways of using this reverse proxy: _as a library or as a CLI._
+You can use `ts-i18n` programmatically or via the CLI.
 
 ## Library
 
-Given the npm package is installed:
-
 ```ts
-import type { TlsConfig } from '@stacksjs/rpx'
-import { startProxy } from '@stacksjs/rpx'
+import { createTranslator, generateTypes, loadTranslations, writeOutputs } from 'ts-i18n'
 
-export interface CleanupConfig {
-  hosts: boolean // clean up /etc/hosts, defaults to false
-  certs: boolean // clean up certificates, defaults to false
+const cfg = {
+  translationsDir: 'locales',
+  defaultLocale: 'en',
+  fallbackLocale: 'pt',
 }
 
-export interface ReverseProxyConfig {
-  from: string // domain to proxy from, defaults to localhost:3000
-  to: string // domain to proxy to, defaults to stacks.localhost
-  cleanUrls?: boolean // removes the .html extension from URLs, defaults to false
-  https: boolean | TlsConfig // automatically uses https, defaults to true, also redirects http to https
-  cleanup?: boolean | CleanupConfig // automatically cleans up /etc/hosts, defaults to false
-  verbose: boolean // log verbose output, defaults to false
-}
+const trees = await loadTranslations(cfg)
+const trans = createTranslator(trees, { defaultLocale: cfg.defaultLocale, fallbackLocale: cfg.fallbackLocale })
 
-const config: ReverseProxyOptions = {
-  from: 'localhost:3000',
-  to: 'my-docs.localhost',
-  cleanUrls: true,
-  https: true,
-  cleanup: false,
-}
+trans('home.title')
+trans('dynamic.hello', { name: 'Ada' })
 
-startProxy(config)
-```
-
-In case you are trying to start multiple proxies, you may use this configuration:
-
-```ts
-// reverse-proxy.config.{ts,js}
-import type { ReverseProxyOptions } from '@stacksjs/rpx'
-import os from 'node:os'
-import path from 'node:path'
-
-const config: ReverseProxyOptions = {
-  https: { // https: true -> also works with sensible defaults
-    caCertPath: path.join(os.homedir(), '.stacks', 'ssl', `stacks.localhost.ca.crt`),
-    certPath: path.join(os.homedir(), '.stacks', 'ssl', `stacks.localhost.crt`),
-    keyPath: path.join(os.homedir(), '.stacks', 'ssl', `stacks.localhost.crt.key`),
-  },
-
-  cleanup: {
-    hosts: true,
-    certs: false,
-  },
-
-  proxies: [
-    {
-      from: 'localhost:5173',
-      to: 'my-app.localhost',
-      cleanUrls: true,
-    },
-    {
-      from: 'localhost:5174',
-      to: 'my-api.local',
-    },
-  ],
-
-  verbose: true,
-}
-
-export default config
+await writeOutputs(trees, 'dist/i18n')
+await generateTypes(trees, 'dist/i18n/keys.d.ts')
 ```
 
 ## CLI
 
+Create `.config/ts-i18n.config.ts` (or run `ts-i18n init`) and then:
+
 ```bash
-rpx --from localhost:3000 --to my-project.localhost
-rpx --from localhost:8080 --to my-project.test --keyPath ./key.pem --certPath ./cert.pem
-rpx --help
-rpx --version
+ts-i18n build
 ```
 
-## Testing
+Available commands:
 
-```bash
-bun test
+- `build`: Load translations; if `outDir` is set, write per-locale JSON; if `typesOutFile` is set, write key types.
+- `list`: Print discovered locales and their top-level namespaces count.
+- `check`: Detect missing keys vs base locale.
+- `init`: Scaffold a sample `.config/ts-i18n.config.ts`.
+
+## Translations format
+
+- YAML: strictly nested; leaves are strings/numbers/booleans/null.
+- TS/JS: `export default` an object; values may be functions for dynamic messages.
+
+Example TS file with dynamic value:
+
+```ts
+export default {
+  dynamic: {
+    welcome: ({ name }: { name: string }) => `Welcome, ${name}!`,
+  },
+}
 ```

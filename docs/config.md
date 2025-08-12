@@ -1,67 +1,41 @@
 # Configuration
 
-_This is just an example of the ts-starter docs._
+`ts-i18n` can be configured via a `.config/ts-i18n.config.ts` file, automatically loaded by the CLI using bunfig. Programmatic usage can pass the same options object directly.
 
-The Reverse Proxy can be configured using a `reverse-proxy.config.ts` _(or `reverse-proxy.config.js`)_ file and it will be automatically loaded when running the `reverse-proxy` command.
+## Options
 
 ```ts
-// reverse-proxy.config.{ts,js}
-import type { ReverseProxyOptions } from '@stacksjs/rpx'
-import os from 'node:os'
-import path from 'node:path'
-
-const config: ReverseProxyOptions = {
-  /**
-   * The from URL to proxy from.
-   * Default: localhost:5173
-   */
-  from: 'localhost:5173',
-
-  /**
-   * The to URL to proxy to.
-   * Default: stacks.localhost
-   */
-  to: 'stacks.localhost',
-
-  /**
-   * The HTTPS settings.
-   * Default: true
-   * If set to false, the proxy will use HTTP.
-   * If set to true, the proxy will use HTTPS.
-   * If set to an object, the proxy will use HTTPS with the provided settings.
-   */
-  https: {
-    domain: 'stacks.localhost',
-    hostCertCN: 'stacks.localhost',
-    caCertPath: path.join(os.homedir(), '.stacks', 'ssl', `stacks.localhost.ca.crt`),
-    certPath: path.join(os.homedir(), '.stacks', 'ssl', `stacks.localhost.crt`),
-    keyPath: path.join(os.homedir(), '.stacks', 'ssl', `stacks.localhost.crt.key`),
-    altNameIPs: ['127.0.0.1'],
-    altNameURIs: ['localhost'],
-    organizationName: 'stacksjs.org',
-    countryName: 'US',
-    stateName: 'California',
-    localityName: 'Playa Vista',
-    commonName: 'stacks.localhost',
-    validityDays: 180,
-    verbose: false,
-  },
-
-  /**
-   * The verbose setting.
-   * Default: false
-   * If set to true, the proxy will log more information.
-   */
-  verbose: false,
+export interface TsI18nConfig {
+  translationsDir: string // e.g. 'locales'
+  defaultLocale: string // e.g. 'en'
+  fallbackLocale?: string | string[] // e.g. 'pt' or ['pt', 'es']
+  include?: string[] // globs relative to translationsDir (defaults: yml|yaml|ts|js)
+  verbose?: boolean
+  outDir?: string // write per-locale JSON to this dir (optional)
+  typesOutFile?: string // write generated d.ts to this file (optional)
 }
-
-export default config
 ```
 
-_Then run:_
+## Example
+
+```ts
+// .config/ts-i18n.config.ts
+export default {
+  translationsDir: 'locales',
+  defaultLocale: 'en',
+  fallbackLocale: 'pt',
+  include: ['**/*.yml', '**/*.yaml', '**/*.ts'],
+  outDir: 'dist/i18n',
+  typesOutFile: 'dist/i18n/keys.d.ts',
+}
+```
+
+## Scaffold
+
+Generate a sample config from defaults:
 
 ```bash
-./rpx start
+ts-i18n init
+# or customize output
+ts-i18n init --out .config/ts-i18n.config.ts
 ```
-
-To learn more, head over to the [documentation](https://reverse-proxy.sh/).
