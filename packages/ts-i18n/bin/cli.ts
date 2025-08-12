@@ -1,8 +1,9 @@
 import { CAC } from 'cac'
 import { version } from '../package.json'
-import { config as defaultConfig } from '../src/config'
+import { config as defaultConfig, defaultConfig as defaultValues } from '../src/config'
 import { loadTranslations } from '../src/loader'
 import { writeOutputs } from '../src/output'
+import { generateSampleConfig } from '../src/scaffold'
 import { generateTypes } from '../src/typegen'
 
 const cli = new CAC('ts-i18n')
@@ -19,6 +20,14 @@ cli
     if (cfg.typesOutFile)
       await generateTypes(trees, cfg.typesOutFile)
     console.log(`Locales: ${Object.keys(trees).join(', ')}`)
+  })
+
+cli
+  .command('init', 'Create a sample .config/ts-i18n.config.ts from defaults')
+  .option('--out <path>', 'Output file path', { default: '.config/ts-i18n.config.ts' })
+  .action(async (opts: { out: string }) => {
+    const file = await generateSampleConfig(defaultValues, opts.out)
+    console.log(`Created sample config at ${file}`)
   })
 
 cli

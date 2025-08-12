@@ -1,6 +1,7 @@
 export * from './config'
 export { loadTranslations } from './loader'
 export { writeOutputs } from './output'
+export { generateSampleConfig } from './scaffold'
 export { createTranslator } from './translator'
 export { generateTypes } from './typegen'
 export * from './types'

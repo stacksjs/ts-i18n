@@ -4,6 +4,7 @@ import { mkdir, readFile, rm, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { loadTranslations } from '../src/loader'
 import { writeOutputs } from '../src/output'
+import { generateSampleConfig } from '../src/scaffold'
 import { createTranslator } from '../src/translator'
 import { generateTypes } from '../src/typegen'
 
@@ -130,5 +131,16 @@ describe('ts-i18n edge cases and errors', () => {
     const trees = await loadTranslations({ ...baseConfig, translationsDir: nestedDir })
     expect((trees as any).en.home.title).toBe('Home Sub')
     expect((trees as any).en.user.age).toBe(30)
+  })
+})
+
+describe('ts-i18n scaffold', () => {
+  it('creates a sample config file', async () => {
+    const out = join(outputs, 'ts-i18n.config.ts')
+    await rm(out, { force: true })
+    const file = await generateSampleConfig(baseConfig, out)
+    const content = await readFile(file, 'utf8')
+    expect(content).toContain('export default')
+    expect(content).toContain('translationsDir')
   })
 })
