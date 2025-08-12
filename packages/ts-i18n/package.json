@@ -1,0 +1,59 @@
+{
+  "name": "ts-i18n",
+  "type": "module",
+  "version": "0.0.0",
+  "description": "Fast, Bun-native TypeScript i18n loader with YAML/TS support and type generation.",
+  "author": "Adelino Ngomacha",
+  "license": "MIT",
+  "homepage": "https://github.com/adelino-ngomacha/ts-i18n#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adelino-ngomacha/ts-i18n.git"
+  },
+  "bugs": {
+    "url": "https://github.com/adelino-ngomacha/ts-i18n/issues"
+  },
+  "keywords": [
+    "i18n",
+    "bun",
+    "typescript",
+    "yaml",
+    "translation",
+    "localization"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/src/index.js"
+    },
+    "./*": {
+      "import": "./dist/*"
+    }
+  },
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "ts-i18n": "./dist/bin/cli.js"
+  },
+  "files": [
+    "README.md",
+    "dist"
+  ],
+  "scripts": {
+    "build": "bun --bun build.ts",
+    "dev": "bun --watch build.ts",
+    "lint": "bunx --bun eslint .",
+    "lint:fix": "bunx --bun eslint . --fix",
+    "test": "bun test --coverage",
+    "typecheck": "bun --bun tsc --noEmit"
+  },
+  "dependencies": {
+    "bunfig": "^0.10.1",
+    "cac": "^6.7.14",
+    "fast-glob": "^3.3.2",
+    "yaml": "^2.6.0"
+  },
+  "devDependencies": {
+    "bun-plugin-dtsx": "^0.21.12"
+  }
+} 
