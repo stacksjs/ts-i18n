@@ -1,3 +1,10 @@
+[Compare changes](https://github.com/stacksjs/ts-i18n/compare/v0.1.2...HEAD)
+
+### Contributors
+
+- Chris <chrisbreuer93@gmail.com>
+
+
 [Compare changes](https://github.com/stacksjs/ts-i18n/compare/v0.1.1...HEAD)
 
 ### Contributors
