@@ -21,8 +21,8 @@
     "template"
   ],
   "bin": {
-    "@stacksjs/i18n": "./dist/bin/cli.js",
-    "i18n": "./dist/bin/cli.js"
+    "@stacksjs/i18n": "packages/ts-i18n/i18n",
+    "i18n": "packages/ts-i18n/i18n"
   },
   "scripts": {
     "build": "for dir in packages/*; do if [ -f \"$dir/package.json\" ]; then echo \"Building $dir\" && bun run --cwd $dir build; fi; done",
