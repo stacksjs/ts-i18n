@@ -5,10 +5,11 @@ export const defaultConfig: I18nConfig = {
   translationsDir: 'locales',
   defaultLocale: 'en',
   fallbackLocale: undefined,
-  include: ['**/*.yml', '**/*.yaml', '**/*.ts', '**/*.js'],
+  include: undefined,
   verbose: false,
   outDir: 'dist/i18n',
   typesOutFile: 'dist/i18n/keys.d.ts',
+  sources: ['ts'],
 }
 
 // eslint-disable-next-line antfu/no-top-level-await

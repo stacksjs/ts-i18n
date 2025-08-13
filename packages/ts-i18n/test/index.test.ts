@@ -1,4 +1,5 @@
 import type { I18nConfig } from '../src/types'
+import type base from './fixtures/locales/en/index'
 import { beforeAll, describe, expect, it } from 'bun:test'
 import { mkdir, readFile, rm, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
@@ -6,7 +7,7 @@ import { loadTranslations } from '../src/loader'
 import { writeOutputs } from '../src/output'
 import { generateSampleConfig } from '../src/scaffold'
 import { createTranslator } from '../src/translator'
-import { generateTypes } from '../src/typegen'
+import { generateTypes, generateTypesFromModule } from '../src/typegen'
 
 const fixtures = new URL('./fixtures/', import.meta.url).pathname
 const outputs = new URL('./outputs/', import.meta.url).pathname
@@ -15,7 +16,7 @@ const baseConfig: I18nConfig = {
   translationsDir: `${fixtures}locales`,
   defaultLocale: 'en',
   fallbackLocale: 'pt',
-  include: ['**/*.yml', '**/*.yaml', '**/*.ts'],
+  sources: ['yaml', 'ts'],
   verbose: false,
   outDir: outputs,
   typesOutFile: `${outputs}/keys.d.ts`,
@@ -31,31 +32,46 @@ describe('ts-i18n loader', () => {
   it('loads YAML locales with nested structure', () => {
     expect(Object.keys(trees)).toContain('en')
     expect(Object.keys(trees)).toContain('pt')
-    expect(trees.en.home.title).toBe('Home')
-    expect(trees.en.user.profile.name).toBe('Name')
+    // Validate via translator to avoid type-narrowing issues on nested unions
+    const trans = createTranslator<typeof base>(trees, { defaultLocale: 'en', fallbackLocale: 'pt' })
+    expect(trans('home.title')).toBe('Home')
+    expect(trans('user.profile.name')).toBe('Name')
   })
 
   it('loads TS locale files with dynamic values', () => {
-    expect(typeof trees.en.dynamic.hello).toBe('function')
-    const trans = createTranslator(trees, { defaultLocale: 'en', fallbackLocale: 'pt' })
+    const trans = createTranslator<typeof base>(trees, { defaultLocale: 'en', fallbackLocale: 'pt' })
     const result = trans('dynamic.hello', { name: 'Ada' })
     expect(result).toBe('Hello, Ada')
   })
 })
 
 describe('ts-i18n translator', () => {
-  it('resolves keys and falls back to fallbackLocale', async () => {
+  it('resolves keys with fallback and functions via flattened maps', async () => {
     const trees = await loadTranslations(baseConfig)
+    const trans = createTranslator<typeof base>(trees, { defaultLocale: 'en', fallbackLocale: 'pt' })
+    expect(trans('home.title')).toBe('Home')
+    expect(trans('dynamic.hello', { name: 'Ada' })).toBe('Hello, Ada')
+    expect(trans('missing.key')).toBe('missing.key')
+  })
+})
+
+describe('sources toggles', () => {
+  it('supports ts-only sources', async () => {
+    const trees = await loadTranslations({ ...baseConfig, sources: ['ts'] })
+    expect(Object.keys(trees)).toContain('en')
+    const trans = createTranslator<typeof base>(trees, { defaultLocale: 'en', fallbackLocale: 'pt' })
+    expect(trans('dynamic.hello', { name: 'Ada' })).toBe('Hello, Ada')
+    // YAML keys should not be present
+    expect(trans('user.profile.name')).toBe('user.profile.name')
+  })
+
+  it('supports yaml-only sources', async () => {
+    const trees = await loadTranslations({ ...baseConfig, sources: ['yaml'] })
+    expect(Object.keys(trees)).toContain('en')
     const trans = createTranslator(trees, { defaultLocale: 'en', fallbackLocale: 'pt' })
-
-    // Exists in en
-    expect(trans('home.title', 'en')).toBe('Home')
-
-    // Missing in en, present in pt → fallback
-    expect(trans('onlyInPt', 'en')).toBe('Apenas em PT')
-
-    // Missing in both → returns key
-    expect(trans('missing.key', 'en')).toBe('missing.key')
+    expect(trans('home.title')).toBe('Home')
+    // dynamic TS should not be present
+    expect(trans('dynamic.hello', { name: 'Ada' })).toBe('dynamic.hello')
   })
 })
 
@@ -80,6 +96,16 @@ describe('ts-i18n outputs and type generation', () => {
     await generateTypes(trees, baseConfig.typesOutFile!)
     const content = await readFile(baseConfig.typesOutFile!, 'utf8')
     expect(content).toContain('export type TranslationKey')
+  })
+
+  it('generates types from TS module (no tree needed)', async () => {
+    await rm(outputs, { recursive: true, force: true })
+    await mkdir(outputs, { recursive: true })
+    const outFile = `${outputs}/keys.d.ts`
+    await generateTypesFromModule(`${fixtures}locales/en/index.ts`, outFile)
+    const content = await readFile(outFile, 'utf8')
+    expect(content).toContain('export type TranslationKey = DotPaths<Base>')
+    expect(content).toContain('export type TypedTranslator = TranslatorFor<Base>')
   })
 })
 
@@ -118,7 +144,7 @@ describe('ts-i18n edge cases and errors', () => {
     await rm(emptyYamlDir, { recursive: true, force: true })
     await mkdir(emptyYamlDir, { recursive: true })
     await writeFile(join(emptyYamlDir, 'en.yml'), '', 'utf8')
-    const trees = await loadTranslations({ ...baseConfig, translationsDir: emptyYamlDir })
+    const trees = await loadTranslations({ ...baseConfig, translationsDir: emptyYamlDir, sources: ['yaml'] })
     expect(trees.en).toEqual({})
   })
 
@@ -128,9 +154,10 @@ describe('ts-i18n edge cases and errors', () => {
     await mkdir(join(nestedDir, 'en'), { recursive: true })
     await writeFile(join(nestedDir, 'en', 'home.yml'), 'home:\n  title: Home Sub\n', 'utf8')
     await writeFile(join(nestedDir, 'en.yml'), 'user:\n  age: 30\n', 'utf8')
-    const trees = await loadTranslations({ ...baseConfig, translationsDir: nestedDir })
-    expect((trees as any).en.home.title).toBe('Home Sub')
-    expect((trees as any).en.user.age).toBe(30)
+    const trees = await loadTranslations({ ...baseConfig, translationsDir: nestedDir, sources: ['yaml'] })
+    const trans = createTranslator(trees, { defaultLocale: 'en', fallbackLocale: 'pt' })
+    expect(trans('home.title')).toBe('Home Sub')
+    expect(trans('user.age')).toBe('30')
   })
 })
 

@@ -1,14 +1,24 @@
-import type { TranslationTree, TransParams, I18nConfig, TranslatorFor } from './types'
+import type { I18nConfig, TranslationTree, TranslatorFor, TransParams } from './types'
 
-function getPath(tree: TranslationTree, path: string): unknown {
-  const parts = path.split('.').filter(Boolean)
-  let current: any = tree
-  for (const part of parts) {
-    if (current == null || typeof current !== 'object')
-      return undefined
-    current = current[part]
+function flatten(tree: TranslationTree, prefix = ''): Record<string, any> {
+  const out: Record<string, any> = {}
+  for (const [k, v] of Object.entries(tree)) {
+    const full = prefix ? `${prefix}.${k}` : k
+    if (v == null)
+      continue
+    if (typeof v === 'function' || typeof v === 'string' || typeof v === 'number' || typeof v === 'boolean') {
+      out[full] = v
+    }
+    else if (v && typeof v === 'object' && !Array.isArray(v)) {
+      Object.assign(out, flatten(v as TranslationTree, full))
+    }
   }
-  return current
+  return out
+}
+
+function uniquePush(arr: string[], v: string) {
+  if (!arr.includes(v))
+    arr.push(v)
 }
 
 export function createTranslator<TBase = TranslationTree>(
@@ -18,37 +28,41 @@ export function createTranslator<TBase = TranslationTree>(
   const defaultLocale = cfg.defaultLocale
   const fallbackLocale = cfg.fallbackLocale
 
+  const flatByLocale: Record<string, Record<string, any>> = {}
+  for (const [loc, tree] of Object.entries(locales)) {
+    flatByLocale[loc] = flatten(tree)
+  }
+
   function resolve(key: string, locale?: string, params?: TransParams): string | undefined {
     const tryLocales: string[] = []
     if (locale)
-      tryLocales.push(locale)
-    else tryLocales.push(defaultLocale)
-
+      uniquePush(tryLocales, locale)
+    uniquePush(tryLocales, defaultLocale)
     if (fallbackLocale) {
-      if (Array.isArray(fallbackLocale))
-        tryLocales.push(...fallbackLocale)
-      else tryLocales.push(fallbackLocale)
+      if (Array.isArray(fallbackLocale)) {
+        for (const fl of fallbackLocale) uniquePush(tryLocales, fl)
+      }
+      else {
+        uniquePush(tryLocales, fallbackLocale)
+      }
     }
 
     for (const loc of tryLocales) {
-      const tree = locales[loc]
-      if (!tree)
+      const map = flatByLocale[loc]
+      if (!map)
         continue
-      const val = getPath(tree, key)
+      const val = map[key]
       if (val == null)
         continue
       if (typeof val === 'function') {
-        // Dynamic value support
         const fn = val as (params?: TransParams) => string
         return fn(params)
       }
       if (typeof val === 'string' || typeof val === 'number' || typeof val === 'boolean')
         return String(val)
-      // Nested object → not renderable
-      return undefined
+      // Non-renderable (object/null) are skipped by flatten
     }
 
-    // If not found, return key as a visible fallback
     return key
   }
 

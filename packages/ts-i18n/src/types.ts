@@ -6,6 +6,7 @@ export interface I18nConfig {
   verbose?: boolean
   outDir?: string
   typesOutFile?: string
+  sources?: SourceKind[]
 }
 
 export interface TransParams {
@@ -80,3 +81,5 @@ export type ParamsForKey<T, K extends string> = ParamsForLeaf<PathValue<T, K>>
 
 /** A typed translator for a given base tree shape T */
 export type TranslatorFor<T> = <K extends DotPaths<T>>(key: K, localeOrParams?: string | ParamsForKey<T, K>, maybeParams?: ParamsForKey<T, K>) => string
+
+export type SourceKind = 'ts' | 'yaml'

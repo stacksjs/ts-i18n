@@ -1,4 +1,4 @@
-import type { TranslationTree, I18nConfig } from './types'
+import type { I18nConfig, SourceKind, TranslationTree } from './types'
 import { readFile } from 'node:fs/promises'
 import { basename, extname, join, relative as pathRelative, resolve, sep } from 'node:path'
 import { pathToFileURL } from 'node:url'
@@ -47,12 +47,21 @@ function setAtPath(obj: TranslationTree, path: string[], value: TranslationTree)
   cursor[path[path.length - 1]] = value
 }
 
+function patternsForSources(sources: SourceKind[]): string[] {
+  const pats: string[] = []
+  if (sources.includes('yaml'))
+    pats.push('**/*.yml', '**/*.yaml')
+  if (sources.includes('ts'))
+    pats.push('**/*.ts', '**/*.js')
+  return pats
+}
+
 export async function loadTranslations(config: I18nConfig): Promise<Record<string, TranslationTree>> {
   if (typeof config.translationsDir !== 'string' || config.translationsDir.trim().length === 0)
     throw new Error('ts-i18n: translationsDir must be a non-empty string')
   const baseDir = resolve(config.translationsDir)
 
-  const include = config.include ?? ['**/*.yml', '**/*.yaml', '**/*.ts', '**/*.js']
+  const include = config.include ?? patternsForSources(config.sources ?? ['ts'])
   const patterns = include.map(p => join(baseDir, p))
   const matched = await globby(patterns, { dot: false })
   const files = matched.map(f => resolve(f))
@@ -60,9 +69,9 @@ export async function loadTranslations(config: I18nConfig): Promise<Record<strin
   if (!files.length)
     throw new Error(`ts-i18n: No translation files found under ${baseDir}`)
 
-  const localeMap: Record<string, TranslationTree> = {}
+  interface Entry { locale: string, container: TranslationTree }
 
-  for (const file of files) {
+  const entries: Entry[] = await Promise.all(files.map(async (file) => {
     const ext = extname(file).toLowerCase()
     const isYaml = ext === '.yml' || ext === '.yaml'
     const isTs = ext === '.ts' || ext === '.js'
@@ -106,16 +115,15 @@ export async function loadTranslations(config: I18nConfig): Promise<Record<strin
     if (!locale)
       throw new Error(`ts-i18n: Could not infer locale from file path: ${file}`)
 
-    const namespacePath = rest.length ? rest.join('/') : ''
     const tree = data as TranslationTree
 
-    if (!localeMap[locale])
-      localeMap[locale] = {}
+    let container: TranslationTree = {}
 
-    if (!namespacePath) {
-      localeMap[locale] = deepMerge(localeMap[locale], tree)
+    if (rest.length === 0) {
+      container = tree
     }
     else {
+      const namespacePath = rest.join('/')
       const parts = namespacePath
         .replace(ext, '')
         .split('/')
@@ -128,10 +136,20 @@ export async function loadTranslations(config: I18nConfig): Promise<Record<strin
       ) {
         valueToSet = (tree as any)[last] as TranslationTree
       }
-      const container: TranslationTree = {}
-      setAtPath(container, parts, valueToSet)
-      localeMap[locale] = deepMerge(localeMap[locale], container)
+      const c: TranslationTree = {}
+      setAtPath(c, parts, valueToSet)
+      container = c
     }
+
+    return { locale, container }
+  }))
+
+  const localeMap: Record<string, TranslationTree> = {}
+
+  for (const { locale, container } of entries) {
+    if (!localeMap[locale])
+      localeMap[locale] = {}
+    localeMap[locale] = deepMerge(localeMap[locale], container)
   }
 
   return localeMap
