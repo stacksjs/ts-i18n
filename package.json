@@ -15,10 +15,12 @@
     "url": "https://github.com/stacksjs/ts-i18n/issues"
   },
   "keywords": [
-    "monorepo",
-    "ts-starter",
-    "ts-i18n",
-    "template"
+    "i18n",
+    "bun",
+    "typescript",
+    "yaml",
+    "translation",
+    "localization"
   ],
   "bin": {
     "@stacksjs/i18n": "packages/ts-i18n/i18n",
