@@ -1,6 +1,6 @@
-import type { Dictionary } from '../../../../src/types'
+import type { Dictionary, TransParams } from '../../../../src/types'
 
-export default {
+const dict: Dictionary = {
   home: {
     title: 'Home',
   },
@@ -8,6 +8,8 @@ export default {
     profile: { name: 'Name' },
   },
   dynamic: {
-    hello: ({ name }: { name: string }) => `Hello, ${name}`,
+    hello: (params?: TransParams): string => `Hello, ${params?.name}`,
   },
-} satisfies Dictionary
+}
+
+export default dict

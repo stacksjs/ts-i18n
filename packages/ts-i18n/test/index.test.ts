@@ -1,5 +1,4 @@
 import type { I18nConfig } from '../src/types'
-import type base from './fixtures/locales/en/index'
 import { beforeAll, describe, expect, it } from 'bun:test'
 import { mkdir, readFile, rm, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
@@ -33,13 +32,13 @@ describe('ts-i18n loader', () => {
     expect(Object.keys(trees)).toContain('en')
     expect(Object.keys(trees)).toContain('pt')
     // Validate via translator to avoid type-narrowing issues on nested unions
-    const trans = createTranslator<typeof base>(trees, { defaultLocale: 'en', fallbackLocale: 'pt' })
+    const trans = createTranslator<any>(trees, { defaultLocale: 'en', fallbackLocale: 'pt' })
     expect(trans('home.title')).toBe('Home')
     expect(trans('user.profile.name')).toBe('Name')
   })
 
   it('loads TS locale files with dynamic values', () => {
-    const trans = createTranslator<typeof base>(trees, { defaultLocale: 'en', fallbackLocale: 'pt' })
+    const trans = createTranslator<any>(trees, { defaultLocale: 'en', fallbackLocale: 'pt' })
     const result = trans('dynamic.hello', { name: 'Ada' })
     expect(result).toBe('Hello, Ada')
   })
@@ -48,7 +47,7 @@ describe('ts-i18n loader', () => {
 describe('ts-i18n translator', () => {
   it('resolves keys with fallback and functions via flattened maps', async () => {
     const trees = await loadTranslations(baseConfig)
-    const trans = createTranslator<typeof base>(trees, { defaultLocale: 'en', fallbackLocale: 'pt' })
+    const trans = createTranslator<any>(trees, { defaultLocale: 'en', fallbackLocale: 'pt' })
     expect(trans('home.title')).toBe('Home')
     expect(trans('dynamic.hello', { name: 'Ada' })).toBe('Hello, Ada')
     expect(trans('missing.key')).toBe('missing.key')
@@ -59,7 +58,7 @@ describe('sources toggles', () => {
   it('supports ts-only sources', async () => {
     const trees = await loadTranslations({ ...baseConfig, sources: ['ts'] })
     expect(Object.keys(trees)).toContain('en')
-    const trans = createTranslator<typeof base>(trees, { defaultLocale: 'en', fallbackLocale: 'pt' })
+    const trans = createTranslator<any>(trees, { defaultLocale: 'en', fallbackLocale: 'pt' })
     expect(trans('dynamic.hello', { name: 'Ada' })).toBe('Hello, Ada')
     // YAML keys should not be present
     expect(trans('user.profile.name')).toBe('user.profile.name')
@@ -68,7 +67,7 @@ describe('sources toggles', () => {
   it('supports yaml-only sources', async () => {
     const trees = await loadTranslations({ ...baseConfig, sources: ['yaml'] })
     expect(Object.keys(trees)).toContain('en')
-    const trans = createTranslator(trees, { defaultLocale: 'en', fallbackLocale: 'pt' })
+    const trans = createTranslator<any>(trees, { defaultLocale: 'en', fallbackLocale: 'pt' })
     expect(trans('home.title')).toBe('Home')
     // dynamic TS should not be present
     expect(trans('dynamic.hello', { name: 'Ada' })).toBe('dynamic.hello')
