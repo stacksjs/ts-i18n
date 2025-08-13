@@ -1,6 +1,7 @@
 import type { I18nConfig } from './types'
 import { mkdir, writeFile } from 'node:fs/promises'
-import { dirname } from 'node:path'
+import { dirname, isAbsolute, relative } from 'node:path'
+import process from 'node:process'
 
 function toTsLiteral(value: unknown): string {
   if (typeof value === 'string')
@@ -20,8 +21,20 @@ function toTsLiteral(value: unknown): string {
   return 'undefined'
 }
 
+function toRelativePath(p?: string): string | undefined {
+  if (!p)
+    return p
+  return isAbsolute(p) ? relative(process.cwd(), p) : p
+}
+
 export async function generateSampleConfig(base: I18nConfig, outFile = '.config/ts-i18n.config.ts'): Promise<string> {
-  const content = `// ts-i18n configuration sample\n// Update values as needed for your project\n\nexport default ${toTsLiteral(base)}\n`
+  const normalized: I18nConfig = {
+    ...base,
+    translationsDir: toRelativePath(base.translationsDir)!,
+    outDir: toRelativePath(base.outDir),
+    typesOutFile: toRelativePath(base.typesOutFile),
+  }
+  const content = `// ts-i18n configuration sample\n// Update values as needed for your project\n\nexport default ${toTsLiteral(normalized)}\n`
   await mkdir(dirname(outFile), { recursive: true })
   await writeFile(outFile, content, 'utf8')
   return outFile

@@ -1,3 +1,5 @@
+#!/usr/bin/env bun
+
 import { CAC } from 'cac'
 import { version } from '../package.json'
 import { config as defaultConfig, defaultConfig as defaultValues } from '../src/config'

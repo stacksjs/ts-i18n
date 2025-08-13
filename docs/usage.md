@@ -2,25 +2,32 @@
 
 You can use `ts-i18n` programmatically or via the CLI.
 
-## Library
+## Library (TS-first)
 
 ```ts
-import { createTranslator, generateTypes, loadTranslations, writeOutputs } from 'ts-i18n'
+import type { DotPaths, ParamsForKey, TranslatorFor } from 'ts-i18n'
+import { createTranslator, loadTranslations, writeOutputs } from 'ts-i18n'
+import base from './locales/en/index'
+
+type Base = typeof base
+type Key = DotPaths<Base>
+type Params<K extends Key> = ParamsForKey<Base, K>
+type T = TranslatorFor<Base>
 
 const cfg = {
   translationsDir: 'locales',
   defaultLocale: 'en',
   fallbackLocale: 'pt',
+  sources: ['ts'],
 }
 
 const trees = await loadTranslations(cfg)
-const trans = createTranslator(trees, { defaultLocale: cfg.defaultLocale, fallbackLocale: cfg.fallbackLocale })
+const trans: T = createTranslator<Base>(trees, { defaultLocale: cfg.defaultLocale, fallbackLocale: cfg.fallbackLocale })
 
 trans('home.title')
 trans('dynamic.hello', { name: 'Ada' })
 
 await writeOutputs(trees, 'dist/i18n')
-await generateTypes(trees, 'dist/i18n/keys.d.ts')
 ```
 
 ### Authoring TS files with type safety
@@ -44,12 +51,22 @@ export default {
 Create `.config/ts-i18n.config.ts` (or run `ts-i18n init`) and then:
 
 ```bash
-ts-i18n build
+# TS-first
+ts-i18n build --ts-only
+
+# YAML-only (data-only path)
+ts-i18n build --yaml-only
+
+# Mix sources explicitly
+ts-i18n build --sources ts,yaml
+
+# Generate types from a TS base module
+ts-i18n build --types-from ./locales/en/index.ts
 ```
 
 Available commands:
 
-- `build`: Load translations; if `outDir` is set, write per-locale JSON; if `typesOutFile` is set, write key types.
+- `build`: Load translations; if `outDir` is set, write per-locale JSON; if `typesOutFile` is set or `--types-from` provided, write types.
 - `list`: Print discovered locales and their top-level namespaces count.
 - `check`: Detect missing keys vs base locale.
 - `init`: Scaffold a sample `.config/ts-i18n.config.ts`.

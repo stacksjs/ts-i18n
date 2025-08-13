@@ -29,7 +29,7 @@ Fast, Bun‑native TypeScript i18n loader with YAML/TS support, runtime translat
   - [Template engines](#template-engines)
   - [React](#react)
   - [Vue](#vue)
-- [Error handling](#error-handling)
+- [Security](#security)
 - [Performance](#performance)
 - [Testing](#testing)
 - [License](#license)
@@ -50,7 +50,7 @@ Fast, Bun‑native TypeScript i18n loader with YAML/TS support, runtime translat
 - Per‑locale JSON output (optional)
 - Type generation for translation keys
 - Type‑safe keys and parameter inference from TS base locale (optional)
-- Framework‑agnostic; works with SSR and build steps
+- TS‑first by default; enable YAML as needed
 
 ## Installation
 
@@ -71,15 +71,20 @@ yarn add ts-i18n
 ## Quick Start
 
 ```ts
+import type { TranslatorFor } from 'ts-i18n'
 import { createTranslator, loadTranslations } from 'ts-i18n'
+import base from './locales/en/index'
+
+type Base = typeof base
 
 const trees = await loadTranslations({
   translationsDir: 'locales',
   defaultLocale: 'en',
   fallbackLocale: 'pt',
+  sources: ['ts'], // TS-first
 })
 
-const trans = createTranslator(trees, { defaultLocale: 'en', fallbackLocale: 'pt' })
+const trans: TranslatorFor<Base> = createTranslator<Base>(trees, { defaultLocale: 'en', fallbackLocale: 'pt' })
 
 trans('home.title') // "Home"
 trans('dynamic.hello', { name: 'Ada' }) // "Hello, Ada"
@@ -110,10 +115,11 @@ export interface I18nConfig {
   translationsDir: string // e.g. 'locales'
   defaultLocale: string // e.g. 'en'
   fallbackLocale?: string | string[] // e.g. 'pt' or ['pt', 'es']
-  include?: string[] // globs relative to translationsDir
+  include?: string[] // optional globs relative to translationsDir. If set, overrides sources
   verbose?: boolean
   outDir?: string // where to write per-locale JSON (optional)
   typesOutFile?: string // where to write generated d.ts (optional)
+  sources?: ('ts' | 'yaml')[] // default: ['ts']
 }
 ```
 
@@ -125,7 +131,7 @@ export default {
   translationsDir: 'locales',
   defaultLocale: 'en',
   fallbackLocale: 'pt',
-  include: ['**/*.yml', '**/*.yaml', '**/*.ts'],
+  sources: ['ts', 'yaml'],
   outDir: 'dist/i18n',
   typesOutFile: 'dist/i18n/keys.d.ts',
 }
@@ -174,7 +180,7 @@ export default {
 ```ts
 import { createTranslator, generateTypes, loadTranslations, writeOutputs } from 'ts-i18n'
 
-const cfg = { translationsDir: 'locales', defaultLocale: 'en', fallbackLocale: 'pt' }
+const cfg = { translationsDir: 'locales', defaultLocale: 'en', fallbackLocale: 'pt', sources: ['ts'] }
 const trees = await loadTranslations(cfg)
 const trans = createTranslator(trees, { defaultLocale: cfg.defaultLocale, fallbackLocale: cfg.fallbackLocale })
 
@@ -195,14 +201,20 @@ Notes:
 ## CLI
 
 ```bash
-# Build per-locale JSON (when outDir is set) and generate types (when typesOutFile is set)
-ts-i18n build
+# Build per-locale JSON (when outDir is set) and generate types
+# TS-only / YAML-only / explicit sources
+ts-i18n build --ts-only
+ts-i18n build --yaml-only
+ts-i18n build --sources ts,yaml
+
+# Generate types from a TS base module (zero parsing required)
+ts-i18n build --types-from ./locales/en/index.ts
 
 # List discovered locales and their top-level namespaces
-ts-i18n list
+ts-i18n list --sources ts,yaml
 
 # Check missing keys vs base locale
-ts-i18n check
+ts-i18n check --sources ts,yaml
 
 # Create a sample config file
 ts-i18n init --out .config/ts-i18n.config.ts
@@ -318,22 +330,15 @@ export function useTrans() {
 }
 ```
 
-## Error handling
+## Security
 
-The loader throws descriptive errors for common issues:
-
-- Missing or invalid `translationsDir`
-- No files found under `translationsDir`
-- YAML parse failures (reports file path and message)
-- TS module import errors
-- Non‑object exports from YAML/TS
-- Locale inference failure from file path
+- TS/JS translation modules and `.config/ts-i18n.config.ts` execute at build-time. Treat them as trusted code.
+- Prefer YAML-only builds for untrusted sources.
 
 ## Performance
 
-- Uses `tinyglobby` for fast globbing.
-- Minimizes allocations and performs deep merges only when necessary.
-- Bun target build for optimal runtime.
+- Parallel file parsing and pre-flattened lookup maps for O(1) translations.
+- JSON outputs strip function values.
 
 ## Testing
 

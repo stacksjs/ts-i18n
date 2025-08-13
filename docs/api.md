@@ -13,6 +13,7 @@ export interface I18nConfig {
   verbose?: boolean
   outDir?: string
   typesOutFile?: string
+  sources?: ('ts' | 'yaml')[]
 }
 
 export type TransParams = Record<string, string | number>
@@ -53,7 +54,7 @@ import { config, defaultConfig } from 'ts-i18n'
 
 ### `loadTranslations(config)`
 
-Loads YAML and TS translation files and returns a map of locale to translation tree.
+Loads translation files and returns a map of locale to translation tree.
 
 ```ts
 import { loadTranslations } from 'ts-i18n'
@@ -62,21 +63,25 @@ const trees = await loadTranslations({
   translationsDir: 'locales',
   defaultLocale: 'en',
   fallbackLocale: 'pt',
-  include: ['**/*.yml', '**/*.yaml', '**/*.ts', '**/*.js'],
+  // If include is not set, sources controls globs. TS-first by default.
+  sources: ['ts', 'yaml'],
 })
 ```
 
-- Resolves locale from file path (Option A structure):
+- If `include` is provided, it is used as-is (globs relative to `translationsDir`).
+- Otherwise `sources` controls which file types are loaded:
+  - `'ts'` → `**/*.ts`, `**/*.js` (default)
+  - `'yaml'` → `**/*.yml`, `**/*.yaml`
+- Resolves locale from file path:
   - `locales/en.yml` → `en`
   - `locales/en/home.yml` → merged under `en.home`
   - `locales/en/dynamic.ts` → merged under `en.dynamic`
 - YAML must be strictly nested objects with primitive leaves.
 - TS files must `export default` an object; values can be functions.
-- Throws descriptive errors on invalid content or parsing issues.
 
 ### `createTranslator(locales, { defaultLocale, fallbackLocale })`
 
-Creates a translation function with fallback behavior.
+Creates a translation function with fallback behavior and O(1) lookups via pre-flattened maps.
 
 ```ts
 import { createTranslator } from 'ts-i18n'
@@ -91,7 +96,7 @@ trans('dynamic.welcome', { name: 'Ada' })
 ```
 
 - Lookup order: explicit `locale` (if provided) → `defaultLocale` → `fallbackLocale` (string or array).
-- If a value is a function, it is invoked with the provided params.
+- Function leaves are invoked with the provided params.
 - If key is not found, returns the key (visible missing indicator).
 
 ### `writeOutputs(trees, outDir)`
@@ -106,7 +111,7 @@ await writeOutputs(trees, 'dist/i18n')
 
 ### `generateTypes(trees, outFile)`
 
-Generates a union type for translation keys.
+Generates a union type for translation keys based on the first locale.
 
 ```ts
 import { generateTypes } from 'ts-i18n'
@@ -114,21 +119,19 @@ await generateTypes(trees, 'dist/i18n/keys.d.ts')
 // export type TranslationKey = 'home.title' | ...
 ```
 
-- Uses the first discovered locale as source of keys.
-- For stricter guarantees, ensure your default locale contains the superset of keys.
+### `generateTypesFromModule(modulePath, outFile)`
 
-### `generateSampleConfig(base, outFile?)`
-
-Scaffolds a sample `.config/ts-i18n.config.ts` based on a provided base config.
+Emits a `.d.ts` that references your base TS module and exports strongly-typed helpers.
 
 ```ts
-import { defaultConfig, generateSampleConfig } from 'ts-i18n'
-await generateSampleConfig(defaultConfig) // writes .config/ts-i18n.config.ts
+import { generateTypesFromModule } from 'ts-i18n'
+await generateTypesFromModule('./locales/en/index.ts', 'dist/i18n/keys.d.ts')
+// exports: TranslationKey, ParamsFor<K>, TypedTranslator
 ```
 
-## Authoring helpers
+### Authoring helpers
 
-### `satisfies Dictionary`
+#### `satisfies Dictionary`
 
 Use in TS translation files for editor hints and static checks.
 
@@ -147,7 +150,17 @@ export default {
 
 The CLI reads `.config/ts-i18n.config.ts` (via bunfig) when present.
 
-- `ts-i18n build` → loads translations; writes JSON to `outDir` and types to `typesOutFile` (when set)
-- `ts-i18n list` → prints locales and number of top‑level namespaces
-- `ts-i18n check` → reports missing keys vs base locale (first discovered)
-- `ts-i18n init` → scaffolds a sample config (`--out` to customize path)
+- `ts-i18n build [--ts-only|--yaml-only|--sources ts,yaml] [--types-from ./locales/en/index.ts]`
+- `ts-i18n list [--ts-only|--yaml-only|--sources ts,yaml]`
+- `ts-i18n check [--ts-only|--yaml-only|--sources ts,yaml]`
+- `ts-i18n init --out .config/ts-i18n.config.ts`
+
+## Security
+
+- TS/JS translation modules and `.config/ts-i18n.config.ts` are executed at build-time; treat them as trusted code.
+- Use YAML-only mode for data-only builds where execution is undesired.
+
+## Performance
+
+- Parallel file parsing and pre-flattened maps provide fast startup and O(1) lookups.
+- JSON outputs strip function values for minimal payload.
