@@ -8,6 +8,7 @@ import { loadTranslations } from '../src/loader'
 import { writeOutputs } from '../src/output'
 import { generateSampleConfig } from '../src/scaffold'
 import { generateTypes, generateTypesFromModule } from '../src/typegen'
+import { collectKeys } from '../src/utils'
 
 const cli = new CLI('ts-i18n')
 
@@ -108,14 +109,3 @@ cli
 cli.version(version)
 cli.help()
 cli.parse()
-
-function collectKeys(tree: any, prefix = ''): string[] {
-  const keys: string[] = []
-  for (const [k, v] of Object.entries(tree)) {
-    const full = prefix ? `${prefix}.${k}` : k
-    if (v && typeof v === 'object' && !Array.isArray(v))
-      keys.push(...collectKeys(v as any, full))
-    else keys.push(full)
-  }
-  return keys
-}
