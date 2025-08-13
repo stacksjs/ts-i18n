@@ -26,7 +26,7 @@
     "fresh": "bunx rimraf node_modules/ bun.lock && bun i",
     "changelog": "bunx logsmith --output CHANGELOG.md --theme github --exclude-authors \"dependabot[bot],github-actions[bot]\" --max-commits 50",
     "changelog:generate": "bunx logsmith --output CHANGELOG.md --theme github --exclude-authors \"dependabot[bot],github-actions[bot]\" --max-commits 50",
-    "release": "bun run changelog:generate && git add CHANGELOG.md && git commit --amend --no-edit && bunx bumpx prompt",
+    "release": "bun run changelog:generate && git add CHANGELOG.md && git commit --amend --no-edit && bunx bumpx prompt  --no-push --yes",
     "test": "bun test",
     "dev:docs": "bun --bun vitepress dev docs",
     "build:docs": "bun --bun vitepress build docs",
