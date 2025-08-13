@@ -4,7 +4,7 @@
     "": {
       "name": "ts-starter-monorepo",
       "devDependencies": {
-        "@stacksjs/bumpx": "^0.1.6",
+        "@stacksjs/bumpx": "^0.1.7",
         "@stacksjs/docs": "^0.70.23",
         "@stacksjs/eslint-config": "^4.14.0-beta.3",
         "@stacksjs/gitlint": "^0.1.5",
@@ -499,7 +499,7 @@
 
     "@sindresorhus/is": ["@sindresorhus/is@4.6.0", "", {}, "sha512-t09vSN3MdfsyCHoFcTRCH/iUtG7OJ0CsjzB8cjAmKc/va/kIgeDI/TxsigdncE/4be734m0cvIYwNaV4i2XqAw=="],
 
-    "@stacksjs/bumpx": ["@stacksjs/bumpx@0.1.6", "", { "dependencies": { "@stacksjs/clapp": "^0.1.16" }, "bin": { "bumpx": "dist/bin/cli.js" } }, "sha512-Ovq3cRkVC1Qs96jTB2oAdX3OZ5H+Fe2VcCWXrMiX11LbpzIKYoriwIBC0oNmvU/AovY16LmicDoJ1STWt2Z71Q=="],
+    "@stacksjs/bumpx": ["@stacksjs/bumpx@0.1.7", "", { "dependencies": { "@stacksjs/clapp": "^0.1.16" }, "bin": { "bumpx": "dist/bin/cli.js" } }, "sha512-Ika90PFAzFfPmg7Y7q7TBkeDGr/GKrFfrmGeo2WuhBfvtTHCLkcZgH3qibpWIqVWzYoYgVoJztI2sE23pqRHAA=="],
 
     "@stacksjs/clapp": ["@stacksjs/clapp@0.1.16", "", { "bin": { "clapp": "dist/bin/cli.js", "@stacksjs/clapp": "dist/bin/cli.js" } }, "sha512-BDmYu9Rk/HHIVc4vQjgQO6MzXNMJvPG6ZGiiEAPQT8EAidx3/6S6O7kyY2UdfJSksiCd5SKFK+WYd1uAs88BrQ=="],
 
