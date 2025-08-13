@@ -28,9 +28,9 @@
     "lint": "bunx --bun eslint .",
     "lint:fix": "bunx --bun eslint . --fix",
     "fresh": "bunx rimraf node_modules/ bun.lock && bun i",
-    "changelog": "bunx logsmith --output CHANGELOG.md --theme github --exclude-authors \"dependabot[bot],github-actions[bot]\" --max-commits 50",
-    "changelog:generate": "bunx logsmith --output CHANGELOG.md --theme github --exclude-authors \"dependabot[bot],github-actions[bot]\" --max-commits 50",
-    "release": "bun run changelog:generate && git add CHANGELOG.md && git commit --amend --no-edit && bunx bumpx prompt  --no-push --yes",
+    "changelog": "bunx --bun logsmith --output CHANGELOG.md --theme github --exclude-authors \"dependabot[bot],github-actions[bot]\" --max-commits 50",
+    "changelog:generate": "bunx --bun logsmith --output CHANGELOG.md --theme github --exclude-authors \"dependabot[bot],github-actions[bot]\" --max-commits 50",
+    "release": "bun run changelog:generate && git add CHANGELOG.md && git commit --amend --no-edit && bunx --bun bumpx prompt  --no-push --yes",
     "test": "bun test",
     "dev:docs": "bun --bun vitepress dev docs",
     "build:docs": "bun --bun vitepress build docs",
@@ -46,7 +46,7 @@
     "@types/bun": "^1.2.20",
     "buddy-bot": "^0.7.9",
     "bun-git-hooks": "^0.2.19",
-    "bun-plugin-dtsx": "^0.21.12",
+    "bun-plugin-dtsx": "0.9.5",
     "typescript": "^5.9.2"
   },
   "overrides": {
