@@ -48,9 +48,9 @@ function setAtPath(obj: TranslationTree, path: string[], value: TranslationTree)
 }
 
 export async function loadTranslations(config: I18nConfig): Promise<Record<string, TranslationTree>> {
-  const baseDir = resolve(config.translationsDir)
-  if (!baseDir || typeof baseDir !== 'string')
+  if (typeof config.translationsDir !== 'string' || config.translationsDir.trim().length === 0)
     throw new Error('ts-i18n: translationsDir must be a non-empty string')
+  const baseDir = resolve(config.translationsDir)
 
   const include = config.include ?? ['**/*.yml', '**/*.yaml', '**/*.ts', '**/*.js']
   const patterns = include.map(p => join(baseDir, p))

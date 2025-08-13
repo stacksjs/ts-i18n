@@ -1,4 +1,4 @@
-import type { TranslationTree, TransParams, I18nConfig } from './types'
+import type { TranslationTree, TransParams, I18nConfig, TranslatorFor } from './types'
 
 function getPath(tree: TranslationTree, path: string): unknown {
   const parts = path.split('.').filter(Boolean)
@@ -11,7 +11,10 @@ function getPath(tree: TranslationTree, path: string): unknown {
   return current
 }
 
-export function createTranslator(locales: Record<string, TranslationTree>, cfg: Pick<I18nConfig, 'defaultLocale' | 'fallbackLocale'>) {
+export function createTranslator<TBase = TranslationTree>(
+  locales: Record<string, TranslationTree>,
+  cfg: Pick<I18nConfig, 'defaultLocale' | 'fallbackLocale'>,
+): TranslatorFor<TBase> {
   const defaultLocale = cfg.defaultLocale
   const fallbackLocale = cfg.fallbackLocale
 
@@ -61,5 +64,5 @@ export function createTranslator(locales: Record<string, TranslationTree>, cfg: 
     }
     const result = resolve(key, locale, params)
     return result ?? key
-  }
+  } as unknown as TranslatorFor<TBase>
 }

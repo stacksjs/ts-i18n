@@ -49,6 +49,7 @@ Fast, Bun‑native TypeScript i18n loader with YAML/TS support, runtime translat
 - Dynamic values via functions in TS files
 - Per‑locale JSON output (optional)
 - Type generation for translation keys
+- Type‑safe keys and parameter inference from TS base locale (optional)
 - Framework‑agnostic; works with SSR and build steps
 
 ## Installation
@@ -215,6 +216,45 @@ Generates a union type of keys for DX.
 import { generateTypes } from 'ts-i18n'
 await generateTypes(trees, 'dist/i18n/keys.d.ts')
 // -> export type TranslationKey = 'home.title' | 'user.profile.name' | ...
+```
+
+If your base locale is authored in TypeScript, you can generate fully typed keys and parameter types inferred from the TS file (including function params for dynamic messages):
+
+```ts
+import { generateTypesFromModule } from 'ts-i18n'
+
+// path is resolved by TypeScript at type time; keep it the same path you import from in your app
+await generateTypesFromModule('./locales/en/index.ts', 'dist/i18n/keys.d.ts')
+```
+
+This emits a declaration file that exports the following types:
+
+```ts
+// dist/i18n/keys.d.ts
+export type TranslationKey // dot‑path keys inferred from your base TS object
+export type ParamsFor<K extends TranslationKey> // parameter type for dynamic function leaves
+export type TypedTranslator // a translator type constrained to the inferred keys/params
+```
+
+Usage in your app:
+
+```ts
+import type { ParamsFor, TranslationKey, TypedTranslator } from './dist/i18n/keys'
+import { createTranslator, loadTranslations } from 'ts-i18n'
+
+const trees = await loadTranslations({ translationsDir: 'locales', defaultLocale: 'en' })
+
+// Option A: annotate the returned translator
+const trans: TypedTranslator = createTranslator(trees, { defaultLocale: 'en' })
+
+// Option B: use the generic to bind the base type yourself
+// import type Base from './locales/en/index'
+// const trans = createTranslator<Base>(trees, { defaultLocale: 'en' })
+
+// Auto‑complete on keys, and correct param types per key
+trans('home.title')
+trans('dynamic.welcome', { name: 'Ada' })
+//            ^? ParamsFor<'dynamic.welcome'> → { name: string }
 ```
 
 ## Per‑locale JSON Output
