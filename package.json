@@ -1,7 +1,7 @@
 {
   "name": "ts-starter-monorepo",
   "type": "module",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Like our `ts-starter`, but optimized for monorepos.",
   "author": "Chris Breuer <chris@stacksjs.org>",
   "license": "MIT",
