@@ -1,7 +1,7 @@
 {
   "name": "ts-i18n",
   "type": "module",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "private": true,
   "description": "Like our `ts-starter`, but optimized for monorepos.",
   "author": "Chris Breuer <chris@stacksjs.org>",
