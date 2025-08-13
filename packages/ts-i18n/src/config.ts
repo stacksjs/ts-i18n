@@ -1,7 +1,7 @@
-import type { TsI18nConfig } from './types'
+import type { I18nConfig } from './types'
 import { loadConfig } from 'bunfig'
 
-export const defaultConfig: TsI18nConfig = {
+export const defaultConfig: I18nConfig = {
   translationsDir: 'locales',
   defaultLocale: 'en',
   fallbackLocale: undefined,
@@ -12,7 +12,7 @@ export const defaultConfig: TsI18nConfig = {
 }
 
 // eslint-disable-next-line antfu/no-top-level-await
-export const config: TsI18nConfig = await loadConfig({
+export const config: I18nConfig = await loadConfig({
   name: 'ts-i18n',
   defaultConfig,
 })

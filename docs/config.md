@@ -5,7 +5,7 @@
 ## Options
 
 ```ts
-export interface TsI18nConfig {
+export interface I18nConfig {
   translationsDir: string // e.g. 'locales'
   defaultLocale: string // e.g. 'en'
   fallbackLocale?: string | string[] // e.g. 'pt' or ['pt', 'es']

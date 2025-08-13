@@ -105,7 +105,7 @@ locales/
 `ts-i18n` reads `.config/ts-i18n.config.ts` via bunfig when using the CLI. You can also pass the same options programmatically.
 
 ```ts
-export interface TsI18nConfig {
+export interface I18nConfig {
   translationsDir: string // e.g. 'locales'
   defaultLocale: string // e.g. 'en'
   fallbackLocale?: string | string[] // e.g. 'pt' or ['pt', 'es']

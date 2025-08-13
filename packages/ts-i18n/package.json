@@ -33,7 +33,7 @@
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "bin": {
-    "ts-i18n": "./dist/bin/cli.js"
+    "i18n": "./dist/bin/cli.js"
   },
   "files": [
     "README.md",
@@ -48,7 +48,7 @@
     "typecheck": "bun --bun tsc --noEmit"
   },
   "dependencies": {
-    "bunfig": "^0.10.1",
+    "bunfig": "^0.14.1",
     "cac": "^6.7.14",
     "tinyglobby": "^0.2.9",
     "yaml": "^2.6.0"

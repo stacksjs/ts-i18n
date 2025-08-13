@@ -1,4 +1,4 @@
-import type { TsI18nConfig } from './types'
+import type { I18nConfig } from './types'
 import { mkdir, writeFile } from 'node:fs/promises'
 import { dirname } from 'node:path'
 
@@ -20,7 +20,7 @@ function toTsLiteral(value: unknown): string {
   return 'undefined'
 }
 
-export async function generateSampleConfig(base: TsI18nConfig, outFile = '.config/ts-i18n.config.ts'): Promise<string> {
+export async function generateSampleConfig(base: I18nConfig, outFile = '.config/ts-i18n.config.ts'): Promise<string> {
   const content = `// ts-i18n configuration sample\n// Update values as needed for your project\n\nexport default ${toTsLiteral(base)}\n`
   await mkdir(dirname(outFile), { recursive: true })
   await writeFile(outFile, content, 'utf8')

@@ -5,7 +5,7 @@
 ### Types
 
 ```ts
-export interface TsI18nConfig {
+export interface I18nConfig {
   translationsDir: string
   defaultLocale: string
   fallbackLocale?: string | string[]

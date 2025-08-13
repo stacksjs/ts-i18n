@@ -1,4 +1,4 @@
-import type { TranslationTree, TsI18nConfig } from './types'
+import type { TranslationTree, I18nConfig } from './types'
 import { readFile } from 'node:fs/promises'
 import { basename, extname, join, relative as pathRelative, resolve, sep } from 'node:path'
 import { pathToFileURL } from 'node:url'
@@ -47,7 +47,7 @@ function setAtPath(obj: TranslationTree, path: string[], value: TranslationTree)
   cursor[path[path.length - 1]] = value
 }
 
-export async function loadTranslations(config: TsI18nConfig): Promise<Record<string, TranslationTree>> {
+export async function loadTranslations(config: I18nConfig): Promise<Record<string, TranslationTree>> {
   const baseDir = resolve(config.translationsDir)
   if (!baseDir || typeof baseDir !== 'string')
     throw new Error('ts-i18n: translationsDir must be a non-empty string')

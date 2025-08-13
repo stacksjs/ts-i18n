@@ -1,4 +1,4 @@
-import type { TsI18nConfig } from '../src/types'
+import type { I18nConfig } from '../src/types'
 import { beforeAll, describe, expect, it } from 'bun:test'
 import { mkdir, readFile, rm, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
@@ -11,7 +11,7 @@ import { generateTypes } from '../src/typegen'
 const fixtures = new URL('./fixtures/', import.meta.url).pathname
 const outputs = new URL('./outputs/', import.meta.url).pathname
 
-const baseConfig: TsI18nConfig = {
+const baseConfig: I18nConfig = {
   translationsDir: `${fixtures}locales`,
   defaultLocale: 'en',
   fallbackLocale: 'pt',
