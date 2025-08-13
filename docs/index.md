@@ -15,7 +15,7 @@ hero:
       link: /usage
     - theme: alt
       text: API
-      link: /api
+      link: /api/
 
 features:
   - title: "YAML + TS"

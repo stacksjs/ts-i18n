@@ -13,6 +13,7 @@ export interface I18nConfig {
   verbose?: boolean
   outDir?: string // write per-locale JSON to this dir (optional)
   typesOutFile?: string // write generated d.ts to this file (optional)
+  sources?: ('ts' | 'yaml')[] // controls discovery when include is not provided; default ['ts']
 }
 ```
 
@@ -27,6 +28,7 @@ export default {
   include: ['**/*.yml', '**/*.yaml', '**/*.ts'],
   outDir: 'dist/i18n',
   typesOutFile: 'dist/i18n/keys.d.ts',
+  sources: ['ts', 'yaml'],
 }
 ```
 
