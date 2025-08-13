@@ -1,6 +1,7 @@
 #!/usr/bin/env bun
 
-import { CAC } from 'cac'
+import { CLI } from '@stacksjs/clapp'
+// import { CAC } from 'cac'
 import { version } from '../package.json'
 import { config as defaultConfig, defaultConfig as defaultValues } from '../src/config'
 import { loadTranslations } from '../src/loader'
@@ -8,7 +9,7 @@ import { writeOutputs } from '../src/output'
 import { generateSampleConfig } from '../src/scaffold'
 import { generateTypes, generateTypesFromModule } from '../src/typegen'
 
-const cli = new CAC('ts-i18n')
+const cli = new CLI('ts-i18n')
 
 cli
   .command('build', 'Build i18n output and generate types')

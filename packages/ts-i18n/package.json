@@ -48,8 +48,8 @@
     "typecheck": "bun --bun tsc --noEmit"
   },
   "dependencies": {
+    "@stacksjs/clapp": "^0.1.16",
     "bunfig": "^0.14.1",
-    "cac": "^6.7.14",
     "tinyglobby": "^0.2.9",
     "yaml": "^2.6.0"
   },
