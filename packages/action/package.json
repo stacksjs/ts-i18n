@@ -1,6 +1,8 @@
 {
-    "name": "ts-i18n-action",
-    "version": "0.1.2",
-    "private": true
+  "name": "ts-i18n-action",
+  "version": "0.1.2",
+  "private": true,
+  "scripts": {
+    "build": "echo 'Action package - no build needed'"
   }
-  
+}
