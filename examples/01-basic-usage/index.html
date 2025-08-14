@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TeamFlow - ts-i18n Demo</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <script src="./browser-app.ts" type="module"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <h1 id="app-title">TeamFlow</h1>
+                <p id="app-tagline">Collaborate with Chris, Avery, and Buddy</p>
+            </div>
+
+            <!-- Language Selector -->
+            <div class="language-selector">
+                <label for="locale-select">Language:</label>
+                <select id="locale-select">
+                    <option value="en">English</option>
+                    <option value="es">Español</option>
+                    <option value="fr">Français</option>
+                </select>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="navigation">
+            <a href="#" id="nav-home">Home</a>
+            <a href="#" id="nav-about">About</a>
+            <a href="#" id="nav-contact">Contact</a>
+            <a href="#" id="nav-settings">Settings</a>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Welcome Section -->
+            <section class="welcome-section">
+                <h2 id="welcome-title">Welcome to TeamFlow</h2>
+                <p id="welcome-subtitle">Start collaborating with your team today</p>
+                <button id="get-started-btn" class="primary-button">Get Started</button>
+            </section>
+
+            <!-- Demo Section -->
+            <section class="demo-section">
+                <h3>🎭 Dynamic Translation Demo</h3>
+
+                <!-- Personal Greeting -->
+                <div class="demo-item">
+                    <label for="name-input">Your Name:</label>
+                    <input type="text" id="name-input" placeholder="Enter your name" value="Chris">
+                    <p id="personal-greeting" class="output">Welcome back, Chris! Ready to collaborate?</p>
+                </div>
+
+                <!-- Team Introduction -->
+                <div class="demo-item">
+                    <label>Team Members:</label>
+                    <div class="team-controls">
+                        <button id="add-member-btn">Add Member</button>
+                        <button id="remove-member-btn">Remove Member</button>
+                        <button id="clear-members-btn">Clear All</button>
+                    </div>
+                    <div id="team-members">Chris, Avery, Buddy</div>
+                    <p id="team-intro" class="output">Your team: Chris, Avery, and Buddy</p>
+                </div>
+
+                <!-- Project Updates -->
+                <div class="demo-item">
+                    <h4>Project Updates:</h4>
+                    <div class="controls">
+                        <select id="author-select">
+                            <option value="Chris">Chris</option>
+                            <option value="Avery">Avery</option>
+                            <option value="Buddy">Buddy</option>
+                        </select>
+                        <select id="action-select">
+                            <option value="created">created</option>
+                            <option value="updated">updated</option>
+                            <option value="deleted">deleted</option>
+                        </select>
+                        <input type="text" id="project-input" placeholder="Project name" value="Mobile App">
+                        <button id="update-project-btn">Generate Update</button>
+                    </div>
+                    <p id="project-update" class="output">Chris created the "Mobile App" project</p>
+                </div>
+
+                <!-- Task Due Notifications -->
+                <div class="demo-item">
+                    <h4>Task Due Notifications:</h4>
+                    <div class="controls">
+                        <input type="text" id="task-input" placeholder="Task name" value="Code Review">
+                        <label for="hours-input">Hours until due:</label>
+                        <input type="number" id="hours-input" value="6">
+                        <button id="update-task-btn">Update Task</button>
+                    </div>
+                    <p id="task-due" class="output">"Code Review" is due in 6 hours</p>
+                </div>
+
+                <!-- Member Count -->
+                <div class="demo-item">
+                    <h4>Team Size:</h4>
+                    <div class="controls">
+                        <input type="number" id="member-count-input" min="0" value="3">
+                        <button id="update-count-btn">Update Count</button>
+                    </div>
+                    <p id="member-count" class="output">3 team members</p>
+                </div>
+            </section>
+
+            <!-- Type Safety Demo -->
+            <section class="type-demo-section">
+                <h3>🔧 TypeScript Type Safety</h3>
+                <div class="code-example">
+                    <h4>Generated Types:</h4>
+                    <pre><code id="type-example">// Auto-generated from your translations
+export type TranslationKey =
+  | "app.title"
+  | "app.tagline"
+  | "welcome.personalGreeting"
+  | "notifications.taskDue"
+  // ... and more!
+
+// Usage with full type safety:
+t('welcome.personalGreeting', { name: 'Chris' }) // ✅ Valid
+t('invalid.key', { name: 'Chris' })              // ❌ TypeScript error
+t('welcome.personalGreeting', { invalid: 'param' }) // ❌ TypeScript error</code></pre>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p id="footer-copyright">© 2024 TeamFlow. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="#" id="footer-privacy">Privacy Policy</a>
+                <a href="#" id="footer-terms">Terms of Service</a>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Status indicator -->
+    <div id="status" class="status">Ready</div>
+</body>
+</html>

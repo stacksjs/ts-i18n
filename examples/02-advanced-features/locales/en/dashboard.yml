@@ -1,0 +1,26 @@
+# Dashboard-specific content
+title: Welcome to your Dashboard
+subtitle: "Here's what's happening with your team"
+
+stats:
+  projects: Projects
+  tasks: Tasks
+  members: Team Members
+  revenue: Revenue
+
+widgets:
+  recentActivity: Recent Activity
+  upcomingDeadlines: Upcoming Deadlines
+  teamPerformance: Team Performance
+  projectProgress: Project Progress
+
+quickActions:
+  newProject: New Project
+  inviteUser: Invite User
+  createTask: Create Task
+  viewReports: View Reports
+
+messages:
+  noActivity: No recent activity
+  noDeadlines: No upcoming deadlines
+  allTasksComplete: All tasks completed! 🎉

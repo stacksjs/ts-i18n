@@ -1,0 +1,19 @@
+app:
+  title: "TeamFlow"
+  tagline: "Collaborate with Chris, Avery, and Buddy"
+
+navigation:
+  home: "Home"
+  about: "About"
+  contact: "Contact"
+  settings: "Settings"
+
+welcome:
+  title: "Welcome to TeamFlow"
+  subtitle: "Start collaborating with your team today"
+  getStarted: "Get Started"
+
+footer:
+  copyright: "© 2024 TeamFlow. All rights reserved."
+  privacy: "Privacy Policy"
+  terms: "Terms of Service"

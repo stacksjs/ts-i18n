@@ -1,0 +1,18 @@
+{
+  "name": "ts-i18n-basic-example",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "Basic usage example of ts-i18n with TypeScript translations",
+  "scripts": {
+    "build": "bun run build.ts",
+    "dev": "bun run app.ts",
+    "web": "bun ./index.html",
+    "build-web": "bun build ./index.html --outdir ./dist --minify"
+  },
+  "dependencies": {
+    "ts-i18n": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  }
+}

@@ -1,0 +1,48 @@
+# Spanish translation file
+app:
+  title: "Demo del Plugin TypeScript"
+  description: "Demostrando la generación inteligente de tipos para archivos YAML"
+  version: "1.0.0"
+
+welcome:
+  message: "¡Bienvenido a nuestro sistema i18n con TypeScript!"
+  subtitle: "Experimenta el poder de los tipos inteligentes"
+
+user:
+  greeting: "¡Hola, {{name}}!"
+  profile:
+    name: "Nombre"
+    email: "Dirección de Correo"
+    settings: "Configuración"
+
+navigation:
+  home: "Inicio"
+  about: "Acerca de"
+  contact: "Contacto"
+  documentation: "Documentación"
+
+features:
+  smartTypes: "Generación Inteligente de Tipos"
+  autoComplete: "Soporte Completo de IntelliSense"
+  errorChecking: "Validación en Tiempo de Compilación"
+  yamlSupport: "Soporte para Archivos YAML"
+
+actions:
+  save: "Guardar"
+  cancel: "Cancelar"
+  delete: "Eliminar"
+  edit: "Editar"
+  create: "Crear Nuevo"
+  update: "Actualizar"
+
+messages:
+  loading: "Cargando..."
+  success: "Operación completada exitosamente"
+  error: "Ocurrió un error"
+  noData: "No hay datos disponibles"
+
+validation:
+  required: "Este campo es obligatorio"
+  email: "Por favor ingresa una dirección de correo válida"
+  minLength: "Se requieren mínimo {{min}} caracteres"
+  maxLength: "Máximo {{max}} caracteres permitidos"

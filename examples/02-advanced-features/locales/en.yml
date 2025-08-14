@@ -1,0 +1,56 @@
+# Core static content for English
+app:
+  name: TeamFlow Pro
+  version: '2.0'
+  description: Advanced collaboration platform
+
+# Navigation labels
+navigation:
+  dashboard: Dashboard
+  projects: Projects
+  team: Team
+  analytics: Analytics
+  settings: Settings
+  help: Help
+
+# Common UI elements
+common:
+  buttons:
+    save: Save
+    cancel: Cancel
+    delete: Delete
+    edit: Edit
+    create: Create
+    export: Export
+    import: Import
+
+  status:
+    loading: Loading...
+    success: Success
+    error: Error
+    warning: Warning
+    info: Information
+
+  actions:
+    confirm: Are you sure?
+    undo: Undo
+    redo: Redo
+
+# Form labels and placeholders
+forms:
+  labels:
+    name: Name
+    email: Email Address
+    password: Password
+    confirmPassword: Confirm Password
+    phone: Phone Number
+    address: Address
+    company: Company
+    role: Role
+
+  placeholders:
+    enterName: Enter your name
+    enterEmail: Enter your email
+    enterPassword: Enter password
+    search: Search...
+    selectOption: Select an option

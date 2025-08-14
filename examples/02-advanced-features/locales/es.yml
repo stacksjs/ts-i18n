@@ -1,0 +1,50 @@
+# Core static content for Spanish (some keys missing to demo fallbacks)
+app:
+  name: TeamFlow Pro
+  version: '2.0'
+  description: Plataforma avanzada de colaboración
+
+# Navigation labels
+navigation:
+  dashboard: Panel
+  projects: Proyectos
+  team: Equipo
+  analytics: Analíticas
+  settings: Configuración
+  # help is missing - will fallback to English
+
+# Common UI elements
+common:
+  buttons:
+    save: Guardar
+    cancel: Cancelar
+    delete: Eliminar
+    edit: Editar
+    create: Crear
+    # export and import missing - will fallback
+
+  status:
+    loading: Cargando...
+    success: Éxito
+    error: Error
+    warning: Advertencia
+    info: Información
+
+  # actions section missing - will fallback to English
+
+# Form labels and placeholders
+forms:
+  labels:
+    name: Nombre
+    email: Dirección de Correo
+    password: Contraseña
+    confirmPassword: Confirmar Contraseña
+    phone: Número de Teléfono
+    # address, company, role missing - will fallback
+
+  placeholders:
+    enterName: Ingresa tu nombre
+    enterEmail: Ingresa tu correo
+    enterPassword: Ingresa contraseña
+    search: Buscar...
+    # selectOption missing - will fallback

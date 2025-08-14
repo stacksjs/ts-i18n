@@ -1,0 +1,17 @@
+{
+  "name": "ts-i18n-cli-example",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "CLI usage example for ts-i18n build tools",
+  "scripts": {
+    "build": "bun run build.ts",
+    "dev": "bun run watch.ts",
+    "validate": "bun run validate.ts"
+  },
+  "dependencies": {
+    "ts-i18n": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  }
+}

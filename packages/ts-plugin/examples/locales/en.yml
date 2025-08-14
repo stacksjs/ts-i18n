@@ -1,0 +1,48 @@
+# Example YAML translation file for TypeScript plugin demo
+app:
+  title: "TypeScript Plugin Demo"
+  description: "Demonstrating smart type generation for YAML files"
+  version: "1.0.0"
+
+welcome:
+  message: "Welcome to our TypeScript-powered i18n system!"
+  subtitle: "Experience the power of smart types"
+
+user:
+  greeting: "Hello, {{name}}!"
+  profile:
+    name: "Name"
+    email: "Email Address"
+    settings: "Settings"
+
+navigation:
+  home: "Home"
+  about: "About"
+  contact: "Contact"
+  documentation: "Documentation"
+
+features:
+  smartTypes: "Smart Type Generation"
+  autoComplete: "Full IntelliSense Support"
+  errorChecking: "Compile-time Validation"
+  yamlSupport: "YAML File Support"
+
+actions:
+  save: "Save"
+  cancel: "Cancel"
+  delete: "Delete"
+  edit: "Edit"
+  create: "Create New"
+  update: "Update"
+
+messages:
+  loading: "Loading..."
+  success: "Operation completed successfully"
+  error: "An error occurred"
+  noData: "No data available"
+
+validation:
+  required: "This field is required"
+  email: "Please enter a valid email address"
+  minLength: "Minimum {{min}} characters required"
+  maxLength: "Maximum {{max}} characters allowed"

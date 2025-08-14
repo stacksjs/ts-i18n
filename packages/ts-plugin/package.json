@@ -1,0 +1,64 @@
+{
+  "name": "ts-plugin-i18n",
+  "type": "module",
+  "version": "0.0.0",
+  "description": "TypeScript plugin for ts-i18n.",
+  "author": "Chris Breuer <chris@stacksjs.org>",
+  "license": "MIT",
+  "homepage": "https://github.com/stacksjs/ts-i18n",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stacksjs/ts-i18n.git"
+  },
+  "bugs": {
+    "url": "https://github.com/stacksjs/ts-i18n/issues"
+  },
+  "keywords": [
+    "i18n",
+    "internationalization",
+    "translation",
+    "localization",
+    "internationalization",
+    "bun",
+    "bun-plugin",
+    "javascript",
+    "typescript"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "README.md",
+    "dist"
+  ],
+  "scripts": {
+    "build": "bun build.ts",
+    "lint": "bunx --bun eslint .",
+    "lint:fix": "bunx --bun eslint . --fix",
+    "changelog": "changelogen --output CHANGELOG.md",
+    "prepublishOnly": "bun --bun run build",
+    "test": "bun test",
+    "typecheck": "bunx tsc --noEmit"
+  },
+  "peerDependencies": {
+    "bun": ">=1.0.0"
+  },
+  "dependencies": {
+    "ts-i18n": "workspace:*",
+    "yaml": "^2.3.4"
+  },
+  "devDependencies": {
+    "bun-plugin-dtsx": "0.9.5"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "bunx lint-staged"
+  },
+  "lint-staged": {
+    "*.{js,ts}": "bunx eslint . --fix"
+  }
+}

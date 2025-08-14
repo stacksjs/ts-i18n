@@ -1,0 +1,17 @@
+app:
+  title: "My i18n App"
+  description: "A demonstration of bun-plugin-i18n"
+
+welcome:
+  message: "Welcome to our application!"
+  greeting: "Hello, {{name}}!"
+
+navigation:
+  home: "Home"
+  about: "About"
+  contact: "Contact"
+
+common:
+  save: "Save"
+  cancel: "Cancel"
+  loading: "Loading..."

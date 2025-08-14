@@ -1,0 +1,22 @@
+cli:
+  name: "ts-i18n CLI Demo"
+  version: "1.0.0"
+  description: "Command-line interface demonstration"
+
+commands:
+  build: "Build translations"
+  validate: "Validate completeness"
+  watch: "Watch for changes"
+  help: "Show help"
+
+messages:
+  building: "Building translations..."
+  complete: "Build complete!"
+  watching: "Watching for changes..."
+  error: "An error occurred"
+
+status:
+  ready: "Ready"
+  processing: "Processing"
+  failed: "Failed"
+  success: "Success"
