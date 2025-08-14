@@ -108,7 +108,7 @@ locales/
 
 ## Configuration
 
-`ts-i18n` reads `.config/ts-i18n.config.ts` via bunfig when using the CLI. You can also pass the same options programmatically.
+`ts-i18n` reads `.config/i18n.config.ts` via bunfig when using the CLI. You can also pass the same options programmatically.
 
 ```ts
 export interface I18nConfig {
@@ -126,7 +126,7 @@ export interface I18nConfig {
 Sample config:
 
 ```ts
-// .config/ts-i18n.config.ts
+// .config/i18n.config.ts
 export default {
   translationsDir: 'locales',
   defaultLocale: 'en',
@@ -140,7 +140,7 @@ export default {
 Scaffold a sample config:
 
 ```bash
-# generates .config/ts-i18n.config.ts from defaults
+# generates .config/i18n.config.ts from defaults
 npx ts-i18n init
 ```
 
@@ -217,7 +217,7 @@ ts-i18n list --sources ts,yaml
 ts-i18n check --sources ts,yaml
 
 # Create a sample config file
-ts-i18n init --out .config/ts-i18n.config.ts
+ts-i18n init --out .config/i18n.config.ts
 ```
 
 ## Type Generation
@@ -332,7 +332,7 @@ export function useTrans() {
 
 ## Security
 
-- TS/JS translation modules and `.config/ts-i18n.config.ts` execute at build-time. Treat them as trusted code.
+- TS/JS translation modules and `.config/i18n.config.ts` execute at build-time. Treat them as trusted code.
 - Prefer YAML-only builds for untrusted sources.
 
 ## Performance

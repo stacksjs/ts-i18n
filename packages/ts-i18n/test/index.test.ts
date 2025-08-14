@@ -162,7 +162,7 @@ describe('ts-i18n edge cases and errors', () => {
 
 describe('ts-i18n scaffold', () => {
   it('creates a sample config file', async () => {
-    const out = join(outputs, 'ts-i18n.config.ts')
+    const out = join(outputs, 'i18n.config.ts')
     await rm(out, { force: true })
     const file = await generateSampleConfig(baseConfig, out)
     const content = await readFile(file, 'utf8')

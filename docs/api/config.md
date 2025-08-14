@@ -7,7 +7,7 @@ import { config, defaultConfig } from 'ts-i18n'
 ```
 
 - `defaultConfig`: built-in defaults
-- `config`: resolved at runtime via bunfig from `.config/ts-i18n.config.ts` when present
+- `config`: resolved at runtime via bunfig from `.config/i18n.config.ts` when present
 
 Defaults:
 

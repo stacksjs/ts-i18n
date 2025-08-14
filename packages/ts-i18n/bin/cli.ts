@@ -42,8 +42,8 @@ cli
   })
 
 cli
-  .command('init', 'Create a sample .config/ts-i18n.config.ts from defaults')
-  .option('--out <path>', 'Output file path', { default: '.config/ts-i18n.config.ts' })
+  .command('init', 'Create a sample .config/i18n.config.ts from defaults')
+  .option('--out <path>', 'Output file path', { default: '.config/i18n.config.ts' })
   .action(async (opts: { out: string }) => {
     const file = await generateSampleConfig(defaultValues, opts.out)
     console.log(`Created sample config at ${file}`)

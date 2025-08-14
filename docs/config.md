@@ -1,6 +1,6 @@
 # Configuration
 
-`ts-i18n` can be configured via a `.config/ts-i18n.config.ts` file, automatically loaded by the CLI using bunfig. Programmatic usage can pass the same options object directly.
+`ts-i18n` can be configured via a `.config/i18n.config.ts` file, automatically loaded by the CLI using bunfig. Programmatic usage can pass the same options object directly.
 
 ## Options
 
@@ -20,7 +20,7 @@ export interface I18nConfig {
 ## Example
 
 ```ts
-// .config/ts-i18n.config.ts
+// .config/i18n.config.ts
 export default {
   translationsDir: 'locales',
   defaultLocale: 'en',
@@ -39,5 +39,5 @@ Generate a sample config from defaults:
 ```bash
 ts-i18n init
 # or customize output
-ts-i18n init --out .config/ts-i18n.config.ts
+ts-i18n init --out .config/i18n.config.ts
 ```

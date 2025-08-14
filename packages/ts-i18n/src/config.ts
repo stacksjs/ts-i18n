@@ -14,6 +14,6 @@ export const defaultConfig: I18nConfig = {
 
 // eslint-disable-next-line antfu/no-top-level-await
 export const config: I18nConfig = await loadConfig({
-  name: 'ts-i18n',
+  name: 'i18n',
   defaultConfig,
 })

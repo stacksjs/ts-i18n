@@ -27,7 +27,7 @@ function toRelativePath(p?: string): string | undefined {
   return isAbsolute(p) ? relative(process.cwd(), p) : p
 }
 
-export async function generateSampleConfig(base: I18nConfig, outFile = '.config/ts-i18n.config.ts'): Promise<string> {
+export async function generateSampleConfig(base: I18nConfig, outFile = '.config/i18n.config.ts'): Promise<string> {
   const normalized: I18nConfig = {
     ...base,
     translationsDir: toRelativePath(base.translationsDir)!,

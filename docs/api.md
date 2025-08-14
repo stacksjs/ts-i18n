@@ -49,7 +49,7 @@ export interface BuildResult {
 import { config, defaultConfig } from 'ts-i18n'
 
 // defaultConfig: built-in sane defaults
-// config: resolved via bunfig from .config/ts-i18n.config.ts (when available)
+// config: resolved via bunfig from .config/i18n.config.ts (when available)
 ```
 
 ### `loadTranslations(config)`
@@ -148,16 +148,16 @@ export default {
 
 ## CLI
 
-The CLI reads `.config/ts-i18n.config.ts` (via bunfig) when present.
+The CLI reads `.config/i18n.config.ts` (via bunfig) when present.
 
-- `ts-i18n build [--ts-only|--yaml-only|--sources ts,yaml] [--types-from ./locales/en/index.ts]`
+- `ts-i18n build [--ts-only|--yaml-only|--sources ts,yaml]`
 - `ts-i18n list [--ts-only|--yaml-only|--sources ts,yaml]`
 - `ts-i18n check [--ts-only|--yaml-only|--sources ts,yaml]`
-- `ts-i18n init --out .config/ts-i18n.config.ts`
+- `ts-i18n init --out .config/i18n.config.ts`
 
 ## Security
 
-- TS/JS translation modules and `.config/ts-i18n.config.ts` are executed at build-time; treat them as trusted code.
+- TS/JS translation modules and `.config/i18n.config.ts` are executed at build-time; treat them as trusted code.
 - Use YAML-only mode for data-only builds where execution is undesired.
 
 ## Performance

@@ -42,7 +42,7 @@ export default {
 By default, TS is loaded first for a TypeScript‑first workflow. Control sources explicitly via config or CLI:
 
 ```ts
-// .config/ts-i18n.config.ts
+// .config/i18n.config.ts
 export default {
   translationsDir: 'locales',
   defaultLocale: 'en',

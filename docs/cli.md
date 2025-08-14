@@ -1,6 +1,6 @@
 # CLI
 
-`ts-i18n` provides a small CLI. It reads `.config/ts-i18n.config.ts` (via bunfig) when present.
+`ts-i18n` provides a small CLI. It reads `.config/i18n.config.ts` (via bunfig) when present.
 
 ## Install
 
@@ -42,10 +42,10 @@ ts-i18n check [--ts-only|--yaml-only|--sources ts,yaml]
 
 ### init
 
-Scaffold a sample `.config/ts-i18n.config.ts` using your current defaults.
+Scaffold a sample `.config/i18n.config.ts` using your current defaults.
 
 ```bash
-ts-i18n init --out .config/ts-i18n.config.ts
+ts-i18n init --out .config/i18n.config.ts
 ```
 
 ## Config file

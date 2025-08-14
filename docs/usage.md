@@ -48,7 +48,7 @@ export default {
 
 ## CLI
 
-Create `.config/ts-i18n.config.ts` (or run `ts-i18n init`) and then:
+Create `.config/i18n.config.ts` (or run `ts-i18n init`) and then:
 
 ```bash
 # TS-first
@@ -69,7 +69,7 @@ Available commands:
 - `build`: Load translations; if `outDir` is set, write per-locale JSON; if `typesOutFile` is set or `--types-from` provided, write types.
 - `list`: Print discovered locales and their top-level namespaces count.
 - `check`: Detect missing keys vs base locale.
-- `init`: Scaffold a sample `.config/ts-i18n.config.ts`.
+- `init`: Scaffold a sample `.config/i18n.config.ts`.
 
 ## Translations format
 

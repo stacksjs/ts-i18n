@@ -77,7 +77,7 @@ await writeOutputs(trees, 'dist/i18n')
 await generateTypes(trees, 'dist/i18n/keys.d.ts')
 ```
 
-Or use the CLI with a `.config/ts-i18n.config.ts`:
+Or use the CLI with a `.config/i18n.config.ts`:
 
 ```bash
 ts-i18n build
