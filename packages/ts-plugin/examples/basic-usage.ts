@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 // Basic usage example of ts-plugin-i18n
 import { createTypeScriptI18nPlugin } from '../src/index'
 

@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { createTranslator, loadTranslations } from 'ts-i18n'
 import type { TypedTranslator } from './dist/i18n/types'
 

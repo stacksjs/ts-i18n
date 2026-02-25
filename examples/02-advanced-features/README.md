@@ -13,7 +13,7 @@ This example demonstrates advanced `ts-i18n` capabilities including namespace me
 
 ## 📁 Project Structure
 
-```
+```text
 02-advanced-features/
 ├── locales/
 │   ├── en.yml                 # Core English static content
@@ -265,7 +265,8 @@ The validation script provides detailed analysis:
 bun run validate
 ```
 
-**Features:**
+### Features
+
 
 - **Completeness percentage** for each locale
 - **Missing key identification** with critical key flagging

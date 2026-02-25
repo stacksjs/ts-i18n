@@ -24,7 +24,7 @@ Fast, Bun‑native TypeScript i18n loader with YAML/TS support, runtime translat
 - [Runtime API](#runtime-api)
 - [CLI](#cli)
 - [Type Generation](#type-generation)
-- [Per‑locale JSON Output](#per-locale-json-output)
+- [Per-locale JSON Output](#per-locale-json-output)
 - [Framework Integration](#framework-integration)
   - [Template engines](#template-engines)
   - [React](#react)
@@ -44,7 +44,7 @@ Fast, Bun‑native TypeScript i18n loader with YAML/TS support, runtime translat
 ## Features
 
 - YAML (.yml/.yaml) and TS/JS translations
-- Folder structure: `locales/en.yml` or `locales/en/*.yml|.ts`
+- Folder structure: `locales/en.yml` or `locales/en/*.yml` or `locales/en/*.ts`
 - Runtime translator with fallback locales
 - Dynamic values via functions in TS files
 - Per‑locale JSON output (optional)
@@ -269,7 +269,7 @@ trans('dynamic.welcome', { name: 'Ada' })
 //            ^? ParamsFor<'dynamic.welcome'> → { name: string }
 ```
 
-## Per‑locale JSON Output
+## Per-locale JSON Output
 
 Write serializable JSON per locale (function values are stripped).
 
@@ -351,3 +351,9 @@ High coverage tests validate loader behavior, translator fallback, outputs, type
 ## License
 
 MIT — see `LICENSE.md`.
+
+<!-- Badges -->
+[npm-version-src]: https://img.shields.io/npm/v/ts-i18n?style=flat-square
+[npm-version-href]: https://npmjs.com/package/ts-i18n
+[github-actions-src]: https://img.shields.io/github/actions/workflow/status/stacksjs/ts-i18n/ci.yml?style=flat-square&branch=main
+[github-actions-href]: https://github.com/stacksjs/ts-i18n/actions/workflows/ci.yml

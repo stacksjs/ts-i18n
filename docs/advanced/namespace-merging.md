@@ -8,7 +8,7 @@
 
 The namespace is determined by the file's location relative to the locale directory:
 
-```
+```text
 locales/
 ├── en.yml                    # → en.*
 ├── en/
@@ -82,7 +82,8 @@ export default {
 } satisfies Dictionary
 ```
 
-**Resulting namespace structure:**
+### Resulting namespace structure
+
 
 ```typescript
 // Accessible as:
@@ -147,7 +148,8 @@ export default {
 } satisfies Dictionary
 ```
 
-**Resulting structure:**
+### Resulting structure
+
 
 ```typescript
 // Accessible as:
@@ -178,7 +180,8 @@ settings:
     twoFactor: "Two-Factor Authentication"
 ```
 
-**Unwrapped result:**
+### Unwrapped result
+
 
 ```typescript
 // Becomes: en.settings.profile.title (not en.settings.settings.profile.title)
@@ -234,7 +237,8 @@ signup:
   checkEmail: "Please check your email to verify your account"
 ```
 
-**Merged result:**
+### Merged result
+
 
 ```typescript
 // All files merge into the auth namespace

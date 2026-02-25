@@ -1,3 +1,4 @@
+/* eslint-disable ts/no-top-level-await */
 import type { I18nConfig } from './types'
 import { loadConfig } from 'bunfig'
 

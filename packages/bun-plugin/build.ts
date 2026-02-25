@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+/* eslint-disable ts/no-top-level-await */
 import { dts } from 'bun-plugin-dtsx'
 
 console.log('🔧 Building bun-plugin-i18n...')

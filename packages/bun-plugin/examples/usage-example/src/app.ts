@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 // Example usage of bun-plugin-i18n
 import { createTranslator } from 'ts-i18n'
 

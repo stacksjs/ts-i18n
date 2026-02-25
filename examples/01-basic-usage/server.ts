@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 // Simple Bun server to serve the HTML demo
 const server = Bun.serve({
   port: 3000,

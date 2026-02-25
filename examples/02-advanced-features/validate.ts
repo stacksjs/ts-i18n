@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 // Translation validation script
 import { loadTranslations } from 'ts-i18n'
 

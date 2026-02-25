@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { mkdir } from 'node:fs/promises'
 import process from 'node:process'
 import { generateTypesFromModule, loadTranslations, writeOutputs } from 'ts-i18n'

@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 // Advanced configuration example with all features
 import { i18nBunPlugin } from 'bun-plugin-i18n'
 

@@ -13,7 +13,7 @@ This example demonstrates how to use `ts-i18n` with TypeScript translation files
 
 ## 📁 Project Structure
 
-```
+```text
 01-basic-usage/
 ├── locales/              # Translation files
 │   ├── en/index.ts      # English (TypeScript with functions)

@@ -73,7 +73,8 @@ const translations = await loadTranslations({
 await generateTypes(translations, 'types/i18n-keys.d.ts')
 ```
 
-**Generated output:**
+### Generated output
+
 
 ```typescript
 // types/i18n-keys.d.ts
@@ -104,7 +105,8 @@ await generateTypesFromModule(
 )
 ```
 
-**Base module structure:**
+### Base module structure
+
 
 ```typescript
 // locales/en/index.ts
@@ -132,7 +134,8 @@ export default {
 } satisfies Dictionary
 ```
 
-**Generated advanced types:**
+### Generated advanced types
+
 
 ```typescript
 // types/i18n-advanced.d.ts

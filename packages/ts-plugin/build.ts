@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+/* eslint-disable ts/no-top-level-await */
 import process from 'node:process'
 
 console.log('🔧 Building bun-plugin-i18n...')
