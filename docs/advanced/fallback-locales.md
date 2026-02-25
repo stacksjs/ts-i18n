@@ -291,7 +291,7 @@ function createPersonalizedTranslator(prefs: UserPreferences) {
   fallbackChain.push(prefs.primaryLocale, ...prefs.secondaryLocales)
   
   // Add regional variants
-  const primaryRegion = prefs.primaryLocale.split('-')[0]
+  const primaryRegion = prefs.primaryLocale.split('-').at(0)
   if (primaryRegion !== prefs.primaryLocale) {
     fallbackChain.push(primaryRegion)
   }

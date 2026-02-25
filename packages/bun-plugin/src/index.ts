@@ -21,7 +21,7 @@ function i18nBunPlugin(options: I18nPluginOptions = {}): BunPlugin {
     typesPath = 'dist/i18n/types.d.ts',
     baseModule,
     watch: shouldWatch = process.env.NODE_ENV !== 'production',
-    _minify = process.env.NODE_ENV === 'production',
+    minify: _minify = process.env.NODE_ENV === 'production',
     verbose = false,
     include,
     exclude,

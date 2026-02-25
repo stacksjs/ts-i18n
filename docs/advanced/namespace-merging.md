@@ -84,7 +84,6 @@ export default {
 
 ### Resulting namespace structure
 
-
 ```typescript
 // Accessible as:
 t('app.name')                    // "TeamFlow"
@@ -150,7 +149,6 @@ export default {
 
 ### Resulting structure
 
-
 ```typescript
 // Accessible as:
 t('dashboard.analytics.title')
@@ -181,7 +179,6 @@ settings:
 ```
 
 ### Unwrapped result
-
 
 ```typescript
 // Becomes: en.settings.profile.title (not en.settings.settings.profile.title)
@@ -238,7 +235,6 @@ signup:
 ```
 
 ### Merged result
-
 
 ```typescript
 // All files merge into the auth namespace

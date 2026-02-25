@@ -38,26 +38,20 @@
   ],
   "scripts": {
     "build": "bun build.ts",
-    "lint": "bunx --bun eslint .",
-    "lint:fix": "bunx --bun eslint . --fix",
+    "lint": "bunx --bun pickier lint .",
+    "lint:fix": "bunx --bun pickier lint . --fix",
     "changelog": "changelogen --output CHANGELOG.md",
     "prepublishOnly": "bun --bun run build",
     "test": "bun test",
     "typecheck": "bunx tsc --noEmit"
   },
   "dependencies": {
-    "ts-i18n": "workspace:*"
+    "@stacksjs/ts-i18n": "workspace:*"
   },
   "peerDependencies": {
     "bun": ">=1.0.0"
   },
   "devDependencies": {
     "bun-plugin-dtsx": "0.9.5"
-  },
-  "simple-git-hooks": {
-    "pre-commit": "bunx lint-staged"
-  },
-  "lint-staged": {
-    "*.{js,ts}": "bunx eslint . --fix"
   }
 }

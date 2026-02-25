@@ -42,8 +42,8 @@
   "scripts": {
     "build": "bun --bun build.ts",
     "dev": "bun --watch build.ts",
-    "lint": "bunx --bun eslint .",
-    "lint:fix": "bunx --bun eslint . --fix",
+    "lint": "bunx --bun pickier lint .",
+    "lint:fix": "bunx --bun pickier lint . --fix",
     "test": "bun test --coverage",
     "typecheck": "bun --bun tsc --noEmit"
   },

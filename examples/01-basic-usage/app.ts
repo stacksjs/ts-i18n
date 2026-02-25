@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 import { createTranslator, loadTranslations } from 'ts-i18n'
+// eslint-disable-next-line pickier/no-import-dist
 import type { TypedTranslator } from './dist/i18n/types'
 
 async function main() {

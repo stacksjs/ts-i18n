@@ -55,7 +55,7 @@ export function createTranslator<TBase = TranslationTree>(
       if (val == null)
         continue
       if (typeof val === 'function') {
-        const fn = val as (params?: TransParams) => string
+        const fn = val as (_params?: TransParams) => string
         return fn(params)
       }
       if (typeof val === 'string' || typeof val === 'number' || typeof val === 'boolean')

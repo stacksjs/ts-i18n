@@ -967,7 +967,7 @@ class PatternOptimizer {
 
       patterns.forEach(pattern => {
         // Group patterns by their base directory
-        const baseDir = pattern.split('/')[0]
+        const baseDir = pattern.split('/').at(0)
         if (!groups.has(baseDir)) {
           groups.set(baseDir, [])
         }

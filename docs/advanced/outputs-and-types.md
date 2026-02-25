@@ -75,7 +75,6 @@ await generateTypes(translations, 'types/i18n-keys.d.ts')
 
 ### Generated output
 
-
 ```typescript
 // types/i18n-keys.d.ts
 export type TranslationKey =
@@ -107,7 +106,6 @@ await generateTypesFromModule(
 
 ### Base module structure
 
-
 ```typescript
 // locales/en/index.ts
 import type { Dictionary } from 'ts-i18n'
@@ -135,7 +133,6 @@ export default {
 ```
 
 ### Generated advanced types
-
 
 ```typescript
 // types/i18n-advanced.d.ts
@@ -245,7 +242,7 @@ async function generateBuildManifest(translations: any, outputDir: string) {
     locales: Object.keys(translations),
     totalKeys: Object.values(translations)
       .reduce((total, tree) => total + countKeys(tree), 0),
-    version: process.env.BUILD_VERSION || 'dev'
+    version: process.env.BUILD*VERSION || 'dev'
   }
 
   await writeFile(
@@ -269,7 +266,7 @@ on:
   push:
     branches: [main, develop]
     paths: ['locales/**', 'src/**']
-  pull_request:
+  pull*request:
     paths: ['locales/**', 'src/**']
 
 jobs:
@@ -366,8 +363,8 @@ jobs:
 
         run: npm run deploy:translations
         env:
-          CDN_TOKEN: ${{ secrets.CDN_TOKEN }}
-          CDN_BUCKET: ${{ secrets.CDN_BUCKET }}
+          CDN*TOKEN: ${{ secrets.CDN*TOKEN }}
+          CDN*BUCKET: ${{ secrets.CDN*BUCKET }}
 ```
 
 ### Advanced Build Scripts
@@ -711,7 +708,7 @@ export {}
   private async generateDeploymentManifest(): Promise<void> {
     const manifest = {
       buildTime: new Date().toISOString(),
-      version: process.env.BUILD_VERSION || 'dev',
+      version: process.env.BUILD*VERSION || 'dev',
       environments: this.config.environments.map(env => ({
         name: env.name,
         locales: env.locales,
@@ -775,7 +772,7 @@ const buildConfig: BuildConfig = {
   },
   validation: {
     requireFullCoverage: false,
-    allowedMissingKeys: ['dev.debug._', 'internal._'],
+    allowedMissingKeys: ['dev.debug.*', 'internal.*'],
     customValidators: []
   }
 }
@@ -923,8 +920,8 @@ export function i18nPlugin(options: I18nVitePluginOptions): Plugin {
 
       // Set up file watching in development
       if (options.watch && this.meta.watchMode) {
-        watcher = watch(`${options.translationsDir}/**/_`, {
-          ignored: /node_modules/
+        watcher = watch(`${options.translationsDir}/**/*`, {
+          ignored: /node*modules/
         })
 
         watcher.on('change', async (path) => {
@@ -1249,7 +1246,7 @@ class I18nPerformanceMonitor {
 
 - Total translations: ${metrics.translationCount}
 - Average resolution time: ${metrics.averageResolutionTime.toFixed(2)}ms
-- Cache hit rate: ${(metrics.cacheHitRate _ 100).toFixed(1)}%
+- Cache hit rate: ${(metrics.cacheHitRate * 100).toFixed(1)}%
 
 ## Most Used Keys
 ${metrics.mostUsedKeys.map(({ key, count }) => `- ${key}: ${count} times`).join('\n')}

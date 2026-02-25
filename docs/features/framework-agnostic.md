@@ -439,7 +439,8 @@ declare global {
 }
 
 export function i18nMiddleware(req: Request, res: Response, next: NextFunction) {
-  const locale = req.headers['accept-language']?.split(',')[0] || 'en'
+  const parts = req.headers['accept-language']?.split(',')
+  const locale = parts?.[0] || 'en'
   req.t = getTranslator(locale)
   next()
 }
@@ -635,7 +636,7 @@ Always provide graceful fallbacks:
 const t = createTranslator(translations, {
   defaultLocale: userPreferredLocale,
   fallbackLocale: [
-    userPreferredLocale.split('-')[0], // 'en-US' -> 'en'
+    userPreferredLocale.split('-').at(0), // 'en-US' -> 'en'
     'en' // Ultimate fallback
   ]
 })

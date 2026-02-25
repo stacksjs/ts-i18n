@@ -267,7 +267,6 @@ bun run validate
 
 ### Features
 
-
 - **Completeness percentage** for each locale
 - **Missing key identification** with critical key flagging
 - **Extra key detection** for cleanup

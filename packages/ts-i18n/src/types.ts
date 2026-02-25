@@ -13,7 +13,7 @@ export interface TransParams {
   [key: string]: string | number
 }
 
-export type TranslationValue = string | number | boolean | null | ((params?: TransParams) => string)
+export type TranslationValue = string | number | boolean | null | ((_params?: TransParams) => string)
 
 export interface TranslationTree {
   [key: string]: TranslationValue | TranslationTree
@@ -40,7 +40,7 @@ export interface BuildResult {
 export type JoinPath<A extends string, B extends string> = A extends '' ? B : `${A}.${B}`
 
 /** Leaf values considered renderable for translations */
-export type RenderableLeaf = string | number | boolean | null | undefined | ((params?: TransParams) => string)
+export type RenderableLeaf = string | number | boolean | null | undefined | ((_params?: TransParams) => string)
 
 /**
  * Produces a union of dot-separated keys for all leaf values of T.
@@ -76,10 +76,10 @@ export type PathValue<T, K extends string, D extends number = 8> =
         : never
 
 /** Extract the params object for a given key K (if the leaf is a function) */
-export type ParamsForLeaf<V> = V extends (...args: infer A) => any ? (A extends [] ? undefined : A[0]) : never
+export type ParamsForLeaf<V> = V extends (..._args: infer A) => any ? (A extends [] ? undefined : A[0]) : never
 export type ParamsForKey<T, K extends string> = ParamsForLeaf<PathValue<T, K>>
 
 /** A typed translator for a given base tree shape T */
-export type TranslatorFor<T> = <K extends DotPaths<T>>(key: K, localeOrParams?: string | ParamsForKey<T, K>, maybeParams?: ParamsForKey<T, K>) => string
+export type TranslatorFor<T> = <K extends DotPaths<T>>(_key: K, _localeOrParams?: string | ParamsForKey<T, K>, _maybeParams?: ParamsForKey<T, K>) => string
 
 export type SourceKind = 'ts' | 'yaml'

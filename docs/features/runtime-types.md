@@ -403,7 +403,7 @@ Always configure reasonable fallback chains:
 const t = createTranslator(translations, {
   defaultLocale: userLocale,
   fallbackLocale: [
-    userLocale.split('-')[0], // 'en-US' -> 'en'
+    userLocale.split('-').at(0), // 'en-US' -> 'en'
     'en'                      // Ultimate fallback
   ]
 })
