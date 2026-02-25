@@ -12,6 +12,6 @@
     "ts-i18n": "workspace:*"
   },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest1.3.9"
   }
 }
