@@ -309,12 +309,14 @@ export default {
 ## Best Practices
 
 ### 1. **Use YAML for Static Content**
+
 - Labels, titles, descriptions
 - Navigation items
 - Static form labels
 - Help text and tooltips
 
 ### 2. **Use TypeScript for Dynamic Content**
+
 - Messages with parameters
 - Pluralization logic
 - Date/time formatting
@@ -322,6 +324,7 @@ export default {
 - Calculated values
 
 ### 3. **Consistent Naming Conventions**
+
 ```typescript
 // Good: Descriptive parameter names
 welcome: ({ userName, companyName }: { userName: string; companyName: string }) =>
@@ -340,6 +343,7 @@ userStatus: ({ user, isOnline, lastSeen }: {
 ```
 
 ### 4. **Type Safety with satisfies**
+
 Always use `satisfies Dictionary` to ensure type safety:
 
 ```typescript
@@ -356,6 +360,7 @@ export default {
 ```
 
 ### 5. **Fallback Strategies**
+
 Structure your files so missing translations fall back gracefully:
 
 ```typescript

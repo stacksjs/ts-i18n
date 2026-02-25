@@ -28,5 +28,3 @@ features:
     icon: "🧭"
     details: "Works with any template engine, React, Vue, and SSR."
 ---
-
-<Home />

@@ -5,36 +5,42 @@
 ## Core Features
 
 ### 🎯 **Type Safety First**
+
 - Auto-generated TypeScript types from your translation keys
 - Compile-time validation of translation keys
 - Parameter type inference for dynamic messages
 - Full IDE autocomplete and refactoring support
 
 ### 📁 **Flexible File Organization**
+
 - YAML files for simple static translations
 - TypeScript files for dynamic messages with parameters
 - Automatic namespace merging from directory structure
 - Support for both flat and nested translation files
 
 ### 🚀 **Framework Agnostic**
+
 - Works with React, Vue, Svelte, Solid, and any JavaScript framework
 - Server-side rendering (SSR) compatible
 - Client-side and build-time usage
 - Zero framework dependencies
 
 ### 🌍 **Smart Locale Management**
+
 - Configurable fallback locale chains
 - Per-request locale override support
 - Deep merging of translation namespaces
 - Locale inheritance and composition
 
 ### ⚡ **Performance Optimized**
+
 - Built with Bun for maximum performance
 - Lazy loading support via JSON outputs
 - Efficient key flattening and lookup
 - Minimal runtime overhead
 
 ### 🛠 **Developer Experience**
+
 - Intuitive CLI for building and scaffolding
 - Hot reloading in development
 - Comprehensive error messages
@@ -104,6 +110,7 @@ console.log(t('admin.userJoined', { user: 'Avery', role: 'admin' }))
 ## Best Practices
 
 ### 1. **Organize by Feature, Not Language**
+
 ```
 locales/
 ├── en/
@@ -121,6 +128,7 @@ locales/
 ```
 
 ### 2. **Use TypeScript for Complex Logic**
+
 ```typescript
 // For dynamic content that needs computation
 export default {
@@ -138,6 +146,7 @@ export default {
 ```
 
 ### 3. **Leverage Type Generation**
+
 ```typescript
 // Generate types from your base locale
 import { generateTypesFromModule } from 'ts-i18n'
@@ -153,6 +162,7 @@ const t: TypedTranslator = createTranslator(...)
 ```
 
 ### 4. **Configure Smart Fallbacks**
+
 ```typescript
 const config = {
   defaultLocale: 'en',

@@ -122,6 +122,7 @@ await generateTypes(translations, 'dist/i18n/keys.d.ts')
 ```
 
 Generated output:
+
 ```typescript
 // dist/i18n/keys.d.ts
 export type TranslationKey =
@@ -151,6 +152,7 @@ await generateTypesFromModule(
 ```
 
 Your base module structure:
+
 ```typescript
 // locales/en/index.ts
 import type { Dictionary } from 'ts-i18n'
@@ -182,6 +184,7 @@ export default {
 ```
 
 Generated advanced types:
+
 ```typescript
 // dist/i18n/types.d.ts
 import type { DotPaths, ParamsForKey, TranslatorFor } from 'ts-i18n'
@@ -354,6 +357,7 @@ const dashboardTranslator = createTranslator(
 ## Best Practices
 
 ### 1. **Use Module-Based Type Generation**
+
 Always prefer `generateTypesFromModule` for full type safety:
 
 ```typescript
@@ -365,6 +369,7 @@ await generateTypes(translations, './types/i18n.d.ts')
 ```
 
 ### 2. **Organize Base Module Strategically**
+
 Structure your base TypeScript module to export a comprehensive translation tree:
 
 ```typescript
@@ -382,6 +387,7 @@ export default {
 ```
 
 ### 3. **Version Your Translation Types**
+
 Track generated types in version control for team consistency:
 
 ```gitignore
@@ -390,6 +396,7 @@ Track generated types in version control for team consistency:
 ```
 
 ### 4. **Implement Fallback Strategies**
+
 Always configure reasonable fallback chains:
 
 ```typescript
@@ -403,10 +410,11 @@ const t = createTranslator(translations, {
 ```
 
 ### 5. **Test Your Translation Functions**
+
 Since TypeScript functions are part of your translations, test them:
 
 ```typescript
-// locales/en/__tests__/notifications.test.ts
+// locales/en/**tests**/notifications.test.ts
 import notifications from '../notifications'
 
 describe('Notification translations', () => {

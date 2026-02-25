@@ -169,9 +169,9 @@ const translations = await loadTranslations({
   translationsDir: 'locales',
   defaultLocale: 'en',
   include: createFeatureAwarePatterns({
-    experimental: process.env.NODE_ENV === 'development',
-    legacy: process.env.INCLUDE_LEGACY === 'true',
-    betaUI: process.env.BETA_FEATURES === 'true'
+    experimental: process.env.NODE*ENV === 'development',
+    legacy: process.env.INCLUDE*LEGACY === 'true',
+    betaUI: process.env.BETA*FEATURES === 'true'
   })
 })
 ```
@@ -292,7 +292,7 @@ function getEnvironmentPatterns(env: 'development' | 'staging' | 'production') {
 const translations = await loadTranslations({
   translationsDir: 'locales',
   defaultLocale: 'en',
-  include: getEnvironmentPatterns(process.env.NODE_ENV as any)
+  include: getEnvironmentPatterns(process.env.NODE*ENV as any)
 })
 ```
 
@@ -475,7 +475,7 @@ const excludePatterns = [
   '!**/*.spec.*',           // Spec files
   '!**/*.d.ts',             // Type declarations
   '!**/*.config.*',         // Config files
-  '!**/node_modules/**',    // Dependencies
+  '!**/node*modules/**',    // Dependencies
   '!**/.git/**',            // Git files
   '!**/dist/**',            // Build outputs
   '!**/coverage/**'         // Test coverage
@@ -691,7 +691,7 @@ class EnterprisePatternManager {
 
   generatePatterns(): string[] {
     const cacheKey = Array.from(this.activeConfigs).sort().join(',')
-    
+
     if (this.cache.has(cacheKey)) {
       return this.cache.get(cacheKey)!
     }
@@ -716,7 +716,7 @@ class EnterprisePatternManager {
     const uniqueExcludes = [...new Set(allExcludes)]
 
     const finalPatterns = [...uniquePatterns, ...uniqueExcludes.map(exclude => `!${exclude}`)]
-    
+
     this.cache.set(cacheKey, finalPatterns)
     return finalPatterns
   }
@@ -735,7 +735,7 @@ class EnterprisePatternManager {
   generateReport(): string {
     const active = this.getActivePatterns()
     const total = this.patterns.size
-    
+
     let report = '# Pattern Manager Report\n\n'
     report += `## Overview\n`
     report += `- Total registered patterns: ${total}\n`
@@ -828,8 +828,8 @@ enterprisePatterns.registerPattern({
   environments: ['staging', 'production'],
   teams: ['premium', 'billing'],
   conditions: {
-    featureFlags: ['premium_enabled'],
-    userRoles: ['admin', 'premium_user']
+    featureFlags: ['premium*enabled'],
+    userRoles: ['admin', 'premium*user']
   }
 })
 
@@ -847,8 +847,8 @@ enterprisePatterns.registerPattern({
   environments: ['development'],
   teams: ['experimental', 'labs'],
   conditions: {
-    featureFlags: ['experimental_enabled'],
-    userRoles: ['admin', 'beta_tester']
+    featureFlags: ['experimental*enabled'],
+    userRoles: ['admin', 'beta*tester']
   }
 })
 
@@ -874,7 +874,7 @@ enterprisePatterns.registerPattern({
 const context = {
   environment: 'production',
   team: 'frontend',
-  featureFlags: ['premium_enabled'],
+  featureFlags: ['premium*enabled'],
   userRole: 'admin',
   deploymentType: 'eu-deployment'
 }
@@ -924,10 +924,10 @@ class PatternOptimizer {
     existing.loadTime = loadTime
     existing.usageFrequency++
     existing.lastUsed = new Date()
-    
+
     // Update cache hit rate using exponential moving average
     const alpha = 0.1
-    existing.cacheHitRate = fromCache 
+    existing.cacheHitRate = fromCache
       ? existing.cacheHitRate + alpha * (1 - existing.cacheHitRate)
       : existing.cacheHitRate * (1 - alpha)
 
@@ -936,7 +936,7 @@ class PatternOptimizer {
 
   optimizePatterns(patterns: string[]): string[] {
     let optimized = [...patterns]
-    
+
     // Apply optimization rules in sequence
     for (const rule of this.optimizationRules) {
       optimized = rule(optimized)
@@ -950,21 +950,21 @@ class PatternOptimizer {
     this.optimizationRules.push((patterns) => {
       const result: string[] = []
       const seen = new Set<string>()
-      
+
       for (const pattern of patterns) {
         if (!seen.has(pattern)) {
           result.push(pattern)
           seen.add(pattern)
         }
       }
-      
+
       return result
     })
 
     // Merge similar patterns
     this.optimizationRules.push((patterns) => {
       const groups = new Map<string, string[]>()
-      
+
       patterns.forEach(pattern => {
         // Group patterns by their base directory
         const baseDir = pattern.split('/')[0]
@@ -975,7 +975,7 @@ class PatternOptimizer {
       })
 
       const result: string[] = []
-      
+
       for (const [baseDir, groupPatterns] of groups) {
         if (groupPatterns.length > 3) {
           // If many patterns in same directory, use a broader pattern
@@ -984,7 +984,7 @@ class PatternOptimizer {
           result.push(...groupPatterns)
         }
       }
-      
+
       return result
     })
 
@@ -993,15 +993,15 @@ class PatternOptimizer {
       return patterns.sort((a, b) => {
         const metricsA = this.metrics.get(a)
         const metricsB = this.metrics.get(b)
-        
+
         if (!metricsA && !metricsB) return 0
         if (!metricsA) return 1
         if (!metricsB) return -1
-        
+
         // Prioritize patterns with better cache hit rate and higher usage
         const scoreA = metricsA.cacheHitRate * 0.7 + (metricsA.usageFrequency / 100) * 0.3
         const scoreB = metricsB.cacheHitRate * 0.7 + (metricsB.usageFrequency / 100) * 0.3
-        
+
         return scoreB - scoreA
       })
     })
@@ -1009,11 +1009,11 @@ class PatternOptimizer {
     // Remove unused patterns
     this.optimizationRules.push((patterns) => {
       const cutoffDate = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) // 7 days ago
-      
+
       return patterns.filter(pattern => {
         const metrics = this.metrics.get(pattern)
         if (!metrics) return true // Keep new patterns
-        
+
         return metrics.lastUsed > cutoffDate || metrics.usageFrequency > 5
       })
     })
@@ -1025,7 +1025,7 @@ class PatternOptimizer {
 
   getPatternRecommendations(): Array<{ pattern: string; recommendation: string }> {
     const recommendations: Array<{ pattern: string; recommendation: string }> = []
-    
+
     for (const [pattern, metrics] of this.metrics) {
       if (metrics.loadTime > 1000) {
         recommendations.push({
@@ -1033,28 +1033,28 @@ class PatternOptimizer {
           recommendation: 'Consider caching or breaking into smaller patterns - high load time'
         })
       }
-      
+
       if (metrics.cacheHitRate < 0.5) {
         recommendations.push({
           pattern,
           recommendation: 'Pattern has low cache hit rate - consider stability'
         })
       }
-      
+
       if (metrics.usageFrequency === 0) {
         recommendations.push({
           pattern,
           recommendation: 'Pattern never used - consider removing'
         })
       }
-      
+
       if (metrics.filesMatched === 0) {
         recommendations.push({
           pattern,
           recommendation: 'Pattern matches no files - check pattern syntax'
         })
       }
-      
+
       if (metrics.filesMatched > 1000) {
         recommendations.push({
           pattern,
@@ -1062,16 +1062,16 @@ class PatternOptimizer {
         })
       }
     }
-    
+
     return recommendations
   }
 
   generateOptimizationReport(): string {
     const allMetrics = Array.from(this.metrics.values())
     const recommendations = this.getPatternRecommendations()
-    
+
     let report = '# Pattern Optimization Report\n\n'
-    
+
     report += '## Performance Summary\n'
     report += `- Total patterns tracked: ${allMetrics.length}\n`
     report += `- Average load time: ${(allMetrics.reduce((sum, m) => sum + m.loadTime, 0) / allMetrics.length).toFixed(2)}ms\n`
@@ -1090,7 +1090,7 @@ class PatternOptimizer {
     const topPatterns = allMetrics
       .sort((a, b) => (b.cacheHitRate * b.usageFrequency) - (a.cacheHitRate * a.usageFrequency))
       .slice(0, 10)
-    
+
     topPatterns.forEach((metrics, index) => {
       report += `${index + 1}. \`${metrics.pattern}\` - ${metrics.usageFrequency} uses, ${(metrics.cacheHitRate * 100).toFixed(1)}% cache hit\n`
     })
@@ -1157,7 +1157,7 @@ class PatternCache {
   async get(patterns: string[], baseDir: string): Promise<string[] | null> {
     const key = this.generateKey(patterns, baseDir)
     const entry = this.cache.get(key)
-    
+
     if (!entry) {
       this.missCount++
       return null
@@ -1186,10 +1186,10 @@ class PatternCache {
 
   async set(patterns: string[], baseDir: string, files: string[]): Promise<void> {
     const key = this.generateKey(patterns, baseDir)
-    
+
     // Calculate metadata
     const metadata = await this.calculateMetadata(files, baseDir)
-    
+
     const entry: CacheEntry = {
       patterns: [...patterns],
       files: [...files],
@@ -1216,7 +1216,7 @@ class PatternCache {
         // In a real implementation, you'd use fs.stat
         // const stats = await fs.stat(fullPath)
         // totalSize += stats.size
-        
+
         // Extract directory
         const dir = file.substring(0, file.lastIndexOf('/'))
         if (dir) directories.add(dir)
@@ -1242,14 +1242,14 @@ class PatternCache {
   private evictOldestEntry(): void {
     let oldestKey = ''
     let oldestTime = Infinity
-    
+
     for (const [key, entry] of this.cache) {
       if (entry.timestamp < oldestTime) {
         oldestTime = entry.timestamp
         oldestKey = key
       }
     }
-    
+
     if (oldestKey) {
       this.cache.delete(oldestKey)
     }
@@ -1273,12 +1273,12 @@ class PatternCache {
   } {
     const totalRequests = this.hitCount + this.missCount
     const hitRate = totalRequests > 0 ? this.hitCount / totalRequests : 0
-    
+
     const entries = Array.from(this.cache.values())
-    const avgFileCount = entries.length > 0 
-      ? entries.reduce((sum, entry) => sum + entry.files.length, 0) / entries.length 
+    const avgFileCount = entries.length > 0
+      ? entries.reduce((sum, entry) => sum + entry.files.length, 0) / entries.length
       : 0
-    
+
     const totalCachedFiles = entries.reduce((sum, entry) => sum + entry.files.length, 0)
 
     return {
@@ -1293,13 +1293,13 @@ class PatternCache {
   cleanup(): void {
     const now = Date.now()
     const expiredKeys: string[] = []
-    
+
     for (const [key, entry] of this.cache) {
       if (now - entry.timestamp > this.ttl) {
         expiredKeys.push(key)
       }
     }
-    
+
     expiredKeys.forEach(key => this.cache.delete(key))
   }
 
@@ -1356,7 +1356,7 @@ class EnvironmentPatternManager {
 
     // Build inherited patterns
     const resolvedPatterns = await this.buildInheritedPatterns(config)
-    
+
     // Add base patterns if provided
     if (basePatterns) {
       resolvedPatterns.push(...basePatterns)
@@ -1364,16 +1364,16 @@ class EnvironmentPatternManager {
 
     // Apply overrides
     const withOverrides = this.applyOverrides(resolvedPatterns, config.overrides)
-    
+
     // Optimize patterns
     const optimized = this.optimizer.optimizePatterns(withOverrides)
-    
+
     return optimized
   }
 
   private async buildInheritedPatterns(config: EnvironmentConfig): Promise<string[]> {
     const patterns: string[] = []
-    
+
     // Process inheritance chain
     if (config.inherits) {
       for (const parentName of config.inherits) {
@@ -1384,13 +1384,13 @@ class EnvironmentPatternManager {
         }
       }
     }
-    
+
     // Add own patterns
     patterns.push(...config.patterns.include)
-    
+
     // Add exclusions
     patterns.push(...config.patterns.exclude.map(pattern => `!${pattern}`))
-    
+
     return patterns
   }
 
@@ -1417,11 +1417,11 @@ class EnvironmentPatternManager {
     }
 
     const patterns = await this.resolvePatterns(environmentName, additionalPatterns)
-    
+
     // Use caching
     const cacheKey = `${environmentName}-${defaultLocale}`
     const cached = await this.cache.get(patterns, translationsDir)
-    
+
     if (cached) {
       console.log(`Using cached patterns for ${environmentName}`)
       return this.loadFromFileList(cached, translationsDir, defaultLocale)
@@ -1429,7 +1429,7 @@ class EnvironmentPatternManager {
 
     // Load with concurrency control
     const startTime = performance.now()
-    
+
     try {
       const result = await this.loadWithConcurrencyControl(
         translationsDir,
@@ -1437,9 +1437,9 @@ class EnvironmentPatternManager {
         patterns,
         config.performance
       )
-      
+
       const loadTime = performance.now() - startTime
-      
+
       // Record metrics
       this.optimizer.recordPatternUsage(
         patterns.join('|'),
@@ -1447,13 +1447,13 @@ class EnvironmentPatternManager {
         loadTime,
         false
       )
-      
+
       // Update cache
       const fileList = this.extractFileList(result)
       await this.cache.set(patterns, translationsDir, fileList)
-      
+
       return result
-      
+
     } catch (error) {
       console.error(`Failed to load translations for ${environmentName}:`, error)
       throw error
@@ -1467,7 +1467,7 @@ class EnvironmentPatternManager {
     performance: EnvironmentConfig['performance']
   ): Promise<any> {
     const { loadTranslations } = await import('ts-i18n')
-    
+
     // Create a promise with timeout
     const loadPromise = loadTranslations({
       translationsDir,
@@ -1488,7 +1488,7 @@ class EnvironmentPatternManager {
         if (attempt >= performance.retryAttempts) {
           throw error
         }
-        
+
         const delay = Math.min(1000 * Math.pow(2, attempt), 10000) // Exponential backoff
         await new Promise(resolve => setTimeout(resolve, delay))
         console.log(`Retrying translation load (attempt ${attempt + 1}/${performance.retryAttempts})`)
@@ -1515,7 +1515,7 @@ class EnvironmentPatternManager {
     }
 
     let report = `# Environment Report: ${environmentName}\n\n`
-    
+
     if (config.inherits) {
       report += `## Inheritance\n`
       report += `Inherits from: ${config.inherits.join(', ')}\n\n`

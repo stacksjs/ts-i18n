@@ -128,10 +128,12 @@ The validation script shows exactly what's missing:
 | es     |       72.3% |  157 | ⚠️ 2   |
 
 ❌ Missing keys (43):
+
    - navigation.help
    - common.buttons.export
    - common.buttons.import
    - common.actions.confirm
+
    ...
 ```
 
@@ -248,6 +250,7 @@ await generateTypesFromModule(
 ```
 
 This generates comprehensive types including:
+
 - Union types for all translation keys
 - Parameter type inference for functions
 - Typed translator interface
@@ -263,6 +266,7 @@ bun run validate
 ```
 
 **Features:**
+
 - **Completeness percentage** for each locale
 - **Missing key identification** with critical key flagging
 - **Extra key detection** for cleanup
@@ -278,6 +282,7 @@ bun run validate
 ### Critical Key Detection
 
 Automatically identifies critical keys that should be prioritized:
+
 - Error messages (`error.*`)
 - Warning messages (`warning.*`)
 - Common UI buttons (`common.buttons.*`)

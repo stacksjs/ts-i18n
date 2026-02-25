@@ -273,30 +273,38 @@ jobs:
   validate-translations:
     runs-on: ubuntu-latest
     steps:
+
       - uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
+
         uses: actions/setup-node@v4
         with:
           node-version: '18'
           cache: 'npm'
-      
+
       - name: Install dependencies
+
         run: npm ci
-      
+
       - name: Validate translation structure
+
         run: npm run i18n:validate
-      
+
       - name: Generate types
+
         run: npm run i18n:types
-      
+
       - name: Build translations
+
         run: npm run i18n:build
-      
+
       - name: Check for completeness
+
         run: npm run i18n:check-completeness
-      
+
       - name: Upload translation artifacts
+
         uses: actions/upload-artifact@v4
         with:
           name: i18n-dist
@@ -307,27 +315,33 @@ jobs:
     needs: validate-translations
     runs-on: ubuntu-latest
     steps:
+
       - uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
+
         uses: actions/setup-node@v4
         with:
           node-version: '18'
           cache: 'npm'
-      
+
       - name: Install dependencies
+
         run: npm ci
-      
+
       - name: Download translation artifacts
+
         uses: actions/download-artifact@v4
         with:
           name: i18n-dist
           path: dist/i18n/
-      
+
       - name: Type check with translations
+
         run: npm run type-check
-      
+
       - name: Lint translation usage
+
         run: npm run lint:i18n-usage
 
   deploy-translations:
@@ -335,15 +349,18 @@ jobs:
     needs: [validate-translations, type-check]
     runs-on: ubuntu-latest
     steps:
+
       - uses: actions/checkout@v4
-      
+
       - name: Download translation artifacts
+
         uses: actions/download-artifact@v4
         with:
           name: i18n-dist
           path: dist/i18n/
-      
+
       - name: Deploy to CDN
+
         run: npm run deploy:translations
         env:
           CDN_TOKEN: ${{ secrets.CDN_TOKEN }}
@@ -390,7 +407,7 @@ class AdvancedI18nBuilder {
 
   async buildAll(): Promise<void> {
     console.log('🚀 Starting advanced i18n build process...')
-    
+
     // Load base translations
     const allTranslations = await loadTranslations({
       translationsDir: 'locales',
@@ -408,40 +425,40 @@ class AdvancedI18nBuilder {
 
     // Generate deployment manifest
     await this.generateDeploymentManifest()
-    
+
     console.log('✅ Build process completed successfully!')
   }
 
   private async validateTranslations(translations: any): Promise<void> {
     console.log('🔍 Validating translations...')
-    
+
     const results: ValidationResult[] = []
-    
+
     // Run built-in validators
     results.push(await this.validateCompleteness(translations))
     results.push(await this.validateTypeConsistency(translations))
     results.push(await this.validateDynamicFunctions(translations))
-    
+
     // Run custom validators
     for (const validator of this.config.validation.customValidators) {
       results.push(validator(translations))
     }
-    
+
     // Aggregate results
     const allErrors = results.flatMap(r => r.errors)
     const allWarnings = results.flatMap(r => r.warnings)
-    
+
     if (allWarnings.length > 0) {
       console.warn('⚠️  Validation warnings:')
       allWarnings.forEach(warning => console.warn(`  - ${warning}`))
     }
-    
+
     if (allErrors.length > 0) {
       console.error('❌ Validation errors:')
       allErrors.forEach(error => console.error(`  - ${error}`))
       throw new Error(`Translation validation failed with ${allErrors.length} errors`)
     }
-    
+
     console.log('✅ Translation validation passed')
   }
 
@@ -449,19 +466,19 @@ class AdvancedI18nBuilder {
     const baseKeys = this.collectKeys(translations.en)
     const errors: string[] = []
     const warnings: string[] = []
-    
+
     for (const [locale, tree] of Object.entries(translations)) {
       if (locale === 'en') continue
-      
+
       const localeKeys = this.collectKeys(tree)
-      const missingKeys = baseKeys.filter(key => 
-        !localeKeys.includes(key) && 
+      const missingKeys = baseKeys.filter(key =>
+        !localeKeys.includes(key) &&
         !this.config.validation.allowedMissingKeys.includes(key)
       )
-      
+
       if (missingKeys.length > 0) {
         const message = `Locale ${locale} missing ${missingKeys.length} keys: ${missingKeys.slice(0, 3).join(', ')}${missingKeys.length > 3 ? '...' : ''}`
-        
+
         if (this.config.validation.requireFullCoverage) {
           errors.push(message)
         } else {
@@ -469,36 +486,36 @@ class AdvancedI18nBuilder {
         }
       }
     }
-    
+
     return { valid: errors.length === 0, errors, warnings }
   }
 
   private async validateTypeConsistency(translations: any): Promise<ValidationResult> {
     const errors: string[] = []
     const warnings: string[] = []
-    
+
     // Check that dynamic functions have consistent signatures across locales
     const baseLocale = translations.en
-    
+
     for (const [locale, tree] of Object.entries(translations)) {
       if (locale === 'en') continue
-      
+
       this.validateFunctionSignatures(baseLocale, tree as any, locale, '', errors)
     }
-    
+
     return { valid: errors.length === 0, errors, warnings }
   }
 
   private validateFunctionSignatures(
-    base: any, 
-    target: any, 
-    locale: string, 
-    path: string, 
+    base: any,
+    target: any,
+    locale: string,
+    path: string,
     errors: string[]
   ): void {
     for (const [key, value] of Object.entries(base)) {
       const currentPath = path ? `${path}.${key}` : key
-      
+
       if (typeof value === 'function' && target[key]) {
         if (typeof target[key] !== 'function') {
           errors.push(`${locale}: ${currentPath} should be a function but is ${typeof target[key]}`)
@@ -513,31 +530,31 @@ class AdvancedI18nBuilder {
   private async validateDynamicFunctions(translations: any): Promise<ValidationResult> {
     const errors: string[] = []
     const warnings: string[] = []
-    
+
     // Test dynamic functions with sample data
     for (const [locale, tree] of Object.entries(translations)) {
       await this.testDynamicFunctions(tree as any, locale, '', errors, warnings)
     }
-    
+
     return { valid: errors.length === 0, errors, warnings }
   }
 
   private async testDynamicFunctions(
-    obj: any, 
-    locale: string, 
-    path: string, 
-    errors: string[], 
+    obj: any,
+    locale: string,
+    path: string,
+    errors: string[],
     warnings: string[]
   ): Promise<void> {
     for (const [key, value] of Object.entries(obj)) {
       const currentPath = path ? `${path}.${key}` : key
-      
+
       if (typeof value === 'function') {
         try {
           // Test with sample parameters
           const sampleParams = this.generateSampleParams(value)
           const result = value(sampleParams)
-          
+
           if (typeof result !== 'string') {
             warnings.push(`${locale}: ${currentPath} function returns ${typeof result}, expected string`)
           }
@@ -554,62 +571,62 @@ class AdvancedI18nBuilder {
     // Very basic parameter generation - in real implementation,
     // you'd want more sophisticated parameter inference
     const funcStr = func.toString()
-    
+
     // Look for common parameter patterns
     if (funcStr.includes('name')) return { name: 'Test' }
     if (funcStr.includes('count')) return { count: 1 }
     if (funcStr.includes('date')) return { date: new Date() }
     if (funcStr.includes('amount')) return { amount: 100 }
-    
+
     return {}
   }
 
   private async buildEnvironment(
-    env: BuildConfig['environments'][0], 
+    env: BuildConfig['environments'][0],
     allTranslations: any
   ): Promise<void> {
     console.log(`🔨 Building environment: ${env.name}`)
-    
+
     // Filter translations for this environment
     const envTranslations = this.filterTranslationsForEnvironment(allTranslations, env)
-    
+
     // Create output directory
     await mkdir(env.outputDir, { recursive: true })
-    
+
     // Write JSON outputs
     const outputFiles = await writeOutputs(envTranslations, env.outputDir)
-    
+
     // Generate types for this environment
     await this.generateEnvironmentTypes(envTranslations, env)
-    
+
     // Minify if requested
     if (env.minify) {
       await this.minifyOutputs(outputFiles)
     }
-    
+
     // Generate source maps if requested
     if (env.generateSourceMaps) {
       await this.generateSourceMaps(outputFiles, envTranslations)
     }
-    
+
     // Generate file hashes for caching
     await this.generateFileHashes(outputFiles, env.outputDir)
-    
+
     console.log(`✅ Environment ${env.name} built successfully`)
   }
 
   private filterTranslationsForEnvironment(
-    translations: any, 
+    translations: any,
     env: BuildConfig['environments'][0]
   ): any {
     const filtered: any = {}
-    
+
     for (const locale of env.locales) {
       if (translations[locale]) {
         filtered[locale] = this.filterByFeatures(translations[locale], env.features)
       }
     }
-    
+
     return filtered
   }
 
@@ -620,12 +637,12 @@ class AdvancedI18nBuilder {
   }
 
   private async generateEnvironmentTypes(
-    translations: any, 
+    translations: any,
     env: BuildConfig['environments'][0]
   ): Promise<void> {
     const typesPath = join(env.outputDir, 'types.d.ts')
     await generateTypes(translations, typesPath)
-    
+
     // Generate environment-specific type augmentations
     const augmentationPath = join(env.outputDir, 'augmentation.d.ts')
     const augmentation = this.generateTypeAugmentation(env)
@@ -656,7 +673,7 @@ export {}
   }
 
   private async generateSourceMaps(
-    outputFiles: string[], 
+    outputFiles: string[],
     originalTranslations: any
   ): Promise<void> {
     for (const file of outputFiles) {
@@ -667,23 +684,23 @@ export {}
         names: [],
         mappings: 'AAAA' // Simplified - real implementation would be more complex
       }
-      
+
       await writeFile(`${file}.map`, JSON.stringify(sourceMap, null, 2))
     }
   }
 
   private async generateFileHashes(outputFiles: string[], outputDir: string): Promise<void> {
     const hashes: Record<string, string> = {}
-    
+
     for (const file of outputFiles) {
       const content = await readFile(file, 'utf-8')
       const hash = createHash('sha256').update(content).digest('hex').slice(0, 8)
       const fileName = file.split('/').pop()!
       hashes[fileName] = hash
     }
-    
+
     await writeFile(
-      join(outputDir, 'file-hashes.json'), 
+      join(outputDir, 'file-hashes.json'),
       JSON.stringify(hashes, null, 2)
     )
   }
@@ -700,23 +717,23 @@ export {}
       })),
       cdnConfig: this.config.cdn
     }
-    
+
     await writeFile('dist/deployment-manifest.json', JSON.stringify(manifest, null, 2))
   }
 
   private collectKeys(obj: any, prefix = ''): string[] {
     const keys: string[] = []
-    
+
     for (const [key, value] of Object.entries(obj)) {
       const fullKey = prefix ? `${prefix}.${key}` : key
-      
+
       if (typeof value === 'object' && value !== null && typeof value !== 'function') {
         keys.push(...this.collectKeys(value, fullKey))
       } else {
         keys.push(fullKey)
       }
     }
-    
+
     return keys
   }
 }
@@ -755,7 +772,7 @@ const buildConfig: BuildConfig = {
   },
   validation: {
     requireFullCoverage: false,
-    allowedMissingKeys: ['dev.debug.*', 'internal.*'],
+    allowedMissingKeys: ['dev.debug._', 'internal._'],
     customValidators: []
   }
 }
@@ -807,7 +824,7 @@ export class I18nWebpackPlugin implements WebpackPluginInstance {
 
       compiler.hooks.watchRun.tapAsync(pluginName, async (compiler, callback) => {
         const changedFiles = Array.from(compiler.modifiedFiles || [])
-        const translationFilesChanged = changedFiles.some(file => 
+        const translationFilesChanged = changedFiles.some(file =>
           file.includes(this.options.translationsDir)
         )
 
@@ -834,7 +851,7 @@ export class I18nWebpackPlugin implements WebpackPluginInstance {
     // Filter to specific locales if specified
     const filteredTranslations = this.options.locales
       ? Object.fromEntries(
-          Object.entries(translations).filter(([locale]) => 
+          Object.entries(translations).filter(([locale]) =>
             this.options.locales!.includes(locale)
           )
         )
@@ -845,7 +862,7 @@ export class I18nWebpackPlugin implements WebpackPluginInstance {
     if (this.options.generateTypes) {
       const { generateTypes } = await import('ts-i18n')
       await generateTypes(
-        filteredTranslations, 
+        filteredTranslations,
         join(this.options.outputDir, 'types.d.ts')
       )
     }
@@ -896,21 +913,21 @@ export function i18nPlugin(options: I18nVitePluginOptions): Plugin {
 
   return {
     name: 'vite-i18n-plugin',
-    
+
     async buildStart() {
       // Build translations at startup
       await buildTranslations()
 
       // Set up file watching in development
       if (options.watch && this.meta.watchMode) {
-        watcher = watch(`${options.translationsDir}/**/*`, {
+        watcher = watch(`${options.translationsDir}/**/_`, {
           ignored: /node_modules/
         })
 
         watcher.on('change', async (path) => {
           console.log(`🌍 Translation file changed: ${path}`)
           await buildTranslations()
-          
+
           // Trigger HMR update
           const server = (this as any).server
           if (server) {
@@ -940,7 +957,7 @@ export function i18nPlugin(options: I18nVitePluginOptions): Plugin {
       if (id.startsWith('virtual:i18n/')) {
         const locale = id.replace('virtual:i18n/', '')
         const translationPath = join(options.outputDir, `${locale}.json`)
-        
+
         try {
           const { readFile } = await import('fs/promises')
           const content = await readFile(translationPath, 'utf-8')
@@ -960,7 +977,7 @@ export function i18nPlugin(options: I18nVitePluginOptions): Plugin {
 
     const filteredTranslations = options.locales
       ? Object.fromEntries(
-          Object.entries(translations).filter(([locale]) => 
+          Object.entries(translations).filter(([locale]) =>
             options.locales!.includes(locale)
           )
         )
@@ -1034,7 +1051,7 @@ class RuntimeI18nValidator {
     // This would ideally use generated types for validation
     // For now, we'll do basic runtime checks
     const expectedParams = this.getExpectedParams(key)
-    
+
     if (!expectedParams) return true
 
     for (const [paramName, paramType] of Object.entries(expectedParams)) {
@@ -1143,7 +1160,7 @@ class I18nPerformanceMonitor {
 
   startMeasurement(): () => void {
     const startTime = performance.now()
-    
+
     return () => {
       const duration = performance.now() - startTime
       this.recordResolutionTime(duration)
@@ -1152,24 +1169,24 @@ class I18nPerformanceMonitor {
 
   recordTranslation(key: string, fromCache: boolean, fallbackUsed?: string): void {
     this.metrics.translationCount++
-    
+
     // Update key usage
     const currentCount = this.keyUsage.get(key) || 0
     this.keyUsage.set(key, currentCount + 1)
-    
+
     // Update cache metrics
     if (fromCache) {
       this.cacheHits++
     } else {
       this.cacheMisses++
     }
-    
+
     // Update fallback usage
     if (fallbackUsed) {
-      this.metrics.fallbackUsage[fallbackUsed] = 
+      this.metrics.fallbackUsage[fallbackUsed] =
         (this.metrics.fallbackUsage[fallbackUsed] || 0) + 1
     }
-    
+
     this.updateMetrics()
   }
 
@@ -1179,7 +1196,7 @@ class I18nPerformanceMonitor {
       error,
       timestamp: Date.now()
     })
-    
+
     // Keep only recent errors
     if (this.metrics.errors.length > 100) {
       this.metrics.errors.shift()
@@ -1188,7 +1205,7 @@ class I18nPerformanceMonitor {
 
   private recordResolutionTime(duration: number): void {
     this.resolutionTimes.push(duration)
-    
+
     // Keep only recent measurements
     if (this.resolutionTimes.length > 1000) {
       this.resolutionTimes.shift()
@@ -1198,16 +1215,16 @@ class I18nPerformanceMonitor {
   private updateMetrics(): void {
     // Update average resolution time
     if (this.resolutionTimes.length > 0) {
-      this.metrics.averageResolutionTime = 
+      this.metrics.averageResolutionTime =
         this.resolutionTimes.reduce((sum, time) => sum + time, 0) / this.resolutionTimes.length
     }
-    
+
     // Update cache hit rate
     const totalCacheRequests = this.cacheHits + this.cacheMisses
     if (totalCacheRequests > 0) {
       this.metrics.cacheHitRate = this.cacheHits / totalCacheRequests
     }
-    
+
     // Update most used keys
     this.metrics.mostUsedKeys = Array.from(this.keyUsage.entries())
       .sort(([, a], [, b]) => b - a)
@@ -1221,14 +1238,15 @@ class I18nPerformanceMonitor {
 
   generateReport(): string {
     const metrics = this.getMetrics()
-    
+
     return `
 # i18n Performance Report
 
 ## Overview
+
 - Total translations: ${metrics.translationCount}
 - Average resolution time: ${metrics.averageResolutionTime.toFixed(2)}ms
-- Cache hit rate: ${(metrics.cacheHitRate * 100).toFixed(1)}%
+- Cache hit rate: ${(metrics.cacheHitRate _ 100).toFixed(1)}%
 
 ## Most Used Keys
 ${metrics.mostUsedKeys.map(({ key, count }) => `- ${key}: ${count} times`).join('\n')}
@@ -1265,19 +1283,19 @@ export function createMonitoredTranslator<T>(translator: T): T {
     apply(target, thisArg, args) {
       const [key] = args
       const stopMeasurement = monitor.startMeasurement()
-      
+
       try {
         const result = target.apply(thisArg, args)
         stopMeasurement()
-        
+
         // Determine if cache was used (simplified)
         const fromCache = false // Would need actual cache implementation
-        
+
         // Determine if fallback was used (simplified)
         const fallbackUsed = undefined // Would need actual fallback detection
-        
+
         monitor.recordTranslation(key, fromCache, fallbackUsed)
-        
+
         return result
       } catch (error) {
         stopMeasurement()

@@ -91,13 +91,17 @@ Examples:
 
 ```yaml
 # GitHub Actions example
+
 - name: Build translations
+
   run: bun run build.ts --verbose --minify
 
 - name: Validate translations
+
   run: bun run validate.ts
 
 - name: Check translation completeness
+
   run: |
     if ! bun run validate.ts | grep -q "100%"; then
       echo "Warning: Translations incomplete"
@@ -107,7 +111,7 @@ Examples:
 ### Pre-commit Hooks
 
 ```bash
-#!/bin/sh
+# !/bin/sh
 # .git/hooks/pre-commit
 
 echo "🌍 Validating translations..."

@@ -359,7 +359,7 @@ class AsyncFallbackTranslator {
   async translate(key: string, locale?: string, params?: any): Promise<string> {
     const targetLocale = locale || this.fallbackConfig.defaultLocale
     const fallbackChain = [targetLocale, ...this.fallbackConfig.fallbackLocale]
-    
+
     for (const currentLocale of fallbackChain) {
       // Check if translation exists in current locale
       const translation = await this.getTranslation(currentLocale, key, params)
@@ -367,7 +367,7 @@ class AsyncFallbackTranslator {
         return translation
       }
     }
-    
+
     // Return key if no translation found
     return key
   }
@@ -378,17 +378,17 @@ class AsyncFallbackTranslator {
       const translations = this.cache.get(locale)
       return this.extractTranslation(translations, key, params)
     }
-    
+
     // Check if already loading
     if (this.loadingPromises.has(locale)) {
       const translations = await this.loadingPromises.get(locale)
       return this.extractTranslation(translations, key, params)
     }
-    
+
     // Start loading
     const loadingPromise = this.loadLocaleTranslations(locale)
     this.loadingPromises.set(locale, loadingPromise)
-    
+
     try {
       const translations = await loadingPromise
       this.cache.set(locale, translations)
@@ -416,7 +416,7 @@ class AsyncFallbackTranslator {
   private extractTranslation(translations: any, key: string, params?: any): string | null {
     const keys = key.split('.')
     let current = translations
-    
+
     for (const keyPart of keys) {
       if (current && typeof current === 'object' && keyPart in current) {
         current = current[keyPart]
@@ -424,7 +424,7 @@ class AsyncFallbackTranslator {
         return null
       }
     }
-    
+
     if (typeof current === 'string') {
       return current
     } else if (typeof current === 'function' && params) {
@@ -435,7 +435,7 @@ class AsyncFallbackTranslator {
         return null
       }
     }
-    
+
     return null
   }
   
@@ -506,31 +506,31 @@ class EnterpriseFallbackManager {
   
   private buildFallbackChain(region: string, businessUnit: string): string[] {
     const chain: string[] = []
-    
+
     // 1. Specific region + business unit
     chain.push(`${region}-${businessUnit}`)
-    
+
     // 2. Regional variant
     chain.push(region)
-    
+
     // 3. Business unit default
     chain.push(businessUnit)
-    
+
     // 4. Compliance requirements
     const compliance = this.config.complianceRequirements[region]
     if (compliance) {
       chain.push(...compliance)
     }
-    
+
     // 5. Branding variants
     const branding = this.config.brandingVariants[businessUnit]
     if (branding) {
       chain.push(...branding)
     }
-    
+
     // 6. Global fallback
     chain.push('global-en')
-    
+
     // Remove duplicates while preserving order
     return [...new Set(chain)]
   }
@@ -542,7 +542,7 @@ class EnterpriseFallbackManager {
   
   createTranslator(region: string, businessUnit: string): any {
     const fallbackChain = this.getFallbackChain(region, businessUnit)
-    
+
     return createTranslator(translations, {
       defaultLocale: fallbackChain[0],
       fallbackLocale: fallbackChain.slice(1)
@@ -600,13 +600,13 @@ class LazyFallbackLoader {
       if (!this.loadedLocales.has(locale)) {
         await this.loadLocale(locale)
       }
-      
+
       const translation = this.extractFromLocale(locale, key)
       if (translation) {
         return translation
       }
     }
-    
+
     return key // Return key if no translation found
   }
   
@@ -625,7 +625,7 @@ class LazyFallbackLoader {
   private extractFromLocale(locale: string, key: string): string | null {
     const translations = this.translations.get(locale)
     if (!translations) return null
-    
+
     return key.split('.').reduce((obj, keyPart) => {
       return obj && obj[keyPart]
     }, translations) || null
@@ -664,15 +664,15 @@ class FallbackCache {
   get(key: string, locale: string): string | null {
     const cacheKey = `${locale}:${key}`
     const entry = this.cache.get(cacheKey)
-    
+
     if (!entry) return null
-    
+
     // Check TTL
     if (Date.now() - entry.timestamp > this.ttl) {
       this.cache.delete(cacheKey)
       return null
     }
-    
+
     // Update access count
     entry.accessCount++
     return entry.value
@@ -683,7 +683,7 @@ class FallbackCache {
     if (this.cache.size >= this.maxSize) {
       this.evictLeastUsed()
     }
-    
+
     const cacheKey = `${locale}:${key}`
     this.cache.set(cacheKey, {
       value,
@@ -697,7 +697,7 @@ class FallbackCache {
     let leastUsedKey = ''
     let leastUsedCount = Infinity
     let oldestTime = Infinity
-    
+
     for (const [key, entry] of this.cache) {
       // Prioritize by access count, then by age
       if (entry.accessCount < leastUsedCount ||
@@ -707,7 +707,7 @@ class FallbackCache {
         oldestTime = entry.timestamp
       }
     }
-    
+
     if (leastUsedKey) {
       this.cache.delete(leastUsedKey)
     }
@@ -721,7 +721,7 @@ class FallbackCache {
     const entries = Array.from(this.cache.values())
     const totalAccess = entries.reduce((sum, entry) => sum + entry.accessCount, 0)
     const hitRate = entries.length > 0 ? totalAccess / entries.length : 0
-    
+
     return { size: this.cache.size, hitRate }
   }
 }
@@ -754,7 +754,7 @@ class FallbackDebugger {
       fallbackChain,
       timestamp: Date.now()
     })
-    
+
     // Keep only recent entries
     if (this.resolutionLog.length > 100) {
       this.resolutionLog.shift()
@@ -763,7 +763,7 @@ class FallbackDebugger {
   
   getMissingTranslations(): Record<string, string[]> {
     const missing: Record<string, string[]> = {}
-    
+
     for (const entry of this.resolutionLog) {
       if (entry.resolvedLocale !== entry.requestedLocale) {
         if (!missing[entry.requestedLocale]) {
@@ -772,27 +772,27 @@ class FallbackDebugger {
         missing[entry.requestedLocale].push(entry.key)
       }
     }
-    
+
     return missing
   }
   
   getFallbackUsage(): Record<string, number> {
     const usage: Record<string, number> = {}
-    
+
     for (const entry of this.resolutionLog) {
       const key = `${entry.requestedLocale} → ${entry.resolvedLocale}`
       usage[key] = (usage[key] || 0) + 1
     }
-    
+
     return usage
   }
   
   generateReport(): string {
     const missing = this.getMissingTranslations()
     const usage = this.getFallbackUsage()
-    
+
     let report = '# Fallback Resolution Report\n\n'
-    
+
     report += '## Missing Translations\n\n'
     for (const [locale, keys] of Object.entries(missing)) {
       report += `### ${locale}\n`
@@ -802,12 +802,12 @@ class FallbackDebugger {
       }
       report += '\n\n'
     }
-    
+
     report += '## Fallback Usage\n\n'
     for (const [chain, count] of Object.entries(usage)) {
       report += `- ${chain}: ${count} times\n`
     }
-    
+
     return report
   }
 }
@@ -821,14 +821,12 @@ function createDebugTranslator(config: any): any {
     apply(target, thisArg, args) {
       const [key, localeOrParams, params] = args
       const requestedLocale = typeof localeOrParams === 'string' ? localeOrParams : config.defaultLocale
-      
+
       const result = target.apply(thisArg, args)
-      
+
       // Determine which locale was actually used
       const resolvedLocale = determineResolvedLocale(key, requestedLocale, config)
-      
-      debugger.logResolution(key, requestedLocale, resolvedLocale, config.fallbackLocale || [])
-      
+
       return result
     }
   })
@@ -861,7 +859,7 @@ describe('Fallback Locale Strategies', () => {
       defaultLocale: 'es-MX',
       fallbackLocale: ['es', 'en']
     })
-    
+
     expect(t('common.save')).toBe('Guardar Cambios')     // From es-MX
     expect(t('common.cancel')).toBe('Cancel')            // Falls back to en
     expect(t('dashboard.title')).toBe('Dashboard')       // Falls back to en
@@ -872,7 +870,7 @@ describe('Fallback Locale Strategies', () => {
       defaultLocale: 'es-CO',
       fallbackLocale: ['es-419', 'es', 'en']
     })
-    
+
     // Should fall back through the chain
     expect(t('common.save')).toBe('Guardar')     // From es (es-CO and es-419 missing)
     expect(t('common.cancel')).toBe('Cancel')    // From en
@@ -883,16 +881,16 @@ describe('Fallback Locale Strategies', () => {
       defaultLocale: 'missing-locale',
       fallbackLocale: ['another-missing', 'es', 'en']
     })
-    
+
     const startTime = performance.now()
-    
+
     // Perform many translations
     const promises = Array.from({ length: 1000 }, (_, i) =>
       Promise.resolve(t('common.save'))
     )
-    
+
     await Promise.all(promises)
-    
+
     const duration = performance.now() - startTime
     expect(duration).toBeLessThan(100) // Should be fast
   })
@@ -908,12 +906,12 @@ describe('Fallback Locale Strategies', () => {
         // Missing greetings.welcome
       }
     }
-    
+
     const t = createTranslator(dynamicTranslations, {
       defaultLocale: 'es',
       fallbackLocale: ['en']
     })
-    
+
     expect(t('greetings.welcome', { name: 'Chris' })).toBe('Welcome, Chris!')
   })
 })

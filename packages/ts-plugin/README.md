@@ -255,7 +255,7 @@ const plugin = await createTypeScriptI18nPlugin({
 
   // Include/exclude patterns
   include: ['**/*.{yml,yaml,ts}'],
-  exclude: ['**/*.test.*', '**/*.spec.*'],
+  exclude: ['**/_.test._', '**/_.spec._'],
 
   // Custom type name transformation
   transformTypeName: (key, locale) => `${locale.toUpperCase()}_${key}`,
@@ -495,18 +495,21 @@ const plugin = await createTypeScriptI18nPlugin({
 Choose the optimal type generation strategy for your needs:
 
 ### Simple Strategy
+
 - Generates basic key union types
 - Fast generation
 - Minimal file size
 - Good for simple projects
 
 ### Advanced Strategy
+
 - Full parameter type inference
 - Complex nested types
 - Function signature analysis
 - Best for complex projects
 
 ### Hybrid Strategy (Default)
+
 - Combines both approaches
 - Smart detection of complexity
 - Optimal balance of features and performance

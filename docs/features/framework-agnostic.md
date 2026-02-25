@@ -569,6 +569,7 @@ title: "{{ translations('app.name') }}"
 ## Best Practices
 
 ### 1. **Single Source of Truth**
+
 Initialize translations once at application startup:
 
 ```typescript
@@ -583,6 +584,7 @@ function getTranslator() {
 ```
 
 ### 2. **Lazy Loading for Large Applications**
+
 Use JSON outputs for client-side lazy loading:
 
 ```typescript
@@ -599,6 +601,7 @@ async function loadLocale(locale: string) {
 ```
 
 ### 3. **Environment-Specific Configuration**
+
 Configure differently for development vs production:
 
 ```typescript
@@ -613,6 +616,7 @@ const config = {
 ```
 
 ### 4. **Type Safety Across Framework Boundaries**
+
 Share types between client and server:
 
 ```typescript
@@ -624,6 +628,7 @@ import type { TypedTranslator, TranslationKey } from './types/i18n'
 ```
 
 ### 5. **Fallback Strategies**
+
 Always provide graceful fallbacks:
 
 ```typescript
@@ -637,6 +642,7 @@ const t = createTranslator(translations, {
 ```
 
 ### 6. **Performance Monitoring**
+
 Track translation performance in production:
 
 ```typescript

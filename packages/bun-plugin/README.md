@@ -403,7 +403,7 @@ i18nBunPlugin({
 i18nBunPlugin({
   onError: (error, context) => {
     // Log to external service
-    analytics.track('i18n_build_error', {
+    analytics.track('i18n*build*error', {
       error: error.message,
       context,
       timestamp: new Date().toISOString()

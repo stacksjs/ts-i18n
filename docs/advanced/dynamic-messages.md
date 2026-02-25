@@ -488,11 +488,11 @@ export default {
       subject: `Welcome to ${company}, ${user.name}!`,
       body: `
         Hi ${user.name},
-        
+
         Welcome to ${company}! We're excited to have you on board.
-        
+
         Your account (${user.email}) is now active and ready to use.
-        
+
         Best regards,
         The ${company} Team
       `,
@@ -507,13 +507,13 @@ export default {
       subject: 'Password Reset Request',
       body: `
         Hi ${user.name},
-        
+
         You requested a password reset. Click the link below to reset your password:
-        
+
         ${resetLink}
-        
+
         This link will expire in ${expiryHours} hours.
-        
+
         If you didn't request this, please ignore this email.
       `,
       cta: 'Reset Password'
@@ -528,16 +528,16 @@ export default {
       subject: `Invoice ${invoice.number} is ready`,
       body: `
         Hi ${user.name}${user.company ? ` from ${user.company}` : ''},
-        
+
         Your invoice for ${invoice.period} is ready.
-        
+
         Invoice: ${invoice.number}
-        Amount: ${new Intl.NumberFormat('en-US', { 
-          style: 'currency', 
-          currency: amount.currency 
+        Amount: ${new Intl.NumberFormat('en-US', {
+          style: 'currency',
+          currency: amount.currency
         }).format(amount.value)}
         Due Date: ${dueDate.toLocaleDateString()}
-        
+
         Please process payment by the due date to avoid service interruption.
       `,
       cta: 'View Invoice'
@@ -566,8 +566,8 @@ export default {
         }`,
         icon: 'task',
         actions: [
-          { label: 'View Task', action: 'view_task' },
-          { label: 'Accept', action: 'accept_task' }
+          { label: 'View Task', action: 'view*task' },
+          { label: 'Accept', action: 'accept*task' }
         ]
       }
     },
@@ -582,7 +582,7 @@ export default {
       body: `${project.name}: "${milestone.name}" completed by ${team.length} team members (${Math.round(completionRate * 100)}% project completion)`,
       icon: 'milestone',
       actions: [
-        { label: 'View Project', action: 'view_project' },
+        { label: 'View Project', action: 'view*project' },
         { label: 'Celebrate', action: 'celebrate' }
       ]
     })
@@ -591,7 +591,7 @@ export default {
   alerts: {
     systemStatus: ({ service, status, details, affectedUsers, eta }: {
       service: string
-      status: 'operational' | 'degraded' | 'partial_outage' | 'major_outage'
+      status: 'operational' | 'degraded' | 'partial*outage' | 'major*outage'
       details: string
       affectedUsers?: number
       eta?: Date
@@ -599,15 +599,15 @@ export default {
       const statusEmojis = {
         operational: '✅',
         degraded: '⚠️',
-        partial_outage: '🟡',
-        major_outage: '🔴'
+        partial*outage: '🟡',
+        major*outage: '🔴'
       }
 
       const statusLabels = {
         operational: 'Operational',
         degraded: 'Performance Issues',
-        partial_outage: 'Partial Outage',
-        major_outage: 'Major Outage'
+        partial*outage: 'Partial Outage',
+        major*outage: 'Major Outage'
       }
 
       return {
@@ -618,10 +618,10 @@ export default {
           ${eta ? `\nEstimated resolution: ${eta.toLocaleString()}` : ''}
         `.trim(),
         icon: 'system',
-        actions: status === 'operational' 
+        actions: status === 'operational'
           ? []
           : [
-              { label: 'Status Page', action: 'view_status' },
+              { label: 'Status Page', action: 'view*status' },
               { label: 'Subscribe to Updates', action: 'subscribe' }
             ]
       }
@@ -659,11 +659,11 @@ export default {
       if (user.role === 'guest') {
         return `Please sign in to ${action} ${resource}`
       }
-      
+
       if (user.plan === 'free' && action === 'create' && resource === 'project') {
         return `Upgrade to Pro to create more projects`
       }
-      
+
       return `Your ${user.role} role doesn't have permission to ${action} ${resource}`
     },
 
@@ -674,16 +674,16 @@ export default {
       if (!feature.context.available) {
         return `${feature.name} is currently unavailable`
       }
-      
+
       if (feature.context.requiresUpgrade) {
         const requiredPlan = user.plan === 'free' ? 'Pro' : 'Enterprise'
         return `${feature.name} requires ${requiredPlan} plan`
       }
-      
+
       if (feature.context.betaAccess) {
         return `${feature.name} is in beta. Contact support for access.`
       }
-      
+
       return `${feature.name} is not available for your account`
     }
   },
@@ -710,11 +710,11 @@ export default {
 
       return `
         Step ${step} of ${total}: ${context.feature}
-        
+
         ${personalizedIntro[user.role]}
-        
+
         Difficulty: ${difficultyIndicator[context.difficulty]}
-        
+
         ${step === 1 ? 'Let\'s begin your journey!' : `You're ${Math.round((step / total) * 100)}% through!`}
       `.trim()
     }
@@ -762,7 +762,7 @@ export default {
         currency: total.currency
       })
 
-      const itemList = items.map(item => 
+      const itemList = items.map(item =>
         `${item.quantity}x ${item.name} - ${formatter.format(item.price * item.quantity)}`
       ).join('\n')
 
@@ -770,13 +770,13 @@ export default {
 
       return `
         Order Summary:
-        
+
         ${itemList}
-        
+
         Subtotal: ${formatter.format(subtotal)}
         ${shipping ? `Shipping (${shipping.method}): ${formatter.format(shipping.cost)}` : ''}
         Tax (${Math.round(tax.rate * 100)}%): ${formatter.format(tax.amount)}
-        
+
         Total: ${formatter.format(total.amount)}
       `.trim()
     }
@@ -860,22 +860,22 @@ export default {
       })
 
       const changeDirection = portfolio.dayChange >= 0 ? '🟢' : '🔴'
-      const topGainer = portfolio.positions.reduce((prev, current) => 
+      const topGainer = portfolio.positions.reduce((prev, current) =>
         current.changePercent > prev.changePercent ? current : prev
       )
-      const topLoser = portfolio.positions.reduce((prev, current) => 
+      const topLoser = portfolio.positions.reduce((prev, current) =>
         current.changePercent < prev.changePercent ? current : prev
       )
 
       return `
         Portfolio Summary ${changeDirection}
-        
+
         Total Value: ${currencyFormatter.format(portfolio.totalValue)}
         Day Change: ${currencyFormatter.format(portfolio.dayChange)} (${percentFormatter.format(portfolio.dayChangePercent / 100)})
-        
+
         Top Performer: ${topGainer.symbol} ${percentFormatter.format(topGainer.changePercent / 100)}
         ${topGainer.changePercent < 0 ? 'Biggest Decline' : 'Worst Performer'}: ${topLoser.symbol} ${percentFormatter.format(topLoser.changePercent / 100)}
-        
+
         ${portfolio.positions.length} positions tracked
       `.trim()
     },
@@ -909,11 +909,11 @@ export default {
       return `
         Transaction Summary
         ${dateFormatter.format(period.start)} - ${dateFormatter.format(period.end)}
-        
+
         Money In: ${currencyFormatter.format(totalIn)}
         Money Out: ${currencyFormatter.format(totalOut)}
         Net Flow: ${currencyFormatter.format(netFlow)} ${netFlow >= 0 ? '🟢' : '🔴'}
-        
+
         ${transactions.length} transactions
       `.trim()
     }
@@ -957,19 +957,19 @@ export default {
 
       return `
         Performance Report
-        
+
         📊 Traffic
         Page Views: ${numberFormatter.format(metrics.pageViews)} ${formatChange(comparison.changes.pageViews)}
         Unique Visitors: ${numberFormatter.format(metrics.uniqueVisitors)} ${formatChange(comparison.changes.uniqueVisitors)}
-        
+
         🎯 Engagement
         Bounce Rate: ${(metrics.bounceRate * 100).toFixed(1)}% ${formatChange(comparison.changes.bounceRate)}
         Avg. Session: ${formatDuration(metrics.avgSessionDuration)} ${formatChange(comparison.changes.avgSessionDuration)}
-        
+
         💰 Conversions
         Conversion Rate: ${(metrics.conversionRate * 100).toFixed(2)}% ${formatChange(comparison.changes.conversionRate)}
         Revenue: ${currencyFormatter.format(metrics.revenue)} ${formatChange(comparison.changes.revenue)}
-        
+
         Compared to last ${comparison.period}
       `.trim()
     }
@@ -987,19 +987,19 @@ export default {
       user: { locale: string; timezone: string }
     }) => {
       const relativeFormatter = getRelativeTimeFormatter(user.locale)
-      
+
       const formatActivity = (activity: typeof activities[0]) => {
         const now = new Date()
         const diffInMs = activity.timestamp.getTime() - now.getTime()
-        
+
         let timeUnit: Intl.RelativeTimeFormatUnit = 'minute'
         let timeValue = Math.round(diffInMs / (1000 * 60))
-        
+
         if (Math.abs(timeValue) >= 60) {
           timeUnit = 'hour'
           timeValue = Math.round(diffInMs / (1000 * 60 * 60))
         }
-        
+
         if (Math.abs(timeValue) >= 24) {
           timeUnit = 'day'
           timeValue = Math.round(diffInMs / (1000 * 60 * 60 * 24))
@@ -1038,15 +1038,15 @@ export default {
 
       return `
         📈 Engagement Summary
-        
+
         👥 Audience: ${numberFormatter.format(engagement.followers)} followers
         👀 Reach: ${numberFormatter.format(engagement.reach)} people
         📱 Impressions: ${numberFormatter.format(engagement.impressions)}
-        
+
         💙 Likes: ${numberFormatter.format(engagement.likes)}
         💬 Comments: ${numberFormatter.format(engagement.comments)}
         🔄 Shares: ${numberFormatter.format(engagement.shares)}
-        
+
         📊 Engagement Rate: ${engagementRate}%
       `.trim()
     }
@@ -1072,7 +1072,7 @@ export default {
       })
 
       const listFormatter = getListFormatter(user.locale, 'conjunction')
-      
+
       const duration = (meeting.end.getTime() - meeting.start.getTime()) / (1000 * 60)
       const attendeeNames = attendees.map(a => a.name)
       const requiredAttendees = attendees.filter(a => a.required).length
@@ -1080,19 +1080,19 @@ export default {
 
       return `
         📅 Meeting Invitation
-        
+
         ${meeting.title}
-        
+
         🕐 When: ${dateFormatter.format(meeting.start)}
         ⏱️ Duration: ${duration} minutes
         ${meeting.location ? `📍 Where: ${meeting.location}` : ''}
         ${meeting.recurring ? `🔄 Recurring: ${meeting.recurring.frequency}${meeting.recurring.until ? ` until ${dateFormatter.format(meeting.recurring.until)}` : ''}` : ''}
-        
+
         👥 Attendees (${attendees.length}):
         ${requiredAttendees > 0 ? `Required: ${requiredAttendees}` : ''}
         ${optionalAttendees > 0 ? `Optional: ${optionalAttendees}` : ''}
         ${listFormatter.format(attendeeNames.slice(0, 5))}${attendeeNames.length > 5 ? ` and ${attendeeNames.length - 5} more` : ''}
-        
+
         ${meeting.agenda ? `
         📋 Agenda:
         ${meeting.agenda.map((item, i) => `${i + 1}. ${item}`).join('\n')}
@@ -1155,8 +1155,8 @@ const formatterCache = new LRUCache<string, Intl.NumberFormat | Intl.DateTimeFor
 const computationCache = new LRUCache<string, any>(200)
 
 function getCachedFormatter(
-  locale: string, 
-  type: 'currency' | 'number' | 'date', 
+  locale: string,
+  type: 'currency' | 'number' | 'date',
   options: any
 ): Intl.NumberFormat | Intl.DateTimeFormat {
   const key = `${type}-${locale}-${JSON.stringify(options)}`
@@ -1177,13 +1177,13 @@ function getCachedFormatter(
 function memoize<T extends (...args: any[]) => any>(fn: T, cacheKeyFn?: (...args: Parameters<T>) => string): T {
   return ((...args: Parameters<T>) => {
     const key = cacheKeyFn ? cacheKeyFn(...args) : JSON.stringify(args)
-    
+
     let result = computationCache.get(key)
     if (result === undefined) {
       result = fn(...args)
       computationCache.set(key, result)
     }
-    
+
     return result
   }) as T
 }
@@ -1242,7 +1242,7 @@ export default {
 
       return `
         Financial Report
-        
+
         Total: ${currencyFormatter.format(totalAmount)}
         Transactions: ${transactions.length}
         Top Category: ${topCategory[0]} (${currencyFormatter.format(topCategory[1])})
@@ -1262,7 +1262,7 @@ export default {
         const sorted = [...data].sort((a, b) => b.value - a.value)
         const significant = sorted.filter(item => item.value >= total * options.groupThreshold)
         const others = sorted.filter(item => item.value < total * options.groupThreshold)
-        
+
         return { total, significant, others }
       })
 
@@ -1280,12 +1280,12 @@ export default {
 
       let result = `Dataset Analysis (${dataset.length} items)\n\n`
       result += `Total: ${numberFormatter.format(total)}\n\n`
-      
+
       if (significant.length > 0) {
         result += `Top ${significant.length} items:\n`
         result += significant.map(item => formatItem(item, options.showPercentages)).join('\n')
       }
-      
+
       if (others.length > 0) {
         const othersTotal = others.reduce((sum, item) => sum + item.value, 0)
         result += `\n\nOthers (${others.length} items): ${numberFormatter.format(othersTotal)}`
@@ -1323,22 +1323,22 @@ export default {
       const typeEmojis = { message: '💬', alert: '⚠️', reminder: '⏰', update: '🔄' }
 
       let result = `Notifications (${notifications.length})\n\n`
-      
+
       for (const priority of priorityOrder) {
         for (const [type] of Object.entries(typeEmojis)) {
           const key = `${type}-${priority}`
           const items = grouped[key]
-          
+
           if (items && items.length > 0) {
             result += `${typeEmojis[type as keyof typeof typeEmojis]} ${type.toUpperCase()} - ${priority.toUpperCase()} (${items.length})\n`
-            
+
             const displayItems = items.slice(0, user.preferences.maxBatch)
             result += displayItems.map(item => `  • ${item.title}`).join('\n')
-            
+
             if (items.length > user.preferences.maxBatch) {
               result += `\n  ... and ${items.length - user.preferences.maxBatch} more`
             }
-            
+
             result += '\n\n'
           }
         }
@@ -1447,13 +1447,13 @@ export const reduxTranslations: Dictionary = {
       state: I18nState
     }) => {
       const { locale, timezone } = state.userPreferences
-      
+
       const greeting = new Intl.DateTimeFormat(locale, {
         timeZone: timezone,
         hour: 'numeric'
       }).format(new Date()).includes('AM') ? 'Good morning' : 'Good evening'
 
-      const lastLoginText = user.lastLogin 
+      const lastLoginText = user.lastLogin
         ? new Intl.RelativeTimeFormat(locale).format(
             Math.floor((user.lastLogin.getTime() - Date.now()) / (1000 * 60 * 60 * 24)),
             'day'
@@ -1466,14 +1466,14 @@ export const reduxTranslations: Dictionary = {
     localizationStatus: ({ state }: { state: I18nState }) => {
       const currentTranslations = state.translationCache[state.currentLocale]
       const loadedLocales = Object.keys(state.translationCache)
-      
+
       return `
         🌍 Localization Status
-        
+
         Current: ${state.currentLocale}
         Available: ${state.availableLocales.join(', ')}
         Loaded: ${loadedLocales.join(', ')}
-        
+
         Cache: ${currentTranslations ? 'Ready' : 'Loading...'}
         ${state.error ? `Error: ${state.error}` : ''}
       `.trim()
@@ -1526,14 +1526,14 @@ export const contextAwareTranslations: Dictionary = {
       })
 
       const itemCount = items.reduce((sum, item) => sum + item.quantity, 0)
-      
+
       return `
         🛒 Shopping Cart
-        
+
         ${itemCount} ${itemCount === 1 ? 'item' : 'items'}
         Total: ${formatter.format(total)}
-        
-        ${items.slice(0, 3).map(item => 
+
+        ${items.slice(0, 3).map(item =>
           `${item.quantity}x ${item.name} - ${formatter.format(item.price * item.quantity)}`
         ).join('\n')}
         ${items.length > 3 ? `... and ${items.length - 3} more items` : ''}
@@ -1553,18 +1553,18 @@ export const contextAwareTranslations: Dictionary = {
       const isMetric = !['US', 'LR', 'MM'].includes(userContext.region)
       const tempUnit = isMetric ? '°C' : '°F'
       const speedUnit = isMetric ? 'km/h' : 'mph'
-      
-      const displayTemp = isMetric 
-        ? weather.temperature 
+
+      const displayTemp = isMetric
+        ? weather.temperature
         : (weather.temperature * 9/5) + 32
-        
+
       const displaySpeed = isMetric
         ? weather.windSpeed
         : weather.windSpeed * 0.621371
 
       return `
         🌤️ Weather Update
-        
+
         ${displayTemp.toFixed(1)}${tempUnit} - ${weather.condition}
         Humidity: ${weather.humidity}%
         Wind: ${displaySpeed.toFixed(1)} ${speedUnit}
@@ -1636,7 +1636,7 @@ describe('Dynamic Messages', () => {
     const optimizedTranslations = {} // Import your optimized translations
 
     it('should cache expensive computations', () => {
-      const data = Array.from({ length: 1000 }, (_, i) => ({
+      const data = Array.from({ length: 1000 }, (*, i) => ({
         value: Math.random() * 100,
         timestamp: new Date(Date.now() - i * 86400000)
       }))
@@ -1787,7 +1787,7 @@ describe('Dynamic Messages', () => {
   describe('Memory Management', () => {
     it('should not leak memory with repeated calls', () => {
       const heavyFunction = ({ size }: { size: number }) => {
-        const data = new Array(size).fill(0).map((_, i) => i)
+        const data = new Array(size).fill(0).map((*, i) => i)
         return `Generated ${data.length} items`
       }
 

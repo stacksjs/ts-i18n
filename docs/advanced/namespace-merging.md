@@ -561,7 +561,7 @@ class ServiceTranslationAggregator {
 
   async loadAllServices(locale: string, services: string[] = []): Promise<any> {
     const cacheKey = `${locale}-${services.join(',')}`
-    
+
     if (this.cache.has(cacheKey)) {
       return this.cache.get(cacheKey)
     }
@@ -593,7 +593,7 @@ class ServiceTranslationAggregator {
       'analytics-service'
     ]
 
-    const servicePromises = servicesToLoad.map(service => 
+    const servicePromises = servicesToLoad.map(service =>
       loadServiceTranslations(service as keyof ServiceNamespaces, locale)
         .catch(error => {
           console.warn(`Failed to load translations for ${service}:`, error)
@@ -602,7 +602,7 @@ class ServiceTranslationAggregator {
     )
 
     const serviceResults = await Promise.all(servicePromises)
-    
+
     // Merge all service translations
     return serviceResults.reduce((acc, serviceTranslation) => ({
       ...acc,
@@ -664,8 +664,8 @@ class FeatureBasedNamespaceLoader {
   }
 
   async loadFeatureTranslations(
-    featureName: string, 
-    locale: string, 
+    featureName: string,
+    locale: string,
     userContext?: { betaAccess: boolean }
   ): Promise<any> {
     const feature = this.featureConfig.get(featureName)
@@ -694,10 +694,10 @@ class FeatureBasedNamespaceLoader {
 
     // Load feature namespaces
     const featureTranslations: any = {}
-    
+
     for (const namespace of feature.namespaces) {
       const cacheKey = `${namespace}-${locale}`
-      
+
       if (this.translations.has(cacheKey)) {
         featureTranslations[namespace] = this.translations.get(cacheKey)
         continue
@@ -726,27 +726,27 @@ class FeatureBasedNamespaceLoader {
   }
 
   async loadAllEnabledFeatures(
-    locale: string, 
+    locale: string,
     userContext?: { betaAccess: boolean }
   ): Promise<any> {
     const enabledFeatures = Array.from(this.featureConfig.values())
       .filter(feature => feature.enabled)
       .filter(feature => !feature.beta || userContext?.betaAccess)
 
-    const featurePromises = enabledFeatures.map(feature => 
+    const featurePromises = enabledFeatures.map(feature =>
       this.loadFeatureTranslations(feature.name, locale, userContext)
     )
 
     const featureResults = await Promise.all(featurePromises)
-    
+
     // Merge all feature translations
-    return featureResults.reduce((acc, featureTranslation) => 
+    return featureResults.reduce((acc, featureTranslation) =>
       this.deepMerge(acc, featureTranslation), {})
   }
 
   private deepMerge(target: any, source: any): any {
     const result = { ...target }
-    
+
     for (const key in source) {
       if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
         result[key] = this.deepMerge(result[key] || {}, source[key])
@@ -754,7 +754,7 @@ class FeatureBasedNamespaceLoader {
         result[key] = source[key]
       }
     }
-    
+
     return result
   }
 
@@ -824,10 +824,10 @@ class VersionedNamespaceManager {
   private migrations: Map<string, (old: any) => any> = new Map()
 
   registerNamespaceVersions(namespace: string, versions: NamespaceVersion[]): void {
-    this.versions.set(namespace, versions.sort((a, b) => 
+    this.versions.set(namespace, versions.sort((a, b) =>
       this.compareVersions(b.version, a.version) // Newest first
     ))
-    
+
     // Set latest non-deprecated version as active
     const latestStable = versions.find(v => !v.deprecated)
     if (latestStable) {
@@ -840,8 +840,8 @@ class VersionedNamespaceManager {
   }
 
   async loadNamespaceVersion(
-    namespace: string, 
-    locale: string, 
+    namespace: string,
+    locale: string,
     requestedVersion?: string
   ): Promise<any> {
     const versions = this.versions.get(namespace)
@@ -901,7 +901,7 @@ class VersionedNamespaceManager {
   ): Promise<any> {
     const migrationKey = `${fromVersion}-${toVersion}`
     const migrator = this.migrations.get(migrationKey)
-    
+
     if (migrator) {
       console.log(`Applying migration for ${namespace}: ${fromVersion} → ${toVersion}`)
       return migrator(data)
@@ -910,11 +910,11 @@ class VersionedNamespaceManager {
     // Try to find a migration path through intermediate versions
     const versions = this.versions.get(namespace) || []
     const migrationPath = this.findMigrationPath(fromVersion, toVersion, versions)
-    
+
     if (migrationPath.length > 0) {
       let currentData = data
       let currentVersion = fromVersion
-      
+
       for (const nextVersion of migrationPath) {
         const stepMigrator = this.migrations.get(`${currentVersion}-${nextVersion}`)
         if (stepMigrator) {
@@ -922,7 +922,7 @@ class VersionedNamespaceManager {
           currentVersion = nextVersion
         }
       }
-      
+
       return currentData
     }
 
@@ -939,9 +939,9 @@ class VersionedNamespaceManager {
     const versionList = versions.map(v => v.version).sort(this.compareVersions)
     const fromIndex = versionList.indexOf(fromVersion)
     const toIndex = versionList.indexOf(toVersion)
-    
+
     if (fromIndex === -1 || toIndex === -1) return []
-    
+
     if (fromIndex < toIndex) {
       return versionList.slice(fromIndex + 1, toIndex + 1)
     } else {
@@ -954,14 +954,14 @@ class VersionedNamespaceManager {
     compatibilityLayer: Record<string, string>
   ): any {
     const enhanced = { ...data }
-    
+
     for (const [oldKey, newKey] of Object.entries(compatibilityLayer)) {
       const value = this.getNestedValue(enhanced, newKey)
       if (value !== undefined) {
         this.setNestedValue(enhanced, oldKey, value)
       }
     }
-    
+
     return enhanced
   }
 
@@ -982,16 +982,16 @@ class VersionedNamespaceManager {
   private compareVersions(a: string, b: string): number {
     const aParts = a.split('.').map(Number)
     const bParts = b.split('.').map(Number)
-    
+
     for (let i = 0; i < Math.max(aParts.length, bParts.length); i++) {
       const aPart = aParts[i] || 0
       const bPart = bParts[i] || 0
-      
+
       if (aPart !== bPart) {
         return aPart - bPart
       }
     }
-    
+
     return 0
   }
 
@@ -1025,22 +1025,22 @@ const versionManager = new VersionedNamespaceManager()
 
 // Register namespace versions
 versionManager.registerNamespaceVersions('user-interface', [
-  { 
-    version: '1.0.0', 
+  {
+    version: '1.0.0',
     deprecated: true,
     compatibilityLayer: {
       'buttons.submit': 'actions.submit',
       'forms.validation': 'validation.messages'
     }
   },
-  { 
-    version: '1.1.0', 
+  {
+    version: '1.1.0',
     deprecated: true,
     migrationPath: '1.0.0'
   },
-  { 
-    version: '2.0.0', 
-    deprecated: false 
+  {
+    version: '2.0.0',
+    deprecated: false
   }
 ])
 
@@ -1071,14 +1071,14 @@ versionManager.registerMigration('1.1.0', '2.0.0', (oldData) => {
 
 // Load specific version
 const legacyTranslations = await versionManager.loadNamespaceVersion(
-  'user-interface', 
-  'en', 
+  'user-interface',
+  'en',
   '1.0.0'
 )
 
 // Load latest version
 const currentTranslations = await versionManager.loadNamespaceVersion(
-  'user-interface', 
+  'user-interface',
   'en'
 )
 ```
@@ -1109,12 +1109,12 @@ class NamespaceAnalytics {
   recordNamespaceLoad(namespace: string, loadTime: number): void {
     const times = this.loadTimes.get(namespace) || []
     times.push(loadTime)
-    
+
     // Keep only recent measurements
     if (times.length > 100) {
       times.shift()
     }
-    
+
     this.loadTimes.set(namespace, times)
     this.updateMetrics(namespace)
   }
@@ -1123,7 +1123,7 @@ class NamespaceAnalytics {
     const fullKey = `${namespace}.${key}`
     const count = this.keyUsage.get(fullKey) || 0
     this.keyUsage.set(fullKey, count + 1)
-    
+
     this.updateMetrics(namespace)
   }
 
@@ -1135,7 +1135,7 @@ class NamespaceAnalytics {
       stats.misses++
     }
     this.cacheStats.set(namespace, stats)
-    
+
     this.updateMetrics(namespace)
   }
 
@@ -1159,13 +1159,13 @@ class NamespaceAnalytics {
     // Calculate usage count
     const namespaceKeys = Array.from(this.keyUsage.keys())
       .filter(key => key.startsWith(`${namespace}.`))
-    metric.usageCount = namespaceKeys.reduce((sum, key) => 
+    metric.usageCount = namespaceKeys.reduce((sum, key) =>
       sum + (this.keyUsage.get(key) || 0), 0)
 
     // Calculate performance metrics
     const loadTimes = this.loadTimes.get(namespace) || []
     if (loadTimes.length > 0) {
-      metric.performance.averageLoadTime = 
+      metric.performance.averageLoadTime =
         loadTimes.reduce((sum, time) => sum + time, 0) / loadTimes.length
     }
 
@@ -1195,24 +1195,24 @@ class NamespaceAnalytics {
 
     metric.keyCount = keys.length
     metric.duplicateKeys = this.findDuplicateKeys(keys)
-    
+
     this.metrics.set(namespace, metric)
     return metric
   }
 
   private collectAllKeys(obj: any, prefix = ''): string[] {
     const keys: string[] = []
-    
+
     for (const [key, value] of Object.entries(obj)) {
       const fullKey = prefix ? `${prefix}.${key}` : key
-      
+
       if (typeof value === 'object' && value !== null && typeof value !== 'function') {
         keys.push(...this.collectAllKeys(value, fullKey))
       } else {
         keys.push(fullKey)
       }
     }
-    
+
     return keys
   }
 
@@ -1221,7 +1221,7 @@ class NamespaceAnalytics {
     keys.forEach(key => {
       keyCount.set(key, (keyCount.get(key) || 0) + 1)
     })
-    
+
     return Array.from(keyCount.entries())
       .filter(([, count]) => count > 1)
       .map(([key]) => key)
@@ -1234,7 +1234,7 @@ class NamespaceAnalytics {
     const avgCacheHitRate = allMetrics.reduce((sum, m) => sum + m.performance.cacheHitRate, 0) / allMetrics.length
 
     let report = '# Namespace Analytics Report\n\n'
-    
+
     report += '## Overview\n'
     report += `- Total Namespaces: ${allMetrics.length}\n`
     report += `- Total Key Usage: ${totalUsage}\n`
@@ -1245,7 +1245,7 @@ class NamespaceAnalytics {
     const topUsed = allMetrics
       .sort((a, b) => b.usageCount - a.usageCount)
       .slice(0, 10)
-    
+
     topUsed.forEach(metric => {
       report += `- ${metric.namespace}: ${metric.usageCount} uses, ${metric.keyCount} keys\n`
     })
@@ -1330,17 +1330,17 @@ function createMonitoredNamespaceLoader() {
   return new Proxy(loadTranslations, {
     async apply(target, thisArg, args) {
       const startTime = performance.now()
-      
+
       try {
         const result = await target.apply(thisArg, args)
         const loadTime = performance.now() - startTime
-        
+
         // Record metrics for each loaded namespace
         Object.keys(result).forEach(locale => {
           analytics.recordNamespaceLoad(locale, loadTime)
           analytics.analyzeNamespace(locale, result[locale])
         })
-        
+
         return result
       } catch (error) {
         console.error('Failed to load translations:', error)
@@ -1356,7 +1356,7 @@ function createAnalyticsTranslator(baseTranslator: any, namespace: string) {
     apply(target, thisArg, args) {
       const [key] = args
       analytics.recordKeyUsage(namespace, key)
-      
+
       return target.apply(thisArg, args)
     }
   })
@@ -1370,7 +1370,7 @@ function createAnalyticsTranslator(baseTranslator: any, namespace: string) {
 ```typescript
 // Conflict detection and resolution
 interface NamespaceConflict {
-  type: 'duplicate_key' | 'type_mismatch' | 'override_warning'
+  type: 'duplicate*key' | 'type*mismatch' | 'override*warning'
   namespace1: string
   namespace2: string
   path: string
@@ -1389,21 +1389,21 @@ class NamespaceConflictResolver {
 
   detectConflicts(translations: Record<string, any>): NamespaceConflict[] {
     this.conflicts = []
-    
+
     const allKeys = new Map<string, Array<{ namespace: string; value: any; type: string }>>()
-    
+
     // Collect all keys from all namespaces
     for (const [namespace, data] of Object.entries(translations)) {
       this.collectKeysWithMetadata(data, namespace, '', allKeys)
     }
-    
+
     // Check for conflicts
     for (const [key, instances] of allKeys) {
       if (instances.length > 1) {
         this.analyzeKeyConflict(key, instances)
       }
     }
-    
+
     return this.conflicts
   }
 
@@ -1416,7 +1416,7 @@ class NamespaceConflictResolver {
     for (const [key, value] of Object.entries(obj)) {
       const fullKey = prefix ? `${prefix}.${key}` : key
       const valueType = typeof value
-      
+
       if (valueType === 'object' && value !== null && !Array.isArray(value)) {
         this.collectKeysWithMetadata(value, namespace, fullKey, allKeys)
       } else {
@@ -1435,7 +1435,7 @@ class NamespaceConflictResolver {
     const types = new Set(instances.map(i => i.type))
     if (types.size > 1) {
       this.conflicts.push({
-        type: 'type_mismatch',
+        type: 'type*mismatch',
         namespace1: instances[0].namespace,
         namespace2: instances[1].namespace,
         path: key,
@@ -1448,10 +1448,10 @@ class NamespaceConflictResolver {
     // Check for different values of same type
     const values = instances.map(i => JSON.stringify(i.value))
     const uniqueValues = new Set(values)
-    
+
     if (uniqueValues.size > 1) {
       this.conflicts.push({
-        type: 'duplicate_key',
+        type: 'duplicate*key',
         namespace1: instances[0].namespace,
         namespace2: instances[1].namespace,
         path: key,
@@ -1471,13 +1471,13 @@ class NamespaceConflictResolver {
 
   private setupDefaultStrategies(): void {
     // Strategy: Use first occurrence
-    this.resolutionStrategies.set('first_wins', (conflict, data) => {
+    this.resolutionStrategies.set('first*wins', (conflict, data) => {
       console.log(`Resolving conflict at ${conflict.path}: using first occurrence from ${conflict.namespace1}`)
       return data // No modification needed as first value is already present
     })
 
     // Strategy: Use last occurrence
-    this.resolutionStrategies.set('last_wins', (conflict, data) => {
+    this.resolutionStrategies.set('last*wins', (conflict, data) => {
       console.log(`Resolving conflict at ${conflict.path}: using last occurrence from ${conflict.namespace2}`)
       // Implementation would override the value
       return data
@@ -1491,7 +1491,7 @@ class NamespaceConflictResolver {
     })
 
     // Strategy: Namespace prefix
-    this.resolutionStrategies.set('namespace_prefix', (conflict, data) => {
+    this.resolutionStrategies.set('namespace*prefix', (conflict, data) => {
       console.log(`Resolving conflict at ${conflict.path}: adding namespace prefixes`)
       // Implementation would rename conflicting keys
       return data
@@ -1500,7 +1500,7 @@ class NamespaceConflictResolver {
 
   resolveConflicts(
     translations: Record<string, any>,
-    strategy: string = 'first_wins'
+    strategy: string = 'first*wins'
   ): Record<string, any> {
     const resolver = this.resolutionStrategies.get(strategy)
     if (!resolver) {
@@ -1509,9 +1509,9 @@ class NamespaceConflictResolver {
 
     const conflicts = this.detectConflicts(translations)
     const autoResolvable = conflicts.filter(c => c.autoResolvable)
-    
+
     let resolved = { ...translations }
-    
+
     for (const conflict of autoResolvable) {
       resolved = resolver(conflict, resolved)
     }
@@ -1527,7 +1527,7 @@ class NamespaceConflictResolver {
 
   generateConflictReport(): string {
     let report = '# Namespace Conflict Report\n\n'
-    
+
     if (this.conflicts.length === 0) {
       report += 'No conflicts detected.\n'
       return report
@@ -1545,12 +1545,12 @@ class NamespaceConflictResolver {
 
     report += '## Summary\n'
     report += `Total conflicts: ${this.conflicts.length}\n\n`
-    
+
     report += '### By Type\n'
     Object.entries(byType).forEach(([type, count]) => {
       report += `- ${type}: ${count}\n`
     })
-    
+
     report += '\n### By Severity\n'
     Object.entries(bySeverity).forEach(([severity, count]) => {
       report += `- ${severity}: ${count}\n`
@@ -1582,9 +1582,9 @@ class NamespaceConflictResolver {
 const conflictResolver = new NamespaceConflictResolver()
 
 // Add custom resolution strategy
-conflictResolver.addCustomStrategy('priority_namespace', (conflict, data) => {
+conflictResolver.addCustomStrategy('priority*namespace', (conflict, data) => {
   const priorityOrder = ['user-service', 'core', 'shared']
-  const winningNamespace = priorityOrder.find(ns => 
+  const winningNamespace = priorityOrder.find(ns =>
     ns === conflict.namespace1 || ns === conflict.namespace2
   )
   

@@ -4,7 +4,6 @@
 
 - Chris <chrisbreuer93@gmail.com>
 
-
 [Compare changes](https://github.com/stacksjs/ts-i18n/compare/v0.1.1...HEAD)
 
 ### Contributors
@@ -12,20 +11,16 @@
 - Adelino Ngomacha <Adelinob335@gmail.com>
 - Chris <chrisbreuer93@gmail.com>
 
-
 [Compare changes](https://github.com/stacksjs/ts-i18n/compare/v0.1.0...HEAD)
 
 ### Contributors
 
 - Adelino Ngomacha <Adelinob335@gmail.com>
 
-
 ### Contributors
 
 - Adelino Ngomacha <Adelinob335@gmail.com>
 - Chris <chrisbreuer93@gmail.com>
-
-
 
 ## v0.3.1...main
 

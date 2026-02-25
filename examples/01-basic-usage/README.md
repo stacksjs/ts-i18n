@@ -42,6 +42,7 @@ bun run build
 ```
 
 This will:
+
 - Load TypeScript translation files
 - Generate JSON outputs in `dist/i18n/`
 - Create TypeScript types in `dist/i18n/types.d.ts`
@@ -52,7 +53,7 @@ This will:
 bun run web
 ```
 
-This uses Bun's HTML bundling to serve the interactive demo at `http://localhost:3000`.
+This uses Bun's HTML bundling to serve the interactive demo at `<http://localhost:3000>`.
 
 ### 4. Run the Node.js Demo
 
@@ -67,10 +68,12 @@ This runs the console demo showing TypeScript usage examples.
 The web demo includes several interactive sections:
 
 ### Language Switching
+
 - Use the language selector to switch between English, Spanish, and French
 - All content updates dynamically including complex functions
 
 ### Dynamic Translations
+
 - **Personal Greeting**: Type your name to see personalized messages
 - **Team Introduction**: Add/remove team members to see pluralization
 - **Project Updates**: Configure author, action, and project for status updates
@@ -78,6 +81,7 @@ The web demo includes several interactive sections:
 - **Member Count**: Change team size to see number formatting
 
 ### Type Safety Demo
+
 - View generated TypeScript types
 - See how compile-time validation works
 - Full autocomplete support in editors
@@ -124,6 +128,7 @@ export type TypedTranslator = TranslatorFor<Base>
 ```
 
 This provides:
+
 - ✅ Autocomplete for all translation keys
 - ✅ Type checking for function parameters
 - ✅ Compile-time validation of translations
@@ -174,22 +179,26 @@ console.log(t('welcome.teamIntro', { members: ['Chris', 'Avery', 'Buddy'] }))
 ## 🏗️ Build Process
 
 ### 1. Translation Loading
+
 - Loads TypeScript files from `locales/` directory
 - Supports complex functions with parameters
 - Validates structure with `satisfies Dictionary`
 
 ### 2. JSON Generation
+
 - Strips functions for browser compatibility
 - Creates per-locale JSON files
 - Optimized for runtime loading
 
 ### 3. Type Generation
+
 - Analyzes base TypeScript module
 - Generates dot-notation key types
 - Infers parameter types for functions
 - Creates typed translator interface
 
 ### 4. Bun Bundling
+
 - Bundles HTML, CSS, and TypeScript
 - Handles module resolution
 - Provides development server
@@ -198,6 +207,7 @@ console.log(t('welcome.teamIntro', { members: ['Chris', 'Avery', 'Buddy'] }))
 ## 🌍 Localization Features
 
 ### Fallback Chains
+
 ```typescript
 const t = createTranslator(translations, {
   defaultLocale: 'es',
@@ -206,6 +216,7 @@ const t = createTranslator(translations, {
 ```
 
 ### Runtime Locale Switching
+
 ```typescript
 // Switch locale at runtime
 t('welcome.title', 'fr') // Force French
@@ -213,6 +224,7 @@ t('welcome.personalGreeting', 'es', { name: 'Carlos' }) // Spanish with params
 ```
 
 ### Complex Pluralization
+
 ```typescript
 // Handles different pluralization rules per language
 teamIntro: ({ members }: { members: string[] }) => {

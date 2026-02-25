@@ -4,7 +4,7 @@
 
 Fast, Bun-native TypeScript i18n loader with YAML/TS support, runtime translation, and type generation. Framework-agnostic and easy to adopt.
 
-## Why ts-i18n?
+## Why ts-i18n
 
 - Works with strict YAML and dynamic TS files
 - Simple runtime translator with fallback locales
