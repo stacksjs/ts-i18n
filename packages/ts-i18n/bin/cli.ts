@@ -1,5 +1,5 @@
-/* eslint-disable no-console */
 #!/usr/bin/env bun
+/* eslint-disable no-console */
 
 import { CLI } from '@stacksjs/clapp'
 // import { CAC } from 'cac'

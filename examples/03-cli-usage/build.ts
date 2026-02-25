@@ -1,5 +1,5 @@
-/* eslint-disable no-console */
 #!/usr/bin/env bun
+/* eslint-disable no-console */
 // CLI build script example
 
 import { mkdir } from 'node:fs/promises'
