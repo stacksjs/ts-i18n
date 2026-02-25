@@ -50,8 +50,8 @@
   "dependencies": {
     "@stacksjs/clapp": "^0.1.16",
     "bunfig": "^0.14.1",
-    "tinyglobby": "^0.2.9",
-    "yaml": "^2.6.0"
+    "tinyglobby": "^0.2.14",
+    "yaml": "^2.8.1"
   },
   "devDependencies": {
     "bun-plugin-dtsx": "0.21.12"
