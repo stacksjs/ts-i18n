@@ -48,7 +48,7 @@
     "@stacksjs/logsmith": "^0.1.8",
     "@types/bun": "^1.2.20",
     "buddy-bot": "^0.8.9",
-    "bun-git-hooks": "^0.2.19",
+    "bun-git-hooks": "^0.3.1",
     "bun-plugin-dtsx": "0.9.5",
     "typescript": "^5.9.2",
     "pickier": "^0.1.20"
