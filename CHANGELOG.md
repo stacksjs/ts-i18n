@@ -1,3 +1,12 @@
+[Compare changes](https://github.com/stacksjs/ts-i18n/compare/v0.1.3...HEAD)
+
+### Contributors
+
+- Adelino Ngomacha <Adelinob335@gmail.com>
+- Adelino Ngomacha <adelinob335@gmail.com>
+- Chris <chrisbreuer93@gmail.com>
+- glennmichael123 <gtorregosa@gmail.com>
+
 [Compare changes](https://github.com/stacksjs/ts-i18n/compare/v0.1.2...HEAD)
 
 ### Contributors
