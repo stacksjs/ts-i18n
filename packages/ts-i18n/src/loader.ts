@@ -1,13 +1,16 @@
 import type { I18nConfig, SourceKind, TranslationTree } from './types'
-import { readFile } from 'node:fs/promises'
 import { basename, extname, join, relative as pathRelative, resolve, sep } from 'node:path'
 import { pathToFileURL } from 'node:url'
-import * as tiny from 'tinyglobby'
-import YAML from 'yaml'
 
-async function globby(patterns: string[], opts: { dot?: boolean }) {
-  const fn: any = (tiny as any).glob
-  return fn(patterns, opts) as Promise<string[]>
+async function globby(patterns: string[], opts: { dot?: boolean }): Promise<string[]> {
+  const results: string[] = []
+  for (const pattern of patterns) {
+    const glob = new Bun.Glob(pattern)
+    for await (const match of glob.scan({ dot: opts.dot ?? false })) {
+      results.push(match)
+    }
+  }
+  return results
 }
 
 async function importTsModule(filePath: string): Promise<Record<string, unknown>> {
@@ -80,8 +83,8 @@ export async function loadTranslations(config: I18nConfig): Promise<Record<strin
 
     if (isYaml) {
       try {
-        const content = await readFile(file, 'utf8')
-        const parsed = YAML.parse(content)
+        const content = await Bun.file(file).text()
+        const parsed = Bun.YAML.parse(content)
         data = parsed == null ? {} : parsed
       }
       catch (e: any) {

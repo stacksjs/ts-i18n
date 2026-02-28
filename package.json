@@ -3,7 +3,7 @@
   "type": "module",
   "version": "0.1.3",
   "private": true,
-  "description": "Like our `ts-starter`, but optimized for monorepos.",
+  "description": "Fast, fully-typed TypeScript i18n loader with YAML/TS support and type generation.",
   "author": "Chris Breuer <chris@stacksjs.org>",
   "license": "MIT",
   "homepage": "https://github.com/stacksjs/ts-i18n#readme",
@@ -17,6 +17,7 @@
   "keywords": [
     "i18n",
     "bun",
+    "node",
     "typescript",
     "yaml",
     "translation",
@@ -42,19 +43,8 @@
     "typecheck": "bun --bun tsc --noEmit"
   },
   "devDependencies": {
-    "@stacksjs/bumpx": "^0.1.17",
-    "@stacksjs/docs": "^0.70.23",
-    "@stacksjs/gitlint": "^0.1.5",
-    "@stacksjs/logsmith": "^0.1.8",
-    "@types/bun": "^1.2.20",
-    "buddy-bot": "^0.8.9",
-    "bun-git-hooks": "^0.2.19",
-    "bun-plugin-dtsx": "0.9.5",
-    "typescript": "^5.9.2",
-    "pickier": "^0.1.20"
-  },
-  "overrides": {
-    "unconfig": "0.3.10"
+    "@stacksjs/bunpress": "^0.1.1",
+    "better-dx": "^0.2.6"
   },
   "git-hooks": {
     "pre-commit": {

@@ -1,8 +1,6 @@
 #!/usr/bin/env bun
 /* eslint-disable no-console */
-
 import { CLI } from '@stacksjs/clapp'
-// import { CAC } from 'cac'
 import { version } from '../package.json'
 import { config as defaultConfig, defaultConfig as defaultValues } from '../src/config'
 import { loadTranslations } from '../src/loader'

@@ -49,10 +49,9 @@
     "bun": ">=1.0.0"
   },
   "dependencies": {
-    "yaml": "^2.3.4",
     "@stacksjs/ts-i18n": "workspace:*"
   },
   "devDependencies": {
-    "bun-plugin-dtsx": "0.9.5"
+    "bun-plugin-dtsx": "0.9.12"
   }
 }

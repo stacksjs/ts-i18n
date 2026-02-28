@@ -13,8 +13,16 @@ export const defaultConfig: I18nConfig = {
   sources: ['ts'],
 }
 
-// eslint-disable-next-line antfu/no-top-level-await
-export const config: I18nConfig = await loadConfig({
-  name: 'i18n',
-  defaultConfig,
-})
+let _config: I18nConfig | null = null
+
+export async function getConfig(): Promise<I18nConfig> {
+  if (!_config) {
+    _config = await loadConfig({
+      name: 'i18n',
+      defaultConfig,
+    })
+  }
+  return _config
+}
+
+export const config: I18nConfig = defaultConfig
