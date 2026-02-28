@@ -10,7 +10,7 @@ Fast, Bun-native TypeScript i18n loader with YAML/TS support, runtime translatio
 - Simple runtime translator with fallback locales
 - Optional JSON outputs for bundlers
 - Type-safe keys via generated `d.ts`
-- Great performance using Bun and tinyglobby
+- Great performance using Bun
 
 ## Install
 
