@@ -46,7 +46,7 @@
     "typecheck": "bunx tsc --noEmit"
   },
   "peerDependencies": {
-    "bun": ">=1.0.0"
+    "bun": ">=1.3.10"
   },
   "dependencies": {
     "@stacksjs/ts-i18n": "workspace:*"
