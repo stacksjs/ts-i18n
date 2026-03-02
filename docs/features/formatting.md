@@ -358,7 +358,7 @@ function formatDate(date: Date, locale: string, options: Intl.DateTimeFormatOpti
     return date.toLocaleDateString(locale, options)
   } catch {
     // Fallback for older environments
-    return date.toISOString().split('T')[0]
+    return date.toISOString().slice(0, 10)
   }
 }
 ```

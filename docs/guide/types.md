@@ -2,7 +2,7 @@
 
 ts-i18n provides powerful type generation capabilities that give you autocomplete, type checking, and parameter inference for your translations.
 
-## Why Type Generation?
+## Why Type Generation
 
 - **Catch typos at compile time** - No more runtime errors from mistyped keys
 - **Autocomplete in IDE** - See all available translation keys as you type
