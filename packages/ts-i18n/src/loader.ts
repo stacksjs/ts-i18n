@@ -84,7 +84,7 @@ export async function loadTranslations(config: I18nConfig): Promise<Record<strin
     if (isYaml) {
       try {
         const content = await Bun.file(file).text()
-        const parsed = Bun.YAML.parse(content)
+        const parsed = (Bun as any).YAML.parse(content)
         data = parsed == null ? {} : parsed
       }
       catch (e: any) {

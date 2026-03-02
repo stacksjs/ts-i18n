@@ -11,11 +11,11 @@
     },
     "packages/action": {
       "name": "ts-i18n-action",
-      "version": "0.1.2",
+      "version": "0.1.4",
     },
     "packages/bun-plugin": {
       "name": "bun-plugin-i18n",
-      "version": "0.0.0",
+      "version": "0.1.4",
       "dependencies": {
         "@stacksjs/ts-i18n": "workspace:*",
       },
@@ -28,7 +28,7 @@
     },
     "packages/ts-i18n": {
       "name": "@stacksjs/ts-i18n",
-      "version": "0.0.0",
+      "version": "0.1.4",
       "bin": {
         "i18n": "./dist/bin/cli.js",
       },
@@ -42,7 +42,7 @@
     },
     "packages/ts-plugin": {
       "name": "ts-plugin-i18n",
-      "version": "0.0.0",
+      "version": "0.1.4",
       "dependencies": {
         "@stacksjs/ts-i18n": "workspace:*",
       },
