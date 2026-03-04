@@ -44,7 +44,7 @@ jobs:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
       - name: Attach Binaries
-        uses: stacksjs/action-releaser@v1.1.0
+        uses: stacksjs/action-releaser@v1.2.9
         with:
           files: |
             packages/ts-i18n/bin/i18n-linux-x64.zip
