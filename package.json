@@ -31,12 +31,11 @@
     "build": "for dir in packages/*; do if [ -f \"$dir/package.json\" ]; then echo \"Building $dir\" && bun run --cwd $dir build; fi; done",
     "fresh": "bunx rimraf node_modules/ bun.lock && bun i",
     "test": "bun test",
-    "lint": "bunx --bun pickier lint .",
-    "lint:fix": "bunx --bun pickier lint . --fix",
+    "lint": "bunx --bun pickier .",
+    "lint:fix": "bunx --bun pickier . --fix",
     "changelog": "bunx logsmith --verbose",
     "changelog:generate": "bunx logsmith --output CHANGELOG.md",
     "release": "bun run changelog:generate && bunx bumpx prompt --recursive",
-    "postinstall": "bunx git-hooks",
     "dev:docs": "bun --bun vitepress dev docs",
     "build:docs": "bun --bun vitepress build docs",
     "preview:docs": "bun --bun vitepress preview docs",
@@ -45,14 +44,6 @@
   "devDependencies": {
     "@stacksjs/bunpress": "^0.1.1",
     "better-dx": "^0.2.6"
-  },
-  "git-hooks": {
-    "pre-commit": {
-      "staged-lint": {
-        "*.{js,ts,json,yaml,yml,md}": "bunx --bun pickier lint --fix"
-      }
-    },
-    "commit-msg": "bunx gitlint --edit .git/COMMIT_EDITMSG"
   },
   "workspaces": [
     "packages/*"
