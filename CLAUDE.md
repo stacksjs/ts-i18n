@@ -2,7 +2,7 @@
 
 ## About
 
-Fast, fully-typed TypeScript i18n loader with YAML/TS support and type generation.
+A fast, Bun-native TypeScript i18n library that loads translations from YAML or TypeScript files, provides a runtime translator with fallback locale support, and generates TypeScript type definitions for key safety. It supports dynamic values via functions in TS files, per-locale JSON output for bundlers, and is framework-agnostic with examples for React, Vue, and template engines. Configuration is managed via `.config/i18n.config.ts`.
 
 ## Linting
 
