@@ -1,6 +1,6 @@
 import { test, expect, describe, beforeEach, afterEach } from 'bun:test'
 import { TypeScriptI18nPlugin, createTypeScriptI18nPlugin } from '../src/index'
-import { rmdir, mkdir } from 'node:fs/promises'
+import { rm, mkdir } from 'node:fs/promises'
 import { existsSync } from 'node:fs'
 
 describe('TypeScriptI18nPlugin', () => {
@@ -8,13 +8,13 @@ describe('TypeScriptI18nPlugin', () => {
 
   beforeEach(async () => {
     if (existsSync(testDir)) {
-      await rmdir(testDir, { recursive: true })
+      await rm(testDir, { recursive: true })
     }
   })
 
   afterEach(async () => {
     if (existsSync(testDir)) {
-      await rmdir(testDir, { recursive: true })
+      await rm(testDir, { recursive: true })
     }
   })
 
