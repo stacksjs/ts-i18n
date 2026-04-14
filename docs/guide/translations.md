@@ -348,9 +348,11 @@ const complex = {
 
 ```typescript
 /**
+
  * User-related translations
  * @param name - The user's display name
  * @param count - Number of items (for pluralization)
+
  */
 export default {
   welcome: ({ name }: { name: string }) => `Welcome, ${name}!`,

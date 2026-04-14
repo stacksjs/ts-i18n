@@ -14,7 +14,7 @@ published_packages=0
 skipped_packages=0
 
 for dir in packages/*/ ; do
-  if [ -d "$dir" ]; then
+  if [[ -d "$dir" ]]; then
     package_name=$(basename "$dir")
     package_json="$dir/package.json"
     total_packages=$((total_packages + 1))
@@ -32,14 +32,14 @@ for dir in packages/*/ ; do
     else
       # Fallback to grep; not perfect but avoids crashing
       private_check=$(grep -E '"private":\s*true' "$package_json" 2>/dev/null || echo "")
-      if [ -n "$private_check" ]; then
+      if [[ -n "$private_check" ]]; then
         is_private="true"
       else
         is_private="false"
       fi
     fi
 
-    if [ "$is_private" = "true" ]; then
+    if [[ "$is_private" = "true" ]]; then
       echo "✓ Skipping $package_name (private package)"
       skipped_packages=$((skipped_packages + 1))
     else
@@ -66,7 +66,7 @@ echo "  Published: $published_packages"
 echo "  Skipped (private): $skipped_packages"
 echo ""
 
-if [ $published_packages -gt 0 ]; then
+if [[ $published_packages -gt 0 ]]; then
   echo "✓ All public packages published successfully!"
 else
   echo "ℹ No packages were published (all packages are private)"

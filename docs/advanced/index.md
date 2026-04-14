@@ -5,18 +5,22 @@ Advanced patterns and customizations for ts-i18n.
 ## Topics
 
 ### Custom Loaders
+
 Create custom translation loaders for various sources.
 [Learn more](/advanced/loaders)
 
 ### Caching Strategies
+
 Optimize translation loading with caching.
 [Learn more](/advanced/caching)
 
 ### SSR Support
+
 Server-side rendering with proper locale handling.
 [Learn more](/advanced/ssr)
 
 ### Testing i18n
+
 Test your internationalized applications.
 [Learn more](/advanced/testing)
 

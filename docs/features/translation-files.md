@@ -238,10 +238,12 @@ For TypeScript files, use clear parameter types:
 ```typescript
 export default {
   /**
-   * Formats a welcome message for the user
-   * @param name - The user's display name
-   * @param count - Number of notifications
-   */
+
+   _ Formats a welcome message for the user
+   _ @param name - The user's display name
+   _ @param count - Number of notifications
+
+   _/
   welcomeMessage: (params: {
     name: string
     count: number

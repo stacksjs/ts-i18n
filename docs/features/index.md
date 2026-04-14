@@ -5,18 +5,22 @@ ts-i18n provides comprehensive internationalization for TypeScript applications.
 ## Core Features
 
 ### Lazy Loading
+
 Load translations on demand for optimal bundle size.
 [Learn more](/features/lazy-loading)
 
 ### Namespace Support
+
 Organize translations into logical namespaces.
 [Learn more](/features/namespaces)
 
 ### ICU MessageFormat
+
 Full support for ICU message formatting standards.
 [Learn more](/features/icu)
 
 ### Vue Integration
+
 First-class Vue.js integration with composables.
 [Learn more](/features/vue)
 

@@ -44,5 +44,3 @@ features:
   - title: "TS-First"
     details: "TypeScript-first by default. Enable YAML parsing only when needed for optimal performance."
 ---
-
-<Home />

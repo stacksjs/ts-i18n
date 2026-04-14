@@ -238,10 +238,13 @@ Add type generation to your CI pipeline:
 
 ```yaml
 # .github/workflows/ci.yml
+
 - name: Generate i18n types
+
   run: bunx ts-i18n generate
 
 - name: Type check
+
   run: bun run typecheck
 ```
 
