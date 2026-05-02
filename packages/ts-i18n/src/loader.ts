@@ -56,6 +56,8 @@ function patternsForSources(sources: SourceKind[]): string[] {
     pats.push('**/*.yml', '**/*.yaml')
   if (sources.includes('ts'))
     pats.push('**/*.ts', '**/*.js')
+  if (sources.includes('json'))
+    pats.push('**/*.json')
   return pats
 }
 
@@ -64,13 +66,27 @@ export async function loadTranslations(config: I18nConfig): Promise<Record<strin
     throw new Error('ts-i18n: translationsDir must be a non-empty string')
   const baseDir = resolve(config.translationsDir)
 
+  // `optional: true` lets framework integrations call loadTranslations
+  // before the user has created their translations directory — common
+  // in fresh-scaffold flows where the i18n package is wired but
+  // translations haven't been authored yet.
+  //
+  // We probe via a Bun.Glob scan of the parent directory rather than
+  // node:fs.existsSync because the loader bundle targets `browser`
+  // (transitive via bunfig). The glob already returns [] for missing
+  // dirs, which is exactly the signal we need.
+
   const include = config.include ?? patternsForSources(config.sources ?? ['ts'])
   const patterns = include.map(p => join(baseDir, p))
   const matched = await globby(patterns, { dot: false })
   const files = matched.map(f => resolve(f))
 
-  if (!files.length)
-    throw new Error(`ts-i18n: No translation files found under ${baseDir}`)
+  if (!files.length) {
+    if (config.optional) return {}
+    throw new Error(`ts-i18n: No translation files found under ${baseDir}. `
+      + `Looked for ${patterns.join(', ')}. `
+      + `If this is a fresh scaffold, add a sample file or pass \`optional: true\`.`)
+  }
 
   interface Entry { locale: string, container: TranslationTree }
 
@@ -78,6 +94,7 @@ export async function loadTranslations(config: I18nConfig): Promise<Record<strin
     const ext = extname(file).toLowerCase()
     const isYaml = ext === '.yml' || ext === '.yaml'
     const isTs = ext === '.ts' || ext === '.js'
+    const isJson = ext === '.json'
 
     let data: unknown
 
@@ -89,6 +106,19 @@ export async function loadTranslations(config: I18nConfig): Promise<Record<strin
       }
       catch (e: any) {
         throw new Error(`ts-i18n: Failed to parse YAML file ${file}: ${e?.message ?? e}`)
+      }
+    }
+    else if (isJson) {
+      // JSON support: framework-agnostic and the format most CMS / TMS
+      // tools (Lokalise, Crowdin, etc.) export to. Empty files are
+      // tolerated as `{}` so a freshly-scaffolded locale doesn't error
+      // before it has any keys.
+      try {
+        const content = await Bun.file(file).text()
+        data = content.trim().length === 0 ? {} : JSON.parse(content)
+      }
+      catch (e: any) {
+        throw new Error(`ts-i18n: Failed to parse JSON file ${file}: ${e?.message ?? e}`)
       }
     }
     else if (isTs) {

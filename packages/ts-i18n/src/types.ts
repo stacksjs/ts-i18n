@@ -7,6 +7,14 @@ export interface I18nConfig {
   outDir?: string
   typesOutFile?: string
   sources?: SourceKind[]
+  /**
+   * When true, the loader treats a missing `translationsDir` as
+   * empty rather than throwing. Useful in tests and CLI scaffolds
+   * where the directory may not exist on first run.
+   *
+   * Defaults to false to preserve the explicit-config-error behavior.
+   */
+  optional?: boolean
 }
 
 export interface TransParams {
@@ -82,4 +90,4 @@ export type ParamsForKey<T, K extends string> = ParamsForLeaf<PathValue<T, K>>
 /** A typed translator for a given base tree shape T */
 export type TranslatorFor<T> = <K extends DotPaths<T>>(_key: K, _localeOrParams?: string | ParamsForKey<T, K>, _maybeParams?: ParamsForKey<T, K>) => string
 
-export type SourceKind = 'ts' | 'yaml'
+export type SourceKind = 'ts' | 'yaml' | 'json'
