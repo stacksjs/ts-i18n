@@ -1,7 +1,7 @@
 {
   "name": "ts-plugin-i18n",
   "type": "module",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "TypeScript plugin for ts-i18n.",
   "author": "Chris Breuer <chris@stacksjs.org>",
   "license": "MIT",
