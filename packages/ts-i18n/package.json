@@ -24,7 +24,7 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/src/index.js"
+      "import": "./dist/index.js"
     },
     "./*": {
       "import": "./dist/*"
@@ -33,7 +33,7 @@
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "bin": {
-    "i18n": "./dist/bin/cli.js"
+    "i18n": "./dist/cli.js"
   },
   "files": [
     "README.md",
@@ -41,6 +41,7 @@
   ],
   "scripts": {
     "build": "bun --bun build.ts",
+    "prepublishOnly": "bun run build",
     "dev": "bun --watch build.ts",
     "lint": "bunx --bun pickier lint .",
     "lint:fix": "bunx --bun pickier lint . --fix",
