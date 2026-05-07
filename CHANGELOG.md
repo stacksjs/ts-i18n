@@ -1,3 +1,24 @@
+[Compare changes](https://github.com/stacksjs/ts-i18n/compare/v0.1.7...v0.1.8)
+
+### 🧹 Chores
+
+- release v0.1.8 ([73052e3](https://github.com/stacksjs/ts-i18n/commit/73052e3)) _(by glennmichael123 <gtorregosa@gmail.com>)_
+- wip ([a90950a](https://github.com/stacksjs/ts-i18n/commit/a90950a)) _(by glennmichael123 <gtorregosa@gmail.com>)_
+
+### Contributors
+
+- _glennmichael123 <gtorregosa@gmail.com>_
+
+[Compare changes](https://github.com/stacksjs/ts-i18n/compare/v0.1.7...HEAD)
+
+### 🧹 Chores
+
+- wip ([a90950a](https://github.com/stacksjs/ts-i18n/commit/a90950a)) _(by glennmichael123 <gtorregosa@gmail.com>)_
+
+### Contributors
+
+- _glennmichael123 <gtorregosa@gmail.com>_
+
 [Compare changes](https://github.com/stacksjs/ts-i18n/compare/v0.1.6...HEAD)
 
 ### Contributors
