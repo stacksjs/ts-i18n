@@ -1,3 +1,13 @@
+[Compare changes](https://github.com/stacksjs/ts-i18n/compare/v0.1.8...v0.1.9)
+
+### 🧹 Chores
+
+- release v0.1.9 ([3ff264a](https://github.com/stacksjs/ts-i18n/commit/3ff264a)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+### Contributors
+
+- _Chris <chrisbreuer93@gmail.com>_
+
 [Compare changes](https://github.com/stacksjs/ts-i18n/compare/v0.1.7...v0.1.8)
 
 ### 🧹 Chores

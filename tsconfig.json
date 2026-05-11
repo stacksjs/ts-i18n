@@ -41,6 +41,7 @@
     "packages/**/test/outputs/**",
     "packages/**/examples/**",
     "examples/**",
+    "pantry/**",
     "docs/**"
   ]
 }

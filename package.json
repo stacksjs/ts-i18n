@@ -1,7 +1,7 @@
 {
   "name": "ts-i18n",
   "type": "module",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "private": true,
   "description": "Fast, fully-typed TypeScript i18n loader with YAML/TS support and type generation.",
   "author": "Chris Breuer <chris@stacksjs.org>",
@@ -49,17 +49,14 @@
   },
   "devDependencies": {
     "@stacksjs/bunpress": "^0.1.1",
-    "better-dx": "^0.2.7"
+    "better-dx": "^0.2.7",
+    "p-limit": "3.1.0"
   },
   "workspaces": [
     "packages/*"
   ],
   "git-hooks": {
-    "pre-commit": {
-      "staged-lint": {
-        "*.{js,ts,json,yaml,yml,md}": "bunx --bun pickier lint --fix"
-      }
-    },
+    "pre-commit": "bun scripts/staged-check.ts",
     "commit-msg": "bunx gitlint --edit .git/COMMIT_EDITMSG"
   }
 }

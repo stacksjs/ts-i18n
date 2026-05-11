@@ -1,7 +1,7 @@
 {
   "name": "@stacksjs/ts-i18n",
   "type": "module",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "description": "Fast, Bun-native TypeScript i18n loader with YAML/TS support and type generation.",
   "author": "Adelino Ngomacha",
   "license": "MIT",
@@ -49,7 +49,7 @@
     "typecheck": "bun --bun tsc --noEmit"
   },
   "dependencies": {
-    "@stacksjs/clapp": "^0.2.0",
+    "@stacksjs/clapp": "^0.2.9",
     "bunfig": "^0.15.6"
   },
   "devDependencies": {

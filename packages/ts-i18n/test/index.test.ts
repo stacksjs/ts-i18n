@@ -105,6 +105,8 @@ describe('ts-i18n outputs and type generation', () => {
     const content = await readFile(outFile, 'utf8')
     expect(content).toContain('export type TranslationKey = DotPaths<Base>')
     expect(content).toContain('export type TypedTranslator = TranslatorFor<Base>')
+    expect(content).toContain('from \'../fixtures/locales/en/index.ts\'')
+    expect(content).not.toContain('/Users/')
   })
 })
 
