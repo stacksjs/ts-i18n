@@ -252,29 +252,29 @@ console.log('=========================')
 
 const workflow = `
 1. 📝 Content teams write YAML translation files
-   - Simple, readable format
-   - No TypeScript knowledge required
-   - Compatible with translation tools
+  - Simple, readable format
+  - No TypeScript knowledge required
+  - Compatible with translation tools
 
 2. 🔧 TypeScript plugin analyzes YAML structure
-   - Generates comprehensive TypeScript interfaces
-   - Creates wrapper modules and unified types
-   - Preserves original values as JSDoc comments
+  - Generates comprehensive TypeScript interfaces
+  - Creates wrapper modules and unified types
+  - Preserves original values as JSDoc comments
 
 3. 💻 Developers get full TypeScript experience
-   - Import generated types in their code
-   - Use TypedTranslator for type-safe translations
-   - Get autocomplete, validation, and refactoring
+  - Import generated types in their code
+  - Use TypedTranslator for type-safe translations
+  - Get autocomplete, validation, and refactoring
 
 4. 🔁 Watch mode keeps types in sync
-   - Automatic regeneration on YAML changes
-   - No manual steps required
-   - Always up-to-date types
+  - Automatic regeneration on YAML changes
+  - No manual steps required
+  - Always up-to-date types
 
 5. 🚀 Production build optimized
-   - Types only used at development time
-   - Runtime uses optimized JSON
-   - No TypeScript overhead in production
+  - Types only used at development time
+  - Runtime uses optimized JSON
+  - No TypeScript overhead in production
 `
 
 console.log(workflow)

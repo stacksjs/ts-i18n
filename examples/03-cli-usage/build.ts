@@ -102,11 +102,12 @@ async function build() {
       console.log('✅ Build completed successfully!')
       console.log(`   Generated ${fileCount} files in ${duration}ms`)
       console.log(`   ${localeCount} locales processed`)
-    } else {
+    }
+    else {
       console.log(`✅ Generated ${fileCount} files for ${localeCount} locales (${duration}ms)`)
     }
-
-  } catch (error) {
+  }
+  catch (error) {
     console.error('❌ Build failed:', error)
     process.exit(1)
   }
@@ -127,7 +128,8 @@ function collectKeys(obj: any, prefix = ''): string[] {
     const fullKey = prefix ? `${prefix}.${key}` : key
     if (value && typeof value === 'object' && !Array.isArray(value)) {
       keys.push(...collectKeys(value, fullKey))
-    } else {
+    }
+    else {
       keys.push(fullKey)
     }
   }

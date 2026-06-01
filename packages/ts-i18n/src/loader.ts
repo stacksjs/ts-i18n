@@ -33,7 +33,7 @@ function deepMerge(target: TranslationTree, source: TranslationTree): Translatio
       output[key] = deepMerge(existing, value as TranslationTree)
     }
     else {
-      ;(output as any)[key] = value as any
+      (output as any)[key] = value as any
     }
   }
   return output

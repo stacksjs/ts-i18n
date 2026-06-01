@@ -4,53 +4,34 @@ on:
   push:
     tags:
       - 'v*'
+  workflow_dispatch:
 
 jobs:
   npm:
-    name: npm
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
-      - name: Install Bun
+      - name: Setup Bun
         uses: oven-sh/setup-bun@v2
-        # env:
-        #   BUN_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-        with:
-          bun-version: latest
-
-      - name: Use cached node_modules
-        uses: actions/cache@v4.2.4
-        with:
-          path: node_modules
-          key: node-modules-${{ hashFiles('**/bun.lock') }}
-          restore-keys: |
-            node-modules-
 
       - name: Install Dependencies
         run: bun install
 
-      - name: Publish to npm
-        run: ./scripts/publish.sh
-        env:
-          BUN_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-
-      - name: Create GitHub release
-        run: bunx changelogithub
-        env:
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-
-      - name: Attach Binaries
-        uses: stacksjs/action-releaser@v1.1.0
+      - name: Publish
+        uses: home-lang/pantry/packages/action@main
         with:
-          files: |
-            packages/ts-i18n/bin/i18n-linux-x64.zip
-            packages/ts-i18n/bin/i18n-linux-arm64.zip
-            packages/ts-i18n/bin/i18n-windows-x64.zip
-            packages/ts-i18n/bin/i18n-darwin-x64.zip
-            packages/ts-i18n/bin/i18n-darwin-arm64.zip
+          install: false
+          publish: npm
+          release: true
+          release-changelog: CHANGELOG.md
         env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

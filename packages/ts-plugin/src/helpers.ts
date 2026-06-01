@@ -19,7 +19,8 @@ export function countKeys(tree: any, depth = 0): number {
   for (const value of Object.values(tree)) {
     if (value && typeof value === 'object' && !Array.isArray(value)) {
       count += countKeys(value, depth + 1)
-    } else {
+    }
+    else {
       count++
     }
   }
@@ -104,9 +105,10 @@ export function generateInterfaceContent(definitions: YamlTypeDefinition[], inte
     if (def.nested && def.nested.length > 0) {
       const nestedInterfaceName = `${capitalizeFirst(propertyName)}Section`
       const nestedContent = generateInterfaceContent(def.nested, nestedInterfaceName, depth + 1)
-      content += nestedContent + '\n'
+      content += `${nestedContent}\n`
       content += `${indent}  ${propertyName}: ${nestedInterfaceName}\n`
-    } else {
+    }
+    else {
       const comment = generatePropertyComment(def, depth + 1)
       content += comment
       content += `${indent}  ${propertyName}: ${def.type}\n`
@@ -123,10 +125,12 @@ export function generatePropertyComment(def: YamlTypeDefinition, depth: number):
 
   if (typeof def.value === 'string') {
     return `${indent}/** "${def.value}" */\n`
-  } else if (typeof def.value === 'function') {
+  }
+  else if (typeof def.value === 'function') {
     const example = generateFunctionExample(def.value)
     return `${indent}/** Function: ${example} */\n`
-  } else if (typeof def.value === 'number' || typeof def.value === 'boolean') {
+  }
+  else if (typeof def.value === 'number' || typeof def.value === 'boolean') {
     return `${indent}/** Value: ${def.value} */\n`
   }
 
@@ -241,7 +245,8 @@ export function analyzeYamlStructure(tree: TranslationTree, locale: string, pref
         value,
         nested,
       })
-    } else if (typeof value === 'function') {
+    }
+    else if (typeof value === 'function') {
       // Function - try to infer parameter types
       const paramType = inferFunctionParameterType(value)
       definitions.push({
@@ -249,7 +254,8 @@ export function analyzeYamlStructure(tree: TranslationTree, locale: string, pref
         type: `(params: ${paramType}) => string`,
         value,
       })
-    } else {
+    }
+    else {
       // Primitive value
       const type = inferPrimitiveType(value)
       definitions.push({

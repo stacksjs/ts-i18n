@@ -6,7 +6,7 @@ ts-i18n supports both YAML and TypeScript translation files, allowing you to cho
 
 Organize your translations by locale in a dedicated directory:
 
-```
+```text
 lang/
   en/
     common.yml

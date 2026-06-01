@@ -1,5 +1,6 @@
 {
   "name": "ts-i18n-action",
+  "type": "module",
   "version": "0.1.9",
   "private": true,
   "scripts": {

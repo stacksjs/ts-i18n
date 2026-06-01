@@ -122,7 +122,8 @@ export default {
           if (keyCount < 50) {
             return `English locale has too few keys (${keyCount}), expected at least 50`
           }
-        } else {
+        }
+        else {
           // Other locales should have at least 70% coverage
           const englishKeys = getEnglishKeyCount()
           const currentKeys = Object.keys(flattened).length
@@ -237,7 +238,8 @@ function flattenObject(obj: any, prefix = ''): Record<string, any> {
 
     if (value && typeof value === 'object' && !Array.isArray(value)) {
       Object.assign(result, flattenObject(value, newKey))
-    } else {
+    }
+    else {
       result[newKey] = value
     }
   }
@@ -265,7 +267,8 @@ async function sendMetrics(metrics: Record<string, number>): Promise<void> {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ metrics, timestamp: Date.now() })
     })
-  } catch (error) {
+  }
+  catch (error) {
     console.warn('Failed to send metrics:', error)
   }
 }
@@ -282,7 +285,8 @@ async function sendErrorReport(report: any): Promise<void> {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(report)
     })
-  } catch (error) {
+  }
+  catch (error) {
     console.warn('Failed to send error report:', error)
   }
 }

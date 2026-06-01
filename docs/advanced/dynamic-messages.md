@@ -461,7 +461,7 @@ describe('Dynamic Message Functions', () => {
 })
 ```
 
-## Advanced Dynamic Patterns
+## Advanced Message Templating
 
 ### Template-Based Message Systems
 

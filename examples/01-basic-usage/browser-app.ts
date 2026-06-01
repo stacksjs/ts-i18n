@@ -247,7 +247,7 @@ else {
 }
 
 // Export for debugging
-;(window as any).appState = {
+(window as any).appState = {
   translator: () => translator,
   currentLocale: () => currentLocale,
   teamMembers: () => teamMembers,
