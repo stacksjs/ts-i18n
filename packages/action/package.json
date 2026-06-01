@@ -1,7 +1,7 @@
 {
   "name": "ts-i18n-action",
   "type": "module",
-  "version": "0.1.10",
+  "version": "0.1.11",
   "private": true,
   "scripts": {
     "build": "echo 'Action package - no build needed'"

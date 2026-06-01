@@ -1,3 +1,13 @@
+[Compare changes](https://github.com/stacksjs/ts-i18n/compare/v0.1.10...v0.1.11)
+
+### 🧹 Chores
+
+- release v0.1.11 ([9fff66a](https://github.com/stacksjs/ts-i18n/commit/9fff66a)) _(by glennmichael123 <gtorregosa@gmail.com>)_
+
+### Contributors
+
+- _glennmichael123 <gtorregosa@gmail.com>_
+
 [Compare changes](https://github.com/stacksjs/ts-i18n/compare/v0.1.9...v0.1.10)
 
 ### 🧹 Chores
