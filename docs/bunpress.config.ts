@@ -1,11 +1,9 @@
-import type { BunpressConfig } from 'bunpress'
+import type { BunPressConfig } from '@stacksjs/bunpress'
 
-const config: BunpressConfig = {
-  name: 'ts-i18n',
+const config: BunPressConfig = {
+  title: 'ts-i18n',
   description: 'Fast, Bun-native TypeScript i18n loader with YAML/TS support and type generation',
   url: 'https://ts-i18n.stacksjs.org',
-  theme: 'docs',
-
   nav: [
     { text: 'Guide', link: '/guide' },
     { text: 'Translation Files', link: '/translation-files' },
@@ -60,16 +58,17 @@ const config: BunpressConfig = {
     ],
   },
 
-  search: true,
-  editLink: {
-    pattern: 'https://github.com/stacksjs/ts-i18n/edit/main/docs/:path',
-    text: 'Edit this page on GitHub',
+  themeConfig: {
+    editLink: {
+      pattern: 'https://github.com/stacksjs/ts-i18n/edit/main/docs/:path',
+      text: 'Edit this page on GitHub',
+    },
+    socialLinks: [
+      { icon: 'github', link: 'https://github.com/stacksjs/ts-i18n' },
+      { icon: 'discord', link: 'https://discord.gg/stacksjs' },
+    ],
   },
 
-  socialLinks: [
-    { icon: 'github', link: 'https://github.com/stacksjs/ts-i18n' },
-    { icon: 'discord', link: 'https://discord.gg/stacksjs' },
-  ],
 }
 
 export default config
